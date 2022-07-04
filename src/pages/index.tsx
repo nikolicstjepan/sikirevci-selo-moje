@@ -34,16 +34,11 @@ const Home: NextPage = () => {
           </section>
 
           <section className="h-full max-h-72 transform group border-2 border-neutral-800 rounded-2xl duration-300 hover:scale-105 hover:border-blue-600 hover:-translate-y-1 hover:shadow-2xl">
-            <a
-              href="https://www.typescriptlang.org/"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer">
               <div className="p-5 py-10 flex flex-col justify-center h-full text-center">
                 <h2 className="mb-5 text-3xl">TypeScript</h2>
                 <p className="mb-5">
-                  Strongly typed programming language that builds on JavaScript,
-                  giving you better tooling at any scale
+                  Strongly typed programming language that builds on JavaScript, giving you better tooling at any scale
                 </p>
                 <button className="p-2 px-6 w-fit self-center text-white font-bold bg-blue-500 rounded-full group-hover:bg-blue-600 duration-300">
                   Documentation
@@ -56,9 +51,7 @@ const Home: NextPage = () => {
             <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer">
               <div className="p-5 py-10 flex flex-col justify-center h-full text-center">
                 <h2 className="mb-5 text-3xl">TailwindCSS</h2>
-                <p className="mb-5">
-                  Rapidly build modern websites without ever leaving your HTML
-                </p>
+                <p className="mb-5">Rapidly build modern websites without ever leaving your HTML</p>
                 <button className="p-2 px-6 w-fit self-center text-white font-bold bg-blue-500 rounded-full group-hover:bg-blue-600 duration-300">
                   Documentation
                 </button>
