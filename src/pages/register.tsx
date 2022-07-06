@@ -4,8 +4,6 @@ import { trpc } from "../utils/trpc";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
-
   return (
     <>
       <Head>
@@ -17,9 +15,6 @@ const Home: NextPage = () => {
       <div className="container flex flex-col items-center justify-center min-h-screen p-10 px-0 mx-auto md:py-20 md:p-10 md:px-0">
         <h1 className="font-extrabold text-center text-7xl">Registracija</h1>
 
-        <div className="py-6 text-2xl text-blue-500">
-          {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
-        </div>
         <button onClick={() => signIn()}>signIn</button>
       </div>
     </>

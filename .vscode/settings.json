@@ -4,7 +4,7 @@
   "prettier.printWidth": 120,
   "prettier.tabWidth": 2,
   "prettier.useTabs": false,
-  "[handlebars]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   }
 }
