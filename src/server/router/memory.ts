@@ -7,6 +7,7 @@ export const memoryRouter = createRouter()
       title: z.string(),
       description: z.string(),
       year: z.number(),
+      fileId: z.string().nullish(),
     }),
     async resolve({ input, ctx }) {
       return await ctx.prisma.memory.create({ data: input });
