@@ -21,4 +21,12 @@ export const memoryRouter = createRouter()
     async resolve({ ctx }) {
       return await ctx.prisma.memory.findMany();
     },
+  })
+  .query("getById", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      return await ctx.prisma.memory.findUnique({ where: { id: input.id } });
+    },
   });
