@@ -5,12 +5,19 @@ import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
 
+type FormDataType = {
+  title: string;
+  description: string;
+  year: string;
+  file?: File;
+};
+
 const CreateMemoriesPage: NextPage = () => {
   const router = useRouter();
   const { mutate, data, error } = trpc.useMutation(["memory.create"]);
 
-  const [formData, setFormData] = useState({ title: "", description: "", year: "", file: null });
-  const [createObjectURL, setCreateObjectURL] = useState(null);
+  const [formData, setFormData] = useState<FormDataType>({ title: "", description: "", year: "" });
+  const [createObjectURL, setCreateObjectURL] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,11 +39,11 @@ const CreateMemoriesPage: NextPage = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    console.log({ name, value });
-    if (e.target.files && e.target.files[0]) {
-      const i = e.target.files[0];
+    if (e.target instanceof HTMLInputElement && e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
 
-      setCreateObjectURL(URL.createObjectURL(i));
+      setCreateObjectURL(URL.createObjectURL(file));
+      setFormData({ ...formData, file });
     } else {
       setFormData({ ...formData, [name]: value });
     }
