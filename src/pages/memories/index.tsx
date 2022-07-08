@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/future/image";
 import { trpc } from "../../utils/trpc";
 
 const MemoriesListPage: NextPage = () => {
@@ -23,10 +24,13 @@ const MemoriesListPage: NextPage = () => {
               return (
                 <div key={id}>
                   <div className="mb-2">
-                    <img
+                    <Image
+                      //loader={myLoader}
                       src="https://m.vecernji.hr/media/img/c0/26/6a427b0603a81f699d11.jpeg"
                       alt={title}
-                      className="aspect-video"
+                      width={290}
+                      height={193}
+                      priority
                     />
                   </div>
                   <div className="mb-2 text-xl">{title}</div>
