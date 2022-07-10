@@ -62,4 +62,16 @@ model Memory {
     title       String
     description String
     year        Int
+    fileId      String
+    file        File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+}
+
+model File {
+    id           String   @id @default(cuid())
+    createdAt    DateTime @default(now())
+    originalName String
+    ext          String
+    size         Int
+    mimeType     String?
+    Memory       Memory[]
 }

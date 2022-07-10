@@ -7,7 +7,7 @@ export const memoryRouter = createRouter()
       title: z.string(),
       description: z.string(),
       year: z.number(),
-      fileId: z.string().nullish(),
+      fileId: z.string(),
     }),
     async resolve({ input, ctx }) {
       return await ctx.prisma.memory.create({ data: input });
@@ -20,7 +20,7 @@ export const memoryRouter = createRouter()
       })
       .nullish(),
     async resolve({ ctx }) {
-      return await ctx.prisma.memory.findMany();
+      return await ctx.prisma.memory.findMany({ include: { file: { select: { id: true, ext: true } } } });
     },
   })
   .query("getById", {
@@ -28,6 +28,9 @@ export const memoryRouter = createRouter()
       id: z.string(),
     }),
     async resolve({ ctx, input }) {
-      return await ctx.prisma.memory.findUnique({ where: { id: input.id } });
+      return await ctx.prisma.memory.findUnique({
+        where: { id: input.id },
+        include: { file: { select: { id: true, ext: true } } },
+      });
     },
   });

@@ -20,13 +20,13 @@ const MemoriesListPage: NextPage = () => {
           <h1 className="font-extrabold text-center text-5xl mb-8">Uspomene</h1>
           <div className="grid grid-cols-3 gap-3 mb-8">
             {list.data?.map((memory) => {
-              const { id, title } = memory;
+              const { id, title, file } = memory;
               return (
                 <div key={id}>
                   <div className="mb-2">
                     <Image
                       //loader={myLoader}
-                      src="https://m.vecernji.hr/media/img/c0/26/6a427b0603a81f699d11.jpeg"
+                      src={`/${file.id}.${file.ext}`}
                       alt={title}
                       width={290}
                       height={193}
