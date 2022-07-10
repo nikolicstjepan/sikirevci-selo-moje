@@ -26,7 +26,7 @@ const MemoriesListPage: NextPage = () => {
                   <div className="mb-2">
                     <Image
                       //loader={myLoader}
-                      src={`/${file.id}.${file.ext}`}
+                      src={`/uploads/${file.id}.${file.ext}`}
                       alt={title}
                       width={290}
                       height={193}

@@ -27,7 +27,7 @@ const MemoryPage: NextPage = () => {
         <div className="max-w-4xl mx-auto">
           <Image
             //loader={myLoader}
-            src={`/${file.id}.${file.ext}`}
+            src={`/uploads/${file.id}.${file.ext}`}
             alt={title}
             width={290}
             height={193}

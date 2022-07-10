@@ -59,7 +59,7 @@ const saveFile = async (file: File | File[]) => {
   });
 
   const data = fs.readFileSync(filepath);
-  fs.writeFileSync(`./public/${createdFile.id}.${fileExt}`, data);
+  fs.writeFileSync(`./public/uploads/${createdFile.id}.${fileExt}`, data);
   fs.unlinkSync(filepath);
 
   return createdFile;
