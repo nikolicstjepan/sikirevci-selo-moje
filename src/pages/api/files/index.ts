@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import formidable, { File } from "formidable";
 import { prisma } from "../../../server/db/client";
+import fs from "fs";
 
 export default async function UploadAPI(req: NextApiRequest, res: NextApiResponse) {
   req.method === "POST"
@@ -13,8 +14,6 @@ export default async function UploadAPI(req: NextApiRequest, res: NextApiRespons
     ? console.log("GET")
     : res.status(404).send("");
 }
-
-import fs from "fs";
 
 export const config = {
   api: {
@@ -59,7 +58,12 @@ const saveFile = async (file: File | File[]) => {
   });
 
   const data = fs.readFileSync(filepath);
-  fs.writeFileSync(`./public/uploads/${createdFile.id}.${fileExt}`, data);
+
+  if (!fs.existsSync(process.env.UPLOADS_FOLDER!)) {
+    fs.mkdirSync(process.env.UPLOADS_FOLDER!, { recursive: true });
+  }
+
+  fs.writeFileSync(`${process.env.UPLOADS_FOLDER}/${createdFile.id}.${fileExt}`, data);
   fs.unlinkSync(filepath);
 
   return createdFile;
