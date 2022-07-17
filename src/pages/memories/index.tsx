@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/future/image";
 import { trpc } from "../../utils/trpc";
+import MainLayout from "../../components/layout/MainLayout";
 
 const MemoriesListPage: NextPage = () => {
   const list = trpc.useQuery(["memory.list"]);
@@ -15,8 +16,8 @@ const MemoriesListPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="bg-blue text-white min-h-screen p-6">
-        <div className="max-w-4xl mx-auto">
+      <MainLayout>
+        <div className="max-w-4xl mx-auto text-white">
           <h1 className="font-extrabold text-center text-5xl mb-8">Uspomene</h1>
           <div className="grid grid-cols-3 gap-3 mb-8">
             {list.data?.map((memory) => {
@@ -45,7 +46,7 @@ const MemoriesListPage: NextPage = () => {
             </Link>
           </div>
         </div>
-      </div>
+      </MainLayout>
     </>
   );
 };

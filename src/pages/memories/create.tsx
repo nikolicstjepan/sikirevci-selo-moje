@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Image from "next/future/image";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import MainLayout from "../../components/layout/MainLayout";
 import { trpc } from "../../utils/trpc";
 
 type FormDataType = {
@@ -83,7 +83,7 @@ const CreateMemoriesPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="bg-blue text-white p-6 min-h-screen">
+      <MainLayout>
         <div className="max-w-md mx-auto">
           <h1 className="font-extrabold text-center text-5xl mb-8">Dodaj uspomenu</h1>
           <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
@@ -174,7 +174,7 @@ const CreateMemoriesPage: NextPage = () => {
           </form>
           {error && <div>{error.message}</div>}
         </div>
-      </div>
+      </MainLayout>
     </>
   );
 };

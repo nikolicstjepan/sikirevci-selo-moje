@@ -7,30 +7,18 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 
 export const authOptions: NextAuthOptions = {
-  // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    // ...add more providers here
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        name: {
-          label: "Name",
-          type: "text",
-          placeholder: "Enter your name",
-        },
-      },
-      async authorize(credentials, _req) {
-        const user = { id: 1, name: credentials?.name ?? "J Smith" };
-        return user;
-      },
-    }),
   ],
   secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=dsdsds",
+  theme: {
+    colorScheme: "dark",
+    brandColor: "#001D49",
+  },
 };
 
 export default NextAuth(authOptions);

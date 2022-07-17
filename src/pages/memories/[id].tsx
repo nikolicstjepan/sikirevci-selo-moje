@@ -3,6 +3,7 @@ import Image from "next/future/image";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import MainLayout from "../../components/layout/MainLayout";
 import { trpc } from "../../utils/trpc";
 
 const MemoryPage: NextPage = () => {
@@ -23,7 +24,7 @@ const MemoryPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="bg-blue text-white min-h-screen p-6">
+      <MainLayout>
         <div className="max-w-4xl mx-auto">
           <Image
             //loader={myLoader}
@@ -42,7 +43,7 @@ const MemoryPage: NextPage = () => {
             </Link>
           </div>
         </div>
-      </div>
+      </MainLayout>
     </>
   );
 };
