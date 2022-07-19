@@ -45,6 +45,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    memories      Memory[]
 }
 
 model VerificationToken {
@@ -62,8 +63,10 @@ model Memory {
     title       String
     description String
     year        Int
-    fileId      String
-    file        File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+    fileId      String   @unique
+    file        File?    @relation(fields: [fileId], references: [id])
+    userId      String
+    user        User     @relation(fields: [userId], references: [id])
 }
 
 model File {
@@ -73,5 +76,5 @@ model File {
     ext          String
     size         Int
     mimeType     String?
-    Memory       Memory[]
+    Memory       Memory?
 }

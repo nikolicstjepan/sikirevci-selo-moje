@@ -1,8 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
 
-// Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 
@@ -18,6 +16,11 @@ export const authOptions: NextAuthOptions = {
   theme: {
     colorScheme: "dark",
     brandColor: "#001D49",
+  },
+  callbacks: {
+    async session({ session, user }) {
+      return { ...session, user: { ...session.user, id: user.id } };
+    },
   },
 };
 

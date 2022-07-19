@@ -1,5 +1,6 @@
 import { createRouter } from "./context";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const memoryRouter = createRouter()
   .mutation("create", {
@@ -10,7 +11,11 @@ export const memoryRouter = createRouter()
       fileId: z.string(),
     }),
     async resolve({ input, ctx }) {
-      return await ctx.prisma.memory.create({ data: input });
+      if (!ctx.session?.user?.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memory.create({ data: { ...input, userId: ctx.session.user.id } });
     },
   })
   .query("list", {
