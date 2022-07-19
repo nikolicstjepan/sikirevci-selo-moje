@@ -25,7 +25,7 @@ export const memoryRouter = createRouter()
       })
       .nullish(),
     async resolve({ ctx }) {
-      return await ctx.prisma.memory.findMany({ include: { file: { select: { id: true, ext: true } } } });
+      return await ctx.prisma.memory.findMany({ include: { file: { select: { id: true, ext: true } }, user: true } });
     },
   })
   .query("getById", {
@@ -35,7 +35,32 @@ export const memoryRouter = createRouter()
     async resolve({ ctx, input }) {
       return await ctx.prisma.memory.findUnique({
         where: { id: input.id },
-        include: { file: { select: { id: true, ext: true } } },
+        include: { file: { select: { id: true, ext: true } }, user: true },
+      });
+    },
+  })
+  .query("getByUserId", {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      return await ctx.prisma.memory.findMany({
+        where: { userId: input.userId },
+        include: { file: { select: { id: true, ext: true } }, user: true },
+      });
+    },
+  })
+  .query("listMy", {
+    async resolve({ ctx }) {
+      const userId = ctx.session?.user?.id;
+
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memory.findMany({
+        where: { userId },
+        include: { file: { select: { id: true, ext: true } }, user: true },
       });
     },
   });

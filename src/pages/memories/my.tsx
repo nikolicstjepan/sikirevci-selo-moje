@@ -6,7 +6,7 @@ import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
 
 const MemoriesListPage: NextPage = () => {
-  const list = trpc.useQuery(["memory.list"]);
+  const list = trpc.useQuery(["memory.listMy"], { ssr: false });
 
   return (
     <>
@@ -18,7 +18,7 @@ const MemoriesListPage: NextPage = () => {
 
       <MainLayout>
         <div className="max-w-4xl mx-auto text-white">
-          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomene</h1>
+          <h1 className="font-extrabold text-center text-5xl mb-8">Moje uspomene</h1>
           <div className="grid grid-cols-3 gap-3 mb-8">
             {list.data?.map((memory) => {
               const { id, title, file, user } = memory;

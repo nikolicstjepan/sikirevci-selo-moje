@@ -14,7 +14,7 @@ const MemoryPage: NextPage = () => {
     return null;
   }
 
-  const { title, description, year, file } = memory;
+  const { title, description, year, file, user } = memory;
 
   return (
     <>
@@ -28,7 +28,7 @@ const MemoryPage: NextPage = () => {
         <div className="max-w-4xl mx-auto">
           <Image
             //loader={myLoader}
-            src={`/uploads/${file.id}.${file.ext}`}
+            src={`/uploads/${file?.id}.${file?.ext}`}
             alt={title}
             width={290}
             height={193}
@@ -37,6 +37,9 @@ const MemoryPage: NextPage = () => {
           <h1 className="font-extrabold text-center text-5xl mb-8">{title}</h1>
           <p className="mb-4">{description}</p>
           <p>{year}</p>
+          <Link href={`/users/${user.id}`}>
+            <p>{user.name}</p>
+          </Link>
           <div className="text-center">
             <Link href="/memories/create">
               <button>Dodaj novu uspomenu</button>
