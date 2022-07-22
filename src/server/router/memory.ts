@@ -25,7 +25,9 @@ export const memoryRouter = createRouter()
       })
       .nullish(),
     async resolve({ ctx }) {
-      return await ctx.prisma.memory.findMany({ include: { file: { select: { id: true, ext: true } }, user: true } });
+      return await ctx.prisma.memory.findMany({
+        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
+      });
     },
   })
   .query("getById", {
@@ -35,7 +37,7 @@ export const memoryRouter = createRouter()
     async resolve({ ctx, input }) {
       return await ctx.prisma.memory.findUnique({
         where: { id: input.id },
-        include: { file: { select: { id: true, ext: true } }, user: true },
+        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
       });
     },
   })
@@ -46,7 +48,7 @@ export const memoryRouter = createRouter()
     async resolve({ ctx, input }) {
       return await ctx.prisma.memory.findMany({
         where: { userId: input.userId },
-        include: { file: { select: { id: true, ext: true } }, user: true },
+        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
       });
     },
   })
@@ -60,7 +62,22 @@ export const memoryRouter = createRouter()
 
       return await ctx.prisma.memory.findMany({
         where: { userId },
-        include: { file: { select: { id: true, ext: true } }, user: true },
+        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
       });
+    },
+  })
+  .query("listMyLiked", {
+    async resolve({ ctx }) {
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: userId },
+        include: { memoryLikes: { select: { id: true } } },
+      });
+
+      return user?.memoryLikes.map((m) => m.id) || [];
     },
   });

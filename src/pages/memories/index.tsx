@@ -4,9 +4,13 @@ import Link from "next/link";
 import Image from "next/future/image";
 import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
+import HeartOutlined from "../../components/icons/HeartOutlined";
 
 const MemoriesListPage: NextPage = () => {
   const list = trpc.useQuery(["memory.list"]);
+  const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
+
+  console.log({ myLikedList });
 
   return (
     <>
@@ -28,7 +32,6 @@ const MemoriesListPage: NextPage = () => {
                     <Link href={`/memories/${id}`}>
                       <a>
                         <Image
-                          //loader={myLoader}
                           src={`/uploads/${file?.id}.${file?.ext}`}
                           alt={title}
                           width={290}
@@ -38,12 +41,30 @@ const MemoriesListPage: NextPage = () => {
                       </a>
                     </Link>
                   </div>
-                  <Link href={`/memories/${id}`}>
-                    <a className="mb-2 text-xl block">{title}</a>
-                  </Link>
-                  <Link href={`/users/${user.id}`}>
-                    <a className="mb-2 text-xl">{user.name}</a>
-                  </Link>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="p-1 pr-2">
+                        <Image src={user.image as string} alt={title} width={50} height={50} />
+                      </div>
+                      <div>
+                        <Link href={`/memories/${id}`}>
+                          <a className="mb-0.5 text-xl block">{title}</a>
+                        </Link>
+                        <Link href={`/users/${user.id}`}>
+                          <a className="text-sm">{user.name}</a>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="pr-3 flex items-center">
+                        <HeartOutlined width="1.25rem" />
+                        <div className="pl-2">{memory._count.memoryLikes || ""}</div>
+                      </div>
+                      <div>
+                        <Link href={`/memories/${id}`}>Otvori</Link>{" "}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
             })}
