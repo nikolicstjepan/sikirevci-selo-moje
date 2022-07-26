@@ -37,7 +37,12 @@ export const memoryRouter = createRouter()
     async resolve({ ctx, input }) {
       return await ctx.prisma.memory.findUnique({
         where: { id: input.id },
-        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
+        include: {
+          file: { select: { id: true, ext: true } },
+          user: true,
+          memoryComments: true,
+          _count: { select: { memoryLikes: true } },
+        },
       });
     },
   })
@@ -109,5 +114,25 @@ export const memoryRouter = createRouter()
       }
 
       return;
+    },
+  })
+  .mutation("leaveComment", {
+    input: z.object({
+      memoryId: z.string(),
+      body: z.string(),
+    }),
+    async resolve({ ctx, input: { memoryId, body } }) {
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memoryComment.create({
+        data: {
+          userId,
+          memoryId,
+          body,
+        },
+      });
     },
   });

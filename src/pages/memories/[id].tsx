@@ -8,25 +8,34 @@ import { trpc } from "../../utils/trpc";
 
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
+import { useState } from "react";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
+  const [comment, setComment] = useState("");
   const { data: memory, refetch } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
 
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
+  const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
 
   if (!memory) {
     return null;
   }
 
-  const { id, title, description, year, file, user } = memory;
+  const { id, title, description, year, file, user, memoryComments: comments } = memory;
   const userLiked = myLikedList.data?.some((likedId) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
     await toggleLike({ memoryId });
     refetch();
     myLikedList.refetch();
+  };
+
+  const handleLeaveComment = async () => {
+    await leaveComment({ memoryId: id, body: comment });
+    setComment("");
+    refetch();
   };
 
   return (
@@ -62,6 +71,29 @@ const MemoryPage: NextPage = () => {
           </button>
 
           <h2>Komentari</h2>
+
+          {comments?.map((c) => {
+            return <div key={c.id}>{c.body}</div>;
+          })}
+
+          <textarea
+            name="description"
+            value={comment}
+            required
+            onChange={(e) => setComment(e.target.value)}
+            className="
+                    mt-1
+                    text-blue
+                    block
+                    w-full
+                    rounded-md
+                    border-gray-300
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                  "
+          />
+          <button disabled={commentIsSending} onClick={handleLeaveComment}>
+            Komentiraj
+          </button>
           <div className="text-center">
             <Link href="/memories/create">
               <button>Dodaj novu uspomenu</button>
