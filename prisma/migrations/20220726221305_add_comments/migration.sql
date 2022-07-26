@@ -1,0 +1,11 @@
+-- CreateTable
+CREATE TABLE "MemoryComment" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "memoryId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "body" TEXT NOT NULL,
+    CONSTRAINT "MemoryComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "MemoryComment_memoryId_fkey" FOREIGN KEY ("memoryId") REFERENCES "Memory" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
