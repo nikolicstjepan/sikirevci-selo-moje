@@ -75,9 +75,39 @@ export const memoryRouter = createRouter()
 
       const user = await ctx.prisma.user.findUnique({
         where: { id: userId },
-        include: { memoryLikes: { select: { id: true } } },
+        include: { memoryLikes: { select: { memoryId: true } } },
       });
 
-      return user?.memoryLikes.map((m) => m.id) || [];
+      return user?.memoryLikes.map((m) => m.memoryId) || [];
+    },
+  })
+  .mutation("toggleLike", {
+    input: z.object({
+      memoryId: z.string(),
+    }),
+    async resolve({ ctx, input: { memoryId } }) {
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const liked = await ctx.prisma.memoryLike.findFirst({ where: { userId, memoryId } });
+
+      if (liked) {
+        await ctx.prisma.memoryLike.delete({
+          where: {
+            id: liked.id,
+          },
+        });
+      } else {
+        await ctx.prisma.memoryLike.create({
+          data: {
+            userId,
+            memoryId,
+          },
+        });
+      }
+
+      return;
     },
   });

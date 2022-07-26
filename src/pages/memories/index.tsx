@@ -5,12 +5,18 @@ import Image from "next/future/image";
 import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
 import HeartOutlined from "../../components/icons/HeartOutlined";
+import HeartFilled from "../../components/icons/HeartFilled";
 
 const MemoriesListPage: NextPage = () => {
   const list = trpc.useQuery(["memory.list"]);
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
+  const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
 
-  console.log({ myLikedList });
+  const handleToggleLikeClick = async (memoryId: string) => {
+    await toggleLike({ memoryId });
+    list.refetch();
+    myLikedList.refetch();
+  };
 
   return (
     <>
@@ -26,6 +32,8 @@ const MemoriesListPage: NextPage = () => {
           <div className="grid grid-cols-3 gap-3 mb-8">
             {list.data?.map((memory) => {
               const { id, title, file, user } = memory;
+              const userLiked = myLikedList.data?.some((likedId) => likedId === id);
+
               return (
                 <div key={id}>
                   <div className="mb-2">
@@ -56,10 +64,15 @@ const MemoriesListPage: NextPage = () => {
                       </div>
                     </div>
                     <div className="flex items-center">
-                      <div className="pr-3 flex items-center">
-                        <HeartOutlined width="1.25rem" />
+                      <button
+                        disabled={isLoading}
+                        className="pr-3 flex items-center"
+                        onClick={() => handleToggleLikeClick(id)}
+                      >
+                        {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
+
                         <div className="pl-2">{memory._count.memoryLikes || ""}</div>
-                      </div>
+                      </button>
                       <div>
                         <Link href={`/memories/${id}`}>Otvori</Link>{" "}
                       </div>
