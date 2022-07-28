@@ -1,0 +1,13 @@
+# v1
+
+1. User can see all memories with pagination and year filter
+2. User can add/edit/delete memory
+3. User can like memory and see list of his liked memories
+4. User can comment memory and see list of commented memories
+5. User can delete his comment
+6. User can edit his profile
+7. User can register with Google account or password and email
+8. User can list his memories and see view, like and comment count
+9. User can be sponsor and have special icon by his name that everyone can see
+10. User can see list of sponsors
+11. Memory can be image or text
