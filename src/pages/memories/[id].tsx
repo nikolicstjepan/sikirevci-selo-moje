@@ -15,7 +15,12 @@ import { useSession } from "next-auth/react";
 const MemoryPage: NextPage = () => {
   const router = useRouter();
   const [comment, setComment] = useState("");
-  const { data: memory, refetch } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const [commentCount, setCommentCount] = useState(5);
+  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const { data: comments, refetch } = trpc.useQuery(
+    ["memory.getCommentsByMemoryId", { memoryId: router.query.id as string, commentCount }],
+    { keepPreviousData: true }
+  );
   const { status } = useSession();
 
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
@@ -27,8 +32,9 @@ const MemoryPage: NextPage = () => {
     return null;
   }
 
-  const { id, title, description, year, file, user, memoryComments: comments } = memory;
+  const { id, title, description, year, file, user, _count } = memory;
   const userLiked = myLikedList.data?.some((likedId) => likedId === id);
+  const hasMoreCOmments = comments && _count.memoryComments > comments.length;
 
   const handleToggleLikeClick = async (memoryId: string) => {
     if (status === "loading") {
@@ -61,6 +67,9 @@ const MemoryPage: NextPage = () => {
     refetch();
   };
 
+  const handleLoadMoreComments = () => {
+    setCommentCount((c) => c + 5);
+  };
   return (
     <>
       <Head>
@@ -70,57 +79,84 @@ const MemoryPage: NextPage = () => {
       </Head>
 
       <MainLayout>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto w-full">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <div className="pr-2">
+                <Link href={`/users/${user.id}`}>
+                  <a>
+                    <Image src={user.image as string} alt={title} width={50} height={50} />
+                  </a>
+                </Link>
+              </div>
+              <div>
+                <Link href={`/users/${user.id}`}>{user.name}</Link>
+              </div>
+            </div>
+            <div>
+              <button disabled={isLoading} className="pr-3 flex items-center" onClick={() => handleToggleLikeClick(id)}>
+                {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
+
+                <div className="pl-2">{_count.memoryLikes || ""}</div>
+              </button>
+            </div>
+          </div>
           <Image
             //loader={myLoader}
             src={`/uploads/${file?.id}.${file?.ext}`}
             alt={title}
-            width={290}
-            height={193}
+            width={64 * 16}
+            height={680}
             priority
-            className="mb-4"
+            className="mb-8"
           />
-          <h1 className="font-extrabold text-center text-5xl mb-8">{title}</h1>
-          <p className="mb-4">{description}</p>
-          <p>{year}</p>
-          <Link href={`/users/${user.id}`}>
-            <p>{user.name}</p>
-          </Link>
-
-          <button disabled={isLoading} className="pr-3 flex items-center" onClick={() => handleToggleLikeClick(id)}>
-            {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
-
-            <div className="pl-2">{memory._count.memoryLikes || ""}</div>
-          </button>
-
-          <h2>Komentari</h2>
-
-          {comments?.map((c) => {
-            return <div key={c.id}>{c.body}</div>;
-          })}
-
-          <textarea
-            name="description"
-            value={comment}
-            required
-            onChange={(e) => setComment(e.target.value)}
-            className="
+          <div className="max-w-2xl mx-auto w-full">
+            <h1 className="font-extrabold text-center text-5xl mb-4">
+              {title} <span className="text-base">{year}</span>
+            </h1>
+            <p className="mb-8">{description}</p>
+            <div className="text-right mb-8">
+              <textarea
+                name="description"
+                value={comment}
+                required
+                onChange={(e) => setComment(e.target.value)}
+                className="
                     mt-1
-                    text-blue
+                    mb-2
+                    bg-blue
                     block
                     w-full
                     rounded-md
                     border-gray-300
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
-          />
-          <button disabled={commentIsSending} onClick={handleLeaveComment}>
-            Komentiraj
-          </button>
-          <div className="text-center">
-            <Link href="/memories/create">
-              <button>Dodaj novu uspomenu</button>
-            </Link>
+              />
+              <button disabled={commentIsSending} onClick={handleLeaveComment}>
+                Komentiraj
+              </button>
+            </div>
+
+            <div className="mb-8">
+              {comments?.map((c) => {
+                return (
+                  <div key={c.id} className="flex items-center mb-2">
+                    <div className="pr-2">
+                      <Link href={`/users/${c.user.id}`}>
+                        <a>
+                          <Image src={c.user.image as string} alt={title} width={50} height={50} />
+                        </a>
+                      </Link>
+                    </div>
+                    <div>
+                      <Link href={`/users/${c.user.id}`}>{c.user.name}</Link> {c.createdAt.toLocaleDateString()}
+                      <div>{c.body}</div>
+                    </div>
+                  </div>
+                );
+              })}
+              {hasMoreCOmments && <button onClick={handleLoadMoreComments}>Prikaži još komentara</button>}
+            </div>
           </div>
         </div>
       </MainLayout>

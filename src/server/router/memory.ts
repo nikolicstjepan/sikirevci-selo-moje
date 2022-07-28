@@ -40,8 +40,7 @@ export const memoryRouter = createRouter()
         include: {
           file: { select: { id: true, ext: true } },
           user: true,
-          memoryComments: true,
-          _count: { select: { memoryLikes: true } },
+          _count: { select: { memoryLikes: true, memoryComments: true } },
         },
       });
     },
@@ -132,6 +131,26 @@ export const memoryRouter = createRouter()
           userId,
           memoryId,
           body,
+        },
+      });
+    },
+  })
+  .query("getCommentsByMemoryId", {
+    input: z.object({
+      memoryId: z.string(),
+      commentCount: z.number(),
+    }),
+    async resolve({ ctx, input: { memoryId, commentCount } }) {
+      return await ctx.prisma.memoryComment.findMany({
+        where: {
+          memoryId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: commentCount,
+        include: {
+          user: true,
         },
       });
     },

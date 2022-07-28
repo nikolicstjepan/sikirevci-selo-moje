@@ -5,14 +5,14 @@ export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
 
   return (
-    <div className="flex justify-between  p-2 mb-6">
+    <div className="flex justify-between max-w-5xl mx-auto pb-2 mb-6 w-full">
       <Link href="/memories">Sikirevci nekad</Link>
       {status !== "loading" && <UserDetails user={session?.user} />}
     </div>
   );
 }
 
-function UserDetails({ user }) {
+function UserDetails({ user }: { user?: any }) {
   if (!user) {
     return <Link href="/sign-in">Prijava</Link>;
   }
