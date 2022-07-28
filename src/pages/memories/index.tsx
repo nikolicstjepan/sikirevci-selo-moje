@@ -6,13 +6,27 @@ import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
+import { useSession } from "next-auth/react";
+import RegisterModal from "../../components/RegisterModal";
+import { useState } from "react";
 
 const MemoriesListPage: NextPage = () => {
   const list = trpc.useQuery(["memory.list"]);
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
+  const { status } = useSession();
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const handleToggleLikeClick = async (memoryId: string) => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      setShowRegisterModal(true);
+      return;
+    }
+
     await toggleLike({ memoryId });
     list.refetch();
     myLikedList.refetch();
@@ -89,6 +103,7 @@ const MemoriesListPage: NextPage = () => {
           </div>
         </div>
       </MainLayout>
+      {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </>
   );
 };

@@ -9,15 +9,19 @@ import { trpc } from "../../utils/trpc";
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
 import { useState } from "react";
+import RegisterModal from "../../components/RegisterModal";
+import { useSession } from "next-auth/react";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
   const [comment, setComment] = useState("");
   const { data: memory, refetch } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const { status } = useSession();
 
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
   const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   if (!memory) {
     return null;
@@ -27,12 +31,31 @@ const MemoryPage: NextPage = () => {
   const userLiked = myLikedList.data?.some((likedId) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      setShowRegisterModal(true);
+      return;
+    }
+
     await toggleLike({ memoryId });
     refetch();
     myLikedList.refetch();
   };
 
   const handleLeaveComment = async () => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      console.log("not auth");
+      setShowRegisterModal(true);
+      return;
+    }
+
     await leaveComment({ memoryId: id, body: comment });
     setComment("");
     refetch();
@@ -101,6 +124,7 @@ const MemoryPage: NextPage = () => {
           </div>
         </div>
       </MainLayout>
+      {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </>
   );
 };

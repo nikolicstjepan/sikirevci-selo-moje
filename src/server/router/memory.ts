@@ -75,7 +75,7 @@ export const memoryRouter = createRouter()
     async resolve({ ctx }) {
       const userId = ctx.session?.user?.id;
       if (!userId) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
+        return [];
       }
 
       const user = await ctx.prisma.user.findUnique({
