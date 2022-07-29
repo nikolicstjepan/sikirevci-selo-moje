@@ -2,6 +2,8 @@ import { createRouter } from "./context";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
+const RECORDS_PER_PAGE = 10;
+
 export const memoryRouter = createRouter()
   .mutation("create", {
     input: z.object({
@@ -19,15 +21,23 @@ export const memoryRouter = createRouter()
     },
   })
   .query("list", {
-    input: z
-      .object({
-        page: z.number().min(1).nullish().default(1),
-      })
-      .nullish(),
-    async resolve({ ctx }) {
-      return await ctx.prisma.memory.findMany({
+    input: z.object({
+      cursor: z.number().nullish(),
+    }),
+    async resolve({ ctx, input }) {
+      const count = await ctx.prisma.memory.count();
+      const memories = await ctx.prisma.memory.findMany({
+        take: RECORDS_PER_PAGE,
+        skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
+        orderBy: { createdAt: "desc" },
         include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
       });
+
+      return {
+        nextCursor:
+          ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE + memories.length < count ? (input?.cursor || 1) + 1 : null,
+        memories,
+      };
     },
   })
   .query("getById", {
