@@ -40,6 +40,15 @@ export const memoryRouter = createRouter()
       };
     },
   })
+  .query("getMemoriesYears", {
+    async resolve({ ctx }) {
+      const groupByYear = await ctx.prisma.memory.groupBy({
+        by: ["year"],
+      });
+
+      return groupByYear.map((m) => m.year);
+    },
+  })
   .query("getById", {
     input: z.object({
       id: z.string(),
