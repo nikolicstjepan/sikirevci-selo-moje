@@ -8,7 +8,7 @@ import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
 import { useSession } from "next-auth/react";
 import RegisterModal from "../../components/RegisterModal";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 const MemoriesListPage: NextPage = () => {
   const [year, setYear] = useState<number | null>(null);
@@ -32,6 +32,7 @@ const MemoriesListPage: NextPage = () => {
     }
 
     await toggleLike({ memoryId });
+    list.remove();
     list.refetch();
     myLikedList.refetch();
   };
