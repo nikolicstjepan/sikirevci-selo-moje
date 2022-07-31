@@ -18,12 +18,15 @@ function UserDetails({ user }: { user?: any }) {
   }
 
   return (
-    <div>
-      {user.name}{" "}
-      <span className="text-xs text-indigo-300 cursor-pointer hover:underline mr-2" onClick={() => signOut()}>
-        Odjava
-      </span>
+    <div className="flex gap-2">
+      <div>
+        {user.name}{" "}
+        <span className="text-xs text-indigo-300 cursor-pointer hover:underline" onClick={() => signOut()}>
+          Odjava
+        </span>
+      </div>
       <Link href="/memories/create">Dodaj uspomenu</Link>
+      <Link href="/memories/my">Moje uspomene</Link>
     </div>
   );
 }

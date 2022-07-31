@@ -1,12 +1,24 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/future/image";
 import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
+import MemoryCard from "../../components/memory/MemoryCard";
 
 const MemoriesListPage: NextPage = () => {
-  const list = trpc.useQuery(["memory.listMy"], { ssr: false });
+  const list = trpc.useInfiniteQuery(["memory.listMy", {}], {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    ssr: false,
+  });
+  const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
+
+  const onLikeClick = async () => {
+    list.remove();
+    list.refetch();
+    myLikedList.refetch();
+  };
+
+  const handleLoadMore = () => list.fetchNextPage();
 
   return (
     <>
@@ -20,39 +32,20 @@ const MemoriesListPage: NextPage = () => {
         <div className="max-w-4xl mx-auto text-white">
           <h1 className="font-extrabold text-center text-5xl mb-8">Moje uspomene</h1>
           <div className="grid grid-cols-3 gap-3 mb-8">
-            {list.data?.map((memory) => {
-              const { id, title, file, user } = memory;
-              return (
-                <div key={id}>
-                  <div className="mb-2">
-                    <Link href={`/memories/${id}`}>
-                      <a>
-                        <Image
-                          //loader={myLoader}
-                          src={`/uploads/${file?.id}.${file?.ext}`}
-                          alt={title}
-                          width={290}
-                          height={193}
-                          priority
-                        />
-                      </a>
-                    </Link>
-                  </div>
-                  <Link href={`/memories/${id}`}>
-                    <a className="mb-2 text-xl block">{title}</a>
-                  </Link>
-                  <Link href={`/users/${user.id}`}>
-                    <a className="mb-2 text-xl">{user.name}</a>
-                  </Link>
-                </div>
-              );
-            })}
+            {list.data?.pages.map(({ memories }) =>
+              memories.map((memory) => {
+                const { id } = memory;
+                const userLiked = !!myLikedList.data?.some((likedId) => likedId === id);
+
+                return <MemoryCard key={id} memory={memory} userLiked={userLiked} onLikeClick={onLikeClick} />;
+              })
+            )}
           </div>
-          <div className="text-center">
-            <Link href="/memories/create">
-              <button>Dodaj novu uspomenu</button>
-            </Link>
-          </div>
+          {list.hasNextPage && (
+            <div className="text-center">
+              <button onClick={handleLoadMore}>Prikaži još uspomena</button>
+            </div>
+          )}
         </div>
       </MainLayout>
     </>

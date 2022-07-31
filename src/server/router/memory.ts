@@ -88,17 +88,32 @@ export const memoryRouter = createRouter()
     },
   })
   .query("listMy", {
-    async resolve({ ctx }) {
+    input: z.object({
+      cursor: z.number().nullish(),
+    }),
+    async resolve({ ctx, input }) {
       const userId = ctx.session?.user?.id;
 
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      return await ctx.prisma.memory.findMany({
+      const count = await ctx.prisma.memory.count({
         where: { userId },
+      });
+      const memories = await ctx.prisma.memory.findMany({
+        where: { userId },
+        take: RECORDS_PER_PAGE,
+        skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
+        orderBy: { createdAt: "desc" },
         include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
       });
+
+      return {
+        nextCursor:
+          ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE + memories.length < count ? (input?.cursor || 1) + 1 : null,
+        memories,
+      };
     },
   })
   .query("listMyLiked", {
