@@ -23,10 +23,19 @@ export const memoryRouter = createRouter()
   .query("list", {
     input: z.object({
       cursor: z.number().nullish(),
+      year: z.number().nullish(),
     }),
     async resolve({ ctx, input }) {
-      const count = await ctx.prisma.memory.count();
+      const { year } = input;
+      const count = await ctx.prisma.memory.count({
+        where: {
+          ...(year && { year }),
+        },
+      });
       const memories = await ctx.prisma.memory.findMany({
+        where: {
+          ...(year && { year }),
+        },
         take: RECORDS_PER_PAGE,
         skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
         orderBy: { createdAt: "desc" },
@@ -44,9 +53,12 @@ export const memoryRouter = createRouter()
     async resolve({ ctx }) {
       const groupByYear = await ctx.prisma.memory.groupBy({
         by: ["year"],
+        _count: {
+          year: true,
+        },
       });
 
-      return groupByYear.map((m) => m.year);
+      return groupByYear;
     },
   })
   .query("getById", {

@@ -17,7 +17,7 @@ TODO
 [+] Make memory detail page look ok
 [+] Show last x comments on details page and show load more button if there is more
 [+] Add pagination od index memory page
-[-] Add year filter on index memory page
+[+] Add year filter on index memory page
 [-] Add new type of memory (text)
 [-] Add edit memory form
 [-] Add delete memory feature

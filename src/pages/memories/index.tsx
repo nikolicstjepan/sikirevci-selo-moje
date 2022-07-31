@@ -8,10 +8,11 @@ import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
 import { useSession } from "next-auth/react";
 import RegisterModal from "../../components/RegisterModal";
-import { useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useState } from "react";
 
 const MemoriesListPage: NextPage = () => {
-  const list = trpc.useInfiniteQuery(["memory.list", {}], {
+  const [year, setYear] = useState<number | null>(null);
+  const list = trpc.useInfiniteQuery(["memory.list", { year }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
@@ -37,6 +38,10 @@ const MemoriesListPage: NextPage = () => {
 
   const handleLoadMore = () => list.fetchNextPage();
 
+  const handleYearChange = (year: number | null) => {
+    setYear(year);
+  };
+
   return (
     <>
       <Head>
@@ -48,7 +53,7 @@ const MemoriesListPage: NextPage = () => {
       <MainLayout>
         <div className="max-w-4xl mx-auto text-white">
           <h1 className="font-extrabold text-center text-5xl mb-8">Uspomene</h1>
-          <YearsFilter />
+          <YearsFilter handleYearChange={handleYearChange} />
           <div className="grid grid-cols-3 gap-3 mb-8">
             {list.data?.pages.map(({ memories }) =>
               memories.map((memory) => {
@@ -116,14 +121,28 @@ const MemoriesListPage: NextPage = () => {
   );
 };
 
-function YearsFilter() {
-  const years = trpc.useQuery(["memory.getMemoriesYears"]);
-  console.log(years);
+function YearsFilter({ handleYearChange }: { handleYearChange: (year: number | null) => void }) {
+  const years = trpc.useQuery(["memory.getMemoriesYears"], { ssr: false });
+
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    handleYearChange(+e.target.value || null);
+  };
+
   return (
-    <div>
-      {years.data?.map((y) => {
-        return <div key={y}>{y}</div>;
-      })}
+    <div className="text-right mb-4">
+      <label>
+        Godina:
+        <select onChange={handleChange} className="bg-blue ml-2">
+          <option value="">Odaberi</option>
+          {years.data?.map((y) => {
+            return (
+              <option value={y.year} key={y.year}>
+                {y.year} ({y._count.year})
+              </option>
+            );
+          })}
+        </select>
+      </label>
     </div>
   );
 }
