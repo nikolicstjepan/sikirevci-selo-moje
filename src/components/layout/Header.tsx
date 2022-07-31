@@ -20,9 +20,10 @@ function UserDetails({ user }: { user?: any }) {
   return (
     <div>
       {user.name}{" "}
-      <span className="text-xs text-indigo-300 cursor-pointer hover:underline" onClick={() => signOut()}>
+      <span className="text-xs text-indigo-300 cursor-pointer hover:underline mr-2" onClick={() => signOut()}>
         Odjava
       </span>
+      <Link href="/memories/create">Dodaj uspomenu</Link>
     </div>
   );
 }

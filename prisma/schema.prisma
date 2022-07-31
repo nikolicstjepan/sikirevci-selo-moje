@@ -63,7 +63,7 @@ model Memory {
     createdAt      DateTime        @default(now())
     modifiedAt     DateTime        @default(now())
     title          String
-    description    String
+    description    String?
     year           Int
     fileId         String          @unique
     file           File?           @relation(fields: [fileId], references: [id])

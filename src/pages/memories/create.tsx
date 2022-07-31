@@ -14,7 +14,7 @@ type FormDataType = {
 };
 
 const CreateMemoriesPage: NextPage = () => {
-  const { data, status } = useSession();
+  const { status } = useSession();
   return (
     <>
       <Head>
