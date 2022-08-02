@@ -199,7 +199,7 @@ export const memoryRouter = createRouter()
       });
     },
   })
-  .query("getCommentsByMemoryId", {
+  .query("remove", {
     input: z.object({
       memoryId: z.string(),
       commentCount: z.number(),
@@ -217,5 +217,36 @@ export const memoryRouter = createRouter()
           user: true,
         },
       });
+    },
+  })
+  .mutation("remove", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input: { id } }) {
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const memory = await ctx.prisma.memory.findUnique({ where: { id } });
+
+      if (!memory) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      if (memory.userId !== userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      await ctx.prisma.memoryLike.deleteMany({
+        where: {
+          memory,
+        },
+      });
+
+      // TODO: delete file and cleanup
+
+      return await ctx.prisma.memory.delete({ where: { id } });
     },
   });

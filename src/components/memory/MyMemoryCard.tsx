@@ -6,6 +6,7 @@ import { trpc } from "../../utils/trpc";
 import HeartFilled from "../icons/HeartFilled";
 import HeartOutlined from "../icons/HeartOutlined";
 import RegisterModal from "../RegisterModal";
+import DeleteMemoryModal from "./DeleteMemoryModal";
 
 export default function MyMemoryCard({
   memory,
@@ -18,8 +19,10 @@ export default function MyMemoryCard({
 }) {
   const { id, title, file, user } = memory;
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
+  const { mutateAsync: remove } = trpc.useMutation(["memory.remove"]);
   const { status } = useSession();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleToggleLikeClick = async (memoryId: string) => {
     if (status === "loading") {
@@ -32,6 +35,15 @@ export default function MyMemoryCard({
     }
 
     await toggleLike({ memoryId });
+    onLikeClick();
+  };
+
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onConfirmDelete = async () => {
+    await remove({ id });
     onLikeClick();
   };
 
@@ -67,11 +79,12 @@ export default function MyMemoryCard({
         <div className="btn btn-sm">
           <Link href={`/memories/edit/${id}`}>Uredi</Link>
         </div>
-        <div className="btn btn-sm text-red-400">
-          <Link href={`/memories/${id}`}>Obriši</Link>
-        </div>
+        <button onClick={handleDelete} className="btn btn-sm text-red-400">
+          Obriši
+        </button>
       </div>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
+      {showDeleteModal && <DeleteMemoryModal onConfirm={onConfirmDelete} onClose={() => setShowDeleteModal(false)} />}
     </div>
   );
 }

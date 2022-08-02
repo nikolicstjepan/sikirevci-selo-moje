@@ -20,9 +20,10 @@ TODO
 [+] Add year filter on index memory page
 [+] Add new type of memory (text)
 [+] Add edit memory form
-[-] Add delete memory feature
+[+] Add delete memory feature
 [-] Fix like bug on index page
 [-] List users liked memories
+[-] Fix comments pagination
 [-] List users comments
 [-] Add option to delete comment
 [-] Add edit profile feature
