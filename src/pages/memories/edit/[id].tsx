@@ -2,11 +2,11 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import MainLayout from "../../components/layout/MainLayout";
-import Loader from "../../components/Loader";
-import CreateMemoryForm from "../../components/memory/CreateMemoryForm";
+import MainLayout from "../../../components/layout/MainLayout";
+import Loader from "../../../components/Loader";
+import EditMemoryForm from "../../../components/memory/EditMemoryForm";
 
-const CreateMemoriesPage: NextPage = () => {
+const EditMemoryPage: NextPage = () => {
   const { status } = useSession();
   return (
     <>
@@ -21,17 +21,17 @@ const CreateMemoriesPage: NextPage = () => {
           {status === "loading" && <Loader />}
           {status === "unauthenticated" && (
             <div className="text-center">
-              Samo registrirano korisnici mogu dodati novu uspomenu.{" "}
+              Samo registrirano korisnici mogu uređivati svoje uspomene.{" "}
               <Link href="/sign-in">
                 <a className="text-indigo-300 hover:underline">Prijava/registracija</a>
               </Link>
             </div>
           )}
-          {status === "authenticated" && <CreateMemoryForm />}
+          {status === "authenticated" && <EditMemoryForm />}
         </>
       </MainLayout>
     </>
   );
 };
 
-export default CreateMemoriesPage;
+export default EditMemoryPage;

@@ -20,6 +20,24 @@ export const memoryRouter = createRouter()
       return await ctx.prisma.memory.create({ data: { ...input, userId: ctx.session.user.id } });
     },
   })
+  .mutation("edit", {
+    input: z.object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string(),
+      year: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user?.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memory.update({
+        where: { id: input.id },
+        data: { ...input, userId: ctx.session.user.id, modifiedAt: new Date() },
+      });
+    },
+  })
   .query("list", {
     input: z.object({
       cursor: z.number().nullish(),

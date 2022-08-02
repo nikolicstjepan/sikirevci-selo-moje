@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
-import MemoryCard from "../../components/memory/MemoryCard";
+import MyMemoryCard from "../../components/memory/MyMemoryCard";
 
 const MemoriesListPage: NextPage = () => {
   const list = trpc.useInfiniteQuery(["memory.listMy", {}], {
@@ -31,13 +31,13 @@ const MemoriesListPage: NextPage = () => {
       <MainLayout>
         <div className="max-w-4xl mx-auto text-white">
           <h1 className="font-extrabold text-center text-5xl mb-8">Moje uspomene</h1>
-          <div className="grid grid-cols-3 gap-3 mb-8">
+          <div className="grid grid-cols-3 gap-6 mb-8">
             {list.data?.pages.map(({ memories }) =>
               memories.map((memory) => {
                 const { id } = memory;
                 const userLiked = !!myLikedList.data?.some((likedId) => likedId === id);
 
-                return <MemoryCard key={id} memory={memory} userLiked={userLiked} onLikeClick={onLikeClick} />;
+                return <MyMemoryCard key={id} memory={memory} userLiked={userLiked} onLikeClick={onLikeClick} />;
               })
             )}
           </div>

@@ -1,43 +1,52 @@
 import { ChangeEvent, FormEvent, ReactElement, useEffect, useRef, useState } from "react";
 import Image from "next/future/image";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+import { InferQueryOutput, trpc } from "../../utils/trpc";
 import getYearOptions from "../../utils/getYearOptions";
+import { useSession } from "next-auth/react";
 
 type FormDataType = {
   title: string;
   description: string;
   year: string;
-  file?: File;
 };
 
 const yearOptions = getYearOptions();
 
-export default function CreateMemoryForm(): ReactElement {
+export default function EditMemoryFormContainer(): ReactElement | null {
   const router = useRouter();
-  const { mutate, data, error } = trpc.useMutation(["memory.create"]);
-  const [showDescription, setShowDescription] = useState(false);
-  const uploadRef = useRef<HTMLInputElement>(null);
+  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const { data } = useSession();
 
-  const [formData, setFormData] = useState<FormDataType>({ title: "", description: "", year: "" });
-  const [createObjectURL, setCreateObjectURL] = useState("");
-  const [uploadFileError, setUploadFileError] = useState("");
+  if (!memory) {
+    return null;
+  }
+
+  if (memory.userId !== data?.user.id) {
+    return <div className="max-w-md mx-auto text-center">Korisnik može samo svoje uspomene uređivati</div>;
+  }
+
+  return <EditMemoryForm memory={memory} />;
+}
+
+function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memory.getById">> }): ReactElement {
+  const router = useRouter();
+
+  const { mutate, data, error } = trpc.useMutation(["memory.edit"]);
+  const [showDescription, setShowDescription] = useState(!!memory.description);
+
+  const [formData, setFormData] = useState<FormDataType>({
+    title: memory.title,
+    description: memory.description || "",
+    year: String(memory.year || ""),
+  });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year, file } = formData;
+    const { title, description, year } = formData;
 
-    if (!file) {
-      setUploadFileError("Molimo odaberite datoteku!");
-      return;
-    }
-
-    const fileId = await uploadToServer(file);
-
-    if (fileId) {
-      mutate({ title, description, year: +year, fileId });
-    }
+    mutate({ id: memory?.id!, title, description, year: +year });
   };
 
   useEffect(() => {
@@ -48,15 +57,8 @@ export default function CreateMemoryForm(): ReactElement {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (e.target instanceof HTMLInputElement && e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
 
-      setCreateObjectURL(URL.createObjectURL(file));
-      setUploadFileError("");
-      setFormData({ ...formData, file });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleRemoveText = () => {
@@ -64,39 +66,11 @@ export default function CreateMemoryForm(): ReactElement {
     setFormData({ ...formData, description: "" });
   };
 
-  const handleRemoveImage = () => {
-    setCreateObjectURL("");
-    setFormData({ ...formData, file: undefined });
-  };
-
-  const uploadToServer = async (file: File): Promise<null | string> => {
-    const body = new FormData();
-    body.append("file", file);
-    const response = await fetch("/api/files", {
-      method: "POST",
-      body,
-    });
-
-    const data = await response.json();
-
-    if (data.status === "error") {
-      setUploadFileError("Greška prilikom učitavanja datoteke, molimo pokušajte ponovo");
-      return null;
-    }
-
-    return data.file.id as string;
-  };
-
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="font-extrabold text-center text-5xl mb-8">Nova uspomena</h1>
+      <h1 className="font-extrabold text-center text-5xl mb-8">Uredi uspomenu</h1>
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         <div className="text-white flex gap-2">
-          {!createObjectURL && (
-            <button type="button" className="btn-sm btn-secondary" onClick={() => uploadRef.current?.click()}>
-              Dodaj sliku
-            </button>
-          )}
           {!showDescription && (
             <button className="btn-sm btn-secondary" onClick={() => setShowDescription(true)} type="button">
               Dodaj tekst
@@ -104,30 +78,22 @@ export default function CreateMemoryForm(): ReactElement {
           )}
         </div>
 
-        {createObjectURL && (
+        {memory?.file && (
           <div>
             <Image
-              //loader={myLoader}
-              src={createObjectURL}
+              src={`/uploads/${memory.file?.id}.${memory.file?.ext}`}
               alt={"upladed image"}
               width={448}
               height={193}
             />
-            <div className="text-right text-red-400 mt-1">
-              <button onClick={handleRemoveImage} type="button">
-                Ukloni sliku
-              </button>
-            </div>
           </div>
         )}
-
-        {uploadFileError && <span className="text-red-400">{uploadFileError}</span>}
-
         <label className="block">
           <span className="text-white">Naslov</span>
           <input
             type="text"
             required
+            value={formData.title}
             name="title"
             onChange={handleChange}
             className="
@@ -147,6 +113,7 @@ export default function CreateMemoryForm(): ReactElement {
             required
             name="year"
             onChange={handleChange}
+            value={formData.year}
             defaultValue=""
             className="
                     mt-1
@@ -172,6 +139,7 @@ export default function CreateMemoryForm(): ReactElement {
             <textarea
               name="description"
               required
+              value={formData.description}
               onChange={handleChange}
               rows={10}
               className="
@@ -191,18 +159,8 @@ export default function CreateMemoryForm(): ReactElement {
           </label>
         )}
 
-        <input
-          ref={uploadRef}
-          type="file"
-          required
-          name="file"
-          title={createObjectURL ? "Promijeni" : "Odaberi"}
-          onChange={handleChange}
-          className="hidden"
-        />
-
         <button className="btn btn-primary" type="submit">
-          Dodaj uspomenu
+          Spremi uspomenu
         </button>
       </form>
       {error && <div>{error.message}</div>}
