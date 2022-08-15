@@ -14,14 +14,18 @@ import { useSession } from "next-auth/react";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
-  const [comment, setComment] = useState("");
-  const [commentCount, setCommentCount] = useState(5);
-  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
-  const { data: comments, refetch } = trpc.useQuery(
-    ["memory.getCommentsByMemoryId", { memoryId: router.query.id as string, commentCount }],
-    { keepPreviousData: true }
-  );
+  const utils = trpc.useContext();
   const { status } = useSession();
+  const [comment, setComment] = useState("");
+
+  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const {
+    data: commentList,
+    hasNextPage: hasMoreCOmments,
+    fetchNextPage: fetchNextCommentPage,
+  } = trpc.useInfiniteQuery(["memory.getCommentsByMemoryId", { memoryId: router.query.id as string }], {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
 
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
@@ -34,7 +38,6 @@ const MemoryPage: NextPage = () => {
 
   const { id, title, description, year, file, user, _count } = memory;
   const userLiked = myLikedList.data?.some((likedId) => likedId === id);
-  const hasMoreCOmments = comments && _count.memoryComments > comments.length;
 
   const handleToggleLikeClick = async (memoryId: string) => {
     if (status === "loading") {
@@ -47,8 +50,9 @@ const MemoryPage: NextPage = () => {
     }
 
     await toggleLike({ memoryId });
-    refetch();
-    myLikedList.refetch();
+
+    utils.invalidateQueries(["memory.getById", { id: router.query.id as string }]);
+    utils.invalidateQueries(["memory.listMyLiked"]);
   };
 
   const handleLeaveComment = async () => {
@@ -64,12 +68,10 @@ const MemoryPage: NextPage = () => {
 
     await leaveComment({ memoryId: id, body: comment });
     setComment("");
-    refetch();
+
+    utils.invalidateQueries(["memory.getCommentsByMemoryId"]);
   };
 
-  const handleLoadMoreComments = () => {
-    setCommentCount((c) => c + 5);
-  };
   return (
     <>
       <Head>
@@ -138,8 +140,8 @@ const MemoryPage: NextPage = () => {
             </div>
 
             <div className="mb-8">
-              {comments?.map((c) => {
-                return (
+              {commentList?.pages.map(({ comments }) => {
+                return comments.map((c) => (
                   <div key={c.id} className="flex items-center mb-2">
                     <div className="pr-2">
                       <Link href={`/users/${c.user.id}`}>
@@ -153,9 +155,10 @@ const MemoryPage: NextPage = () => {
                       <div>{c.body}</div>
                     </div>
                   </div>
-                );
+                ));
               })}
-              {hasMoreCOmments && <button onClick={handleLoadMoreComments}>Prikaži još komentara</button>}
+
+              {hasMoreCOmments && <button onClick={() => fetchNextCommentPage()}>Prikaži još komentara</button>}
             </div>
           </div>
         </div>

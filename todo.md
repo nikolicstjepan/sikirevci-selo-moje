@@ -23,7 +23,7 @@ TODO
 [+] Add delete memory feature
 [+] Fix like bug on index page
 [-] List users liked memories
-[-] Fix comments pagination
+[+] Fix comments pagination
 [-] List users comments
 [-] Add option to delete comment
 [-] Add edit profile feature

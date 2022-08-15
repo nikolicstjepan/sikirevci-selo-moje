@@ -199,24 +199,34 @@ export const memoryRouter = createRouter()
       });
     },
   })
-  .query("remove", {
+  .query("getCommentsByMemoryId", {
     input: z.object({
       memoryId: z.string(),
-      commentCount: z.number(),
+      cursor: z.number().nullish(),
     }),
-    async resolve({ ctx, input: { memoryId, commentCount } }) {
-      return await ctx.prisma.memoryComment.findMany({
+    async resolve({ ctx, input: { memoryId, cursor } }) {
+      const count = await ctx.prisma.memoryComment.count({
+        where: { memoryId },
+      });
+
+      const comments = await ctx.prisma.memoryComment.findMany({
         where: {
           memoryId,
         },
         orderBy: {
           createdAt: "desc",
         },
-        take: commentCount,
+        take: RECORDS_PER_PAGE,
+        skip: ((cursor || 1) - 1) * RECORDS_PER_PAGE,
         include: {
           user: true,
         },
       });
+
+      return {
+        nextCursor: ((cursor || 1) - 1) * RECORDS_PER_PAGE + comments.length < count ? (cursor || 1) + 1 : null,
+        comments,
+      };
     },
   })
   .mutation("remove", {
