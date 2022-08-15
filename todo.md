@@ -21,7 +21,7 @@ TODO
 [+] Add new type of memory (text)
 [+] Add edit memory form
 [+] Add delete memory feature
-[-] Fix like bug on index page
+[+] Fix like bug on index page
 [-] List users liked memories
 [-] Fix comments pagination
 [-] List users comments

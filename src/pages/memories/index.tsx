@@ -6,6 +6,8 @@ import { ChangeEvent, useState } from "react";
 import MemoryCard from "../../components/memory/MemoryCard";
 
 const MemoriesListPage: NextPage = () => {
+  const utils = trpc.useContext();
+
   const [year, setYear] = useState<number | null>(null);
   const list = trpc.useInfiniteQuery(["memory.list", { year }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -14,9 +16,8 @@ const MemoriesListPage: NextPage = () => {
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
 
   const onLikeClick = async () => {
-    list.remove();
-    list.refetch();
-    myLikedList.refetch();
+    utils.invalidateQueries(["memory.list"]);
+    utils.invalidateQueries(["memory.listMyLiked"]);
   };
 
   const handleLoadMore = () => list.fetchNextPage();

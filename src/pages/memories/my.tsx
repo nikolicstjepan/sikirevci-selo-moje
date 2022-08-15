@@ -1,11 +1,12 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
 import MyMemoryCard from "../../components/memory/MyMemoryCard";
 
 const MemoriesListPage: NextPage = () => {
+  const utils = trpc.useContext();
+
   const list = trpc.useInfiniteQuery(["memory.listMy", {}], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     ssr: false,
@@ -13,9 +14,8 @@ const MemoriesListPage: NextPage = () => {
   const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
 
   const onLikeClick = async () => {
-    list.remove();
-    list.refetch();
-    myLikedList.refetch();
+    utils.invalidateQueries(["memory.listMy"]);
+    utils.invalidateQueries(["memory.listMyLiked"]);
   };
 
   const handleLoadMore = () => list.fetchNextPage();
