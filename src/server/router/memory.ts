@@ -259,4 +259,31 @@ export const memoryRouter = createRouter()
 
       return await ctx.prisma.memory.delete({ where: { id } });
     },
+  })
+  .mutation("removeComment", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input: { id } }) {
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const comment = await ctx.prisma.memoryComment.findUnique({ where: { id } });
+
+      if (!comment) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      if (comment.userId !== userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memoryComment.deleteMany({
+        where: {
+          id,
+        },
+      });
+    },
   });

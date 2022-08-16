@@ -8,9 +8,10 @@ import { trpc } from "../../utils/trpc";
 
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import RegisterModal from "../../components/RegisterModal";
 import { useSession } from "next-auth/react";
+import DeleteModal from "../../components/DeleteModal";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
@@ -63,6 +64,10 @@ const MemoryPage: NextPage = () => {
     if (status === "unauthenticated") {
       console.log("not auth");
       setShowRegisterModal(true);
+      return;
+    }
+
+    if (!comment) {
       return;
     }
 
@@ -141,21 +146,7 @@ const MemoryPage: NextPage = () => {
 
             <div className="mb-8">
               {commentList?.pages.map(({ comments }) => {
-                return comments.map((c) => (
-                  <div key={c.id} className="flex items-center mb-2">
-                    <div className="pr-2">
-                      <Link href={`/users/${c.user.id}`}>
-                        <a>
-                          <Image src={c.user.image as string} alt={title} width={50} height={50} />
-                        </a>
-                      </Link>
-                    </div>
-                    <div>
-                      <Link href={`/users/${c.user.id}`}>{c.user.name}</Link> {c.createdAt.toLocaleDateString()}
-                      <div>{c.body}</div>
-                    </div>
-                  </div>
-                ));
+                return comments.map((c) => <Comment key={c.id} {...c} />);
               })}
 
               {hasMoreCOmments && <button onClick={() => fetchNextCommentPage()}>Prikaži još komentara</button>}
@@ -167,5 +158,44 @@ const MemoryPage: NextPage = () => {
     </>
   );
 };
+
+function Comment({ createdAt, user, body, id }: any): ReactElement {
+  const utils = trpc.useContext();
+  const { status, data } = useSession();
+  const { mutateAsync: remove } = trpc.useMutation(["memory.removeComment"]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const isUsersComment = status === "authenticated" && data.user.id === user.id;
+
+  const onConfirmDelete = async () => {
+    await remove({ id });
+    setShowDeleteModal(false);
+    utils.invalidateQueries(["memory.getCommentsByMemoryId"]);
+  };
+
+  return (
+    <>
+      <div className="flex items-center mb-2 w-full">
+        <div className="pr-2">
+          <Link href={`/users/${user.id}`}>
+            <a>
+              <Image src={user.image as string} alt={user.name as string} width={50} height={50} />
+            </a>
+          </Link>
+        </div>
+        <div>
+          <Link href={`/users/${user.id}`}>{user.name}</Link> {createdAt.toLocaleDateString()}
+          <div>{body}</div>
+        </div>
+        {isUsersComment && (
+          <button onClick={() => setShowDeleteModal(true)} className="ml-auto btn btn-sm text-red-400">
+            Ukloni
+          </button>
+        )}
+      </div>
+      {showDeleteModal && <DeleteModal onConfirm={onConfirmDelete} onClose={() => setShowDeleteModal(false)} />}
+    </>
+  );
+}
 
 export default MemoryPage;

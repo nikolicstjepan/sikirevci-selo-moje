@@ -6,7 +6,7 @@ import { trpc } from "../../utils/trpc";
 import HeartFilled from "../icons/HeartFilled";
 import HeartOutlined from "../icons/HeartOutlined";
 import RegisterModal from "../RegisterModal";
-import DeleteMemoryModal from "./DeleteMemoryModal";
+import DeleteMemoryModal from "../DeleteModal";
 
 export default function MyMemoryCard({
   memory,

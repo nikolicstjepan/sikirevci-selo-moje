@@ -25,7 +25,7 @@ TODO
 [-] List users liked memories
 [+] Fix comments pagination
 [-] List users comments
-[-] Add option to delete comment
+[+] Add option to delete comment
 [-] Add edit profile feature
 [-] Add password/email register/login
 [-] Add memory stats (view, like and comment count)
