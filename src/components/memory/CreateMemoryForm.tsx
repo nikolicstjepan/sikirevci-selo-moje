@@ -3,6 +3,7 @@ import Image from "next/future/image";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import getYearOptions from "../../utils/getYearOptions";
+import uploadToServer from "../../utils/uploadToServer";
 
 type FormDataType = {
   title: string;
@@ -33,7 +34,7 @@ export default function CreateMemoryForm(): ReactElement {
       return;
     }
 
-    const fileId = await uploadToServer(file);
+    const fileId = await uploadToServer(file, setUploadFileError);
 
     if (fileId) {
       mutate({ title, description, year: +year, fileId });
@@ -69,24 +70,6 @@ export default function CreateMemoryForm(): ReactElement {
     setFormData({ ...formData, file: undefined });
   };
 
-  const uploadToServer = async (file: File): Promise<null | string> => {
-    const body = new FormData();
-    body.append("file", file);
-    const response = await fetch("/api/files", {
-      method: "POST",
-      body,
-    });
-
-    const data = await response.json();
-
-    if (data.status === "error") {
-      setUploadFileError("Greška prilikom učitavanja datoteke, molimo pokušajte ponovo");
-      return null;
-    }
-
-    return data.file.id as string;
-  };
-
   return (
     <div className="max-w-md mx-auto">
       <h1 className="font-extrabold text-center text-5xl mb-8">Nova uspomena</h1>
@@ -106,13 +89,7 @@ export default function CreateMemoryForm(): ReactElement {
 
         {createObjectURL && (
           <div>
-            <Image
-              //loader={myLoader}
-              src={createObjectURL}
-              alt={"upladed image"}
-              width={448}
-              height={193}
-            />
+            <Image src={createObjectURL} alt={"upladed image"} width={448} height={193} />
             <div className="text-right text-red-400 mt-1">
               <button onClick={handleRemoveImage} type="button">
                 Ukloni sliku
