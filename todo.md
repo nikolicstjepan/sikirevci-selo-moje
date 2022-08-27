@@ -26,8 +26,9 @@ TODO
 [+] Fix comments pagination
 [-] List users comments
 [+] Add option to delete comment
-[-] Add edit profile feature
-[-] Add password/email register/login
+[+] Add edit profile feature
+[-] Handle remove user profile image
+[-] Add facebook login
 [-] Add memory stats (view, like and comment count)
 [-] Add new user role (sponsor)
 [-] Add sponsors page
