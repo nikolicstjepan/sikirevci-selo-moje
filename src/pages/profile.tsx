@@ -50,7 +50,10 @@ type UserType = {
 };
 
 function Profile({ user }: { user: UserType }) {
-  const { mutate, data, error } = trpc.useMutation(["user.edit"]);
+  const utils = trpc.useContext();
+
+  const { mutateAsync, isLoading } = trpc.useMutation(["user.edit"]);
+  const [status, setStatus] = useState("");
 
   const [formData, setFormData] = useState<UserFormType>({
     name: user.name || "",
@@ -72,7 +75,9 @@ function Profile({ user }: { user: UserType }) {
       image = `/uploads/${fileId}.${file.name.split(".").pop()}`;
     }
 
-    mutate({ name, id: user.id, image });
+    await mutateAsync({ name, id: user.id, image });
+    utils.invalidateQueries(["user.myDetails"]);
+    setStatus("saved");
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -86,12 +91,20 @@ function Profile({ user }: { user: UserType }) {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+    setStatus("");
+  };
+
+  const handleRemoveImage = () => {
+    setFormData({ ...formData, image: "" });
+    setFile(null);
+    setCreateObjectURL("");
+    setStatus("");
   };
 
   return (
     <div>
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
-        {(createObjectURL || formData.image) && (
+        {createObjectURL || formData.image ? (
           <div className="text-center">
             <Image
               className="object-contain"
@@ -100,18 +113,26 @@ function Profile({ user }: { user: UserType }) {
               width={100}
               height={100}
             />
-            <div className="text-center text-red-400 mt-1">
-              <button onClick={() => uploadRef.current?.click()} type="button">
+            <div className="text-center mt-1">
+              <button className="text-white mr-2" onClick={() => uploadRef.current?.click()} type="button">
                 Promijeni sliku
               </button>
+              <button className="text-red-400" onClick={handleRemoveImage} type="button">
+                Ukloni sliku
+              </button>
             </div>
+          </div>
+        ) : (
+          <div>
+            <button type="button" className="btn-sm btn-secondary" onClick={() => uploadRef.current?.click()}>
+              Dodaj sliku
+            </button>
           </div>
         )}
 
         <input
           ref={uploadRef}
           type="file"
-          required
           name="file"
           title={createObjectURL ? "Promijeni" : "Odaberi"}
           onChange={handleChange}
@@ -159,9 +180,10 @@ function Profile({ user }: { user: UserType }) {
         </label>
 
         <button className="btn btn-primary" type="submit">
-          Spremi promjene
+          {isLoading ? "Spremanje..." : "Spremi promjene"}
         </button>
       </form>
+      {status === "saved" && <div className="text-center mt-1">Promjene su spremljene</div>}
     </div>
   );
 }
