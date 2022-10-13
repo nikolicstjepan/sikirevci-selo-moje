@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       sendVerificationRequest,
-      from: `Stjepan | SikirevciNekada.com <${process.env.EMAIL_FROM}>`,
+      from: `Stjepan | SikiNekada.com <${process.env.EMAIL_FROM}>`,
     }),
   ],
   secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=dsdsds",
@@ -33,7 +33,6 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, user }) {
-      console.log({ session, user });
       return { ...session, user: { ...session.user, id: user.id } };
     },
   },
