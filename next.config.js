@@ -1,16 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    images: {
-      allowFutureImage: true,
-      remotePatterns: [
-        {
-          protocol: "https",
-          hostname: "**.googleusercontent.com",
-        },
-      ],
-    },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.googleusercontent.com",
+      },
+    ],
   },
 };
 

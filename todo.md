@@ -22,11 +22,14 @@ TODO
 [+] Add edit memory form
 [+] Add delete memory feature
 [+] Fix like bug on index page
-[-] List users liked memories
 [+] Fix comments pagination
-[-] List users comments
 [+] Add option to delete comment
 [+] Add edit profile feature
+[+] Add landing page that explains what app can do
+[+] Fix onboarding flow
+[-] Fix menu
+[-] List users comments
+[-] List users liked memories
 [-] Handle remove user profile image
 [-] Add facebook login
 [-] Add memory stats (view, like and comment count)
