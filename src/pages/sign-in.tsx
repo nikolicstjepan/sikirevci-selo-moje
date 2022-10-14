@@ -14,8 +14,8 @@ const SignIn: NextPage<{ providers: Providers }> = ({ providers }) => {
   return (
     <>
       <Head>
-        <title>SikiNekada - Prijava</title>
-        <meta name="description" content="SikiNekada - Prijava" />
+        <title>SikirevciNekada.com - Prijava</title>
+        <meta name="description" content="SikirevciNekada.com - Prijava" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

@@ -37,17 +37,25 @@ export default function MemoryCard({
 
   return (
     <div>
-      <div className="mb-2">
-        <Link href={`/memories/${id}`}>
+      <div className="mb-2 aspect-video">
+        <Link href={`/memories/${id}`} passHref>
           <a>
-            <Image src={`/uploads/${file?.id}.${file?.ext}`} alt={title} width={290} height={193} priority />
+            <Image
+              className="object-cover aspect-video"
+              src={`/uploads/${file?.id}.${file?.ext}`}
+              alt={title}
+              width={320}
+              height={180}
+            />
           </a>
         </Link>
       </div>
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <div className="p-1 pr-2">
-            <Image src={user.image as string} alt={title} width={50} height={50} />
+            <div className="bg-white p-2 w-9 md:w-12 h-9 md:h-12 rounded-full">
+              <Image src={(user?.image as string) || "/guest.png"} alt={title} width={32} height={32} />
+            </div>
           </div>
           <div>
             <Link href={`/memories/${id}`}>

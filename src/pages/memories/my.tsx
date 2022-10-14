@@ -23,7 +23,7 @@ const MemoriesListPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>SikiNekada - Uspomene</title>
+        <title>SikirevciNekada.com - Uspomene</title>
         <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

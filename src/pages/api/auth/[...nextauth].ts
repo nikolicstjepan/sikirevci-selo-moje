@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       sendVerificationRequest,
-      from: `Stjepan | SikiNekada.com <${process.env.EMAIL_FROM}>`,
+      from: `Stjepan | SikirevciNekada.com.com <${process.env.EMAIL_FROM}>`,
     }),
   ],
   secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=dsdsds",

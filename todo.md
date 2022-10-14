@@ -27,7 +27,8 @@ TODO
 [+] Add edit profile feature
 [+] Add landing page that explains what app can do
 [+] Fix onboarding flow
-[-] Fix menu
+[+] Fix menu
+[-] Public list users memories update
 [-] List users comments
 [-] List users liked memories
 [-] Handle remove user profile image

@@ -80,7 +80,7 @@ const MemoryPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{title} - Uspomene</title>
+        <title>{`${title} - Uspomene`}</title>
         <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -90,11 +90,13 @@ const MemoryPage: NextPage = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <div className="pr-2">
-                <Link href={`/users/${user.id}`}>
-                  <a>
-                    <Image src={user.image as string} alt={title} width={50} height={50} />
-                  </a>
-                </Link>
+                <div className="bg-white p-2 w-9 md:w-12 h-9 md:h-12 rounded-full">
+                  <Link href={`/users/${user.id}`}>
+                    <a>
+                      <Image src={(user.image as string) || "/guest.png"} alt={title} width={32} height={32} />
+                    </a>
+                  </Link>
+                </div>
               </div>
               <div>
                 <Link href={`/users/${user.id}`}>{user.name}</Link>
@@ -109,7 +111,6 @@ const MemoryPage: NextPage = () => {
             </div>
           </div>
           <Image
-            //loader={myLoader}
             src={`/uploads/${file?.id}.${file?.ext}`}
             alt={title}
             width={64 * 16}

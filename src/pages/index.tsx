@@ -1,23 +1,36 @@
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import MainLayout from "../components/layout/MainLayout";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/memories");
+    }
+  }, [status, router]);
+
   return (
     <>
       <Head>
-        <title>SikiNekada</title>
+        <title>SikirevciNekada.com</title>
         <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout>
         <div className="max-w-4xl mx-auto text-white">
-          <h1 className="font-extrabold text-center text-5xl mb-8">SikiNekada</h1>
+          <h1 className="font-extrabold text-center text-5xl mb-8">SikirevciNekada.com</h1>
 
           <div className="mb-8 leading-6">
             <p className="mb-4">
-              Projekt &quot;SikiNekada&quot; je (ambiciozni) pokušaj digitalizacije bogate prošlosti sela Sikirevci.
+              Projekt &quot;SikirevciNekada.com&quot; je (ambiciozni) pokušaj digitalizacije bogate prošlosti sela
+              Sikirevci.
             </p>
 
             <p className="mb-4">

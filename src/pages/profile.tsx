@@ -21,7 +21,7 @@ const ProfilePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>SikiNekada - Moj profil</title>
+        <title>SikirevciNekada.com - Moj profil</title>
         <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="robots" content="noindex" />
