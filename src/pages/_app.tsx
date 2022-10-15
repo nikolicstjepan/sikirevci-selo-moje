@@ -1,12 +1,14 @@
 // src/pages/_app.tsx
 import { withTRPC } from "@trpc/next";
 import type { AppRouter } from "../server/router";
-import type { AppType } from "next/dist/shared/lib/utils";
+import type { AppPropsType, AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
+import { NextRouter } from "next/router";
+import { Session } from "next-auth";
 
-const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }: any) => {
+const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }: AppPropsType<NextRouter, any>) => {
   return (
     <SessionProvider session={session}>
       <Component {...pageProps} />
