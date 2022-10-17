@@ -38,7 +38,7 @@ const MemoryPage: NextPage = () => {
                         <a>
                           <Image
                             //loader={myLoader}
-                            src={`/uploads/${file?.id}.${file?.ext}`}
+                            src={`/api/files/${file?.id}`}
                             alt={title}
                             width={290}
                             height={193}

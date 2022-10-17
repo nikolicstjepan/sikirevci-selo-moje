@@ -42,7 +42,7 @@ export default function MemoryCard({
           <a>
             <Image
               className="object-cover aspect-video"
-              src={`/uploads/${file?.id}.${file?.ext}`}
+              src={`/api/files/${file?.id}`}
               alt={title}
               width={320}
               height={180}

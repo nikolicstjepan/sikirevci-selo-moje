@@ -80,12 +80,7 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
 
         {memory?.file && (
           <div>
-            <Image
-              src={`/uploads/${memory.file?.id}.${memory.file?.ext}`}
-              alt={"upladed image"}
-              width={448}
-              height={193}
-            />
+            <Image src={`/api/files/${memory.file?.id}`} alt={"upladed image"} width={448} height={193} />
           </div>
         )}
         <label className="block">

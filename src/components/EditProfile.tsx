@@ -39,7 +39,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
 
     if (file) {
       const fileId = await uploadToServer(file, setUploadFileError);
-      image = `/uploads/${fileId}.${file.name.split(".").pop()}`;
+      image = `/api/files/${fileId}`;
     }
 
     await mutateAsync({ name, id: user.id, image });

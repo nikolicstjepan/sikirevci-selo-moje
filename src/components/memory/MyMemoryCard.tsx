@@ -52,7 +52,7 @@ export default function MyMemoryCard({
       <div className="mb-2">
         <Link href={`/memories/${id}`}>
           <a>
-            <Image src={`/uploads/${file?.id}.${file?.ext}`} alt={title} width={290} height={193} priority />
+            <Image src={`/api/files/${file?.id}`} alt={title} width={290} height={193} priority />
           </a>
         </Link>
       </div>

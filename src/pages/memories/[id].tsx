@@ -110,14 +110,7 @@ const MemoryPage: NextPage = () => {
               </button>
             </div>
           </div>
-          <Image
-            src={`/uploads/${file?.id}.${file?.ext}`}
-            alt={title}
-            width={64 * 16}
-            height={680}
-            priority
-            className="mb-8"
-          />
+          <Image src={`/api/files/${file?.id}`} alt={title} width={64 * 16} height={680} priority className="mb-8" />
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
               {title} <span className="text-base">{year}</span>

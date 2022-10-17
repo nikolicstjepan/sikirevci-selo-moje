@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import formidable, { File } from "formidable";
 import { prisma } from "../../../server/db/client";
 import fs from "fs";
+import sharp from "sharp";
 
 export default async function UploadAPI(req: NextApiRequest, res: NextApiResponse) {
   req.method === "POST"
@@ -18,6 +19,7 @@ export default async function UploadAPI(req: NextApiRequest, res: NextApiRespons
 export const config = {
   api: {
     bodyParser: false,
+    externalResolver: true,
   },
 };
 
@@ -26,11 +28,13 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   form.parse(req, async function (err, fields, files) {
     try {
       const file = await saveFile(files.file!);
-      console.log({ file });
-      return res.status(200).send({ status: "success", file });
+
+      res.status(200);
+      res.send({ status: "success", file });
     } catch (error) {
       console.error({ error });
-      return res.status(400).send({ status: "error", message: (error as Error).message });
+      res.status(400);
+      res.send({ status: "error", message: (error as Error).message });
     }
   });
 };
@@ -39,7 +43,6 @@ const saveFile = async (file: File | File[]) => {
   if (!file || Array.isArray(file)) {
     throw new Error("Invalid file");
   }
-
   const { filepath, originalFilename, mimetype, size } = file;
 
   if (!originalFilename) {
@@ -53,11 +56,14 @@ const saveFile = async (file: File | File[]) => {
     throw new Error("Invalid fileExt");
   }
 
-  const createdFile = await prisma.file.create({
-    data: { originalName: originalFilename, mimeType: mimetype, size, ext: fileExt },
-  });
-
   const data = fs.readFileSync(filepath);
+  const image = await sharp(data);
+  const { width, height } = await image.metadata();
+
+  console.log({ width, height });
+  const createdFile = await prisma.file.create({
+    data: { originalName: originalFilename, mimeType: mimetype, size, ext: fileExt, width, height },
+  });
 
   if (!fs.existsSync(process.env.UPLOADS_FOLDER!)) {
     fs.mkdirSync(process.env.UPLOADS_FOLDER!, { recursive: true });
