@@ -12,6 +12,7 @@ import { ReactElement, useState } from "react";
 import RegisterModal from "../../components/RegisterModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
+import Loader from "../../components/Loader";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
@@ -34,7 +35,21 @@ const MemoryPage: NextPage = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   if (!memory) {
-    return null;
+    return (
+      <>
+        <Head>
+          <title>{`Uspomene`}</title>
+          <meta name="description" content="Uspomene iz Sikirevaca" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <MainLayout>
+          <div className="max-w-5xl mx-auto w-full text-center">
+            <Loader />
+          </div>
+        </MainLayout>
+      </>
+    );
   }
 
   const { id, title, description, year, file, user, _count } = memory;
@@ -110,7 +125,9 @@ const MemoryPage: NextPage = () => {
               </button>
             </div>
           </div>
-          <Image src={`/api/files/${file?.id}`} alt={title} width={64 * 16} height={680} priority className="mb-8" />
+          <div className="h-[65vh] relative mb-8">
+            <Image src={`/api/files/${file?.id}`} fill alt={title} sizes="100vw" priority className="object-contain" />
+          </div>
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
               {title} <span className="text-base">{year}</span>

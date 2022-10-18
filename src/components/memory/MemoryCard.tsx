@@ -37,16 +37,10 @@ export default function MemoryCard({
 
   return (
     <div>
-      <div className="mb-2 aspect-video">
-        <Link href={`/memories/${id}`} passHref>
-          <a>
-            <Image
-              className="object-cover aspect-video"
-              src={`/api/files/${file?.id}`}
-              alt={title}
-              width={320}
-              height={180}
-            />
+      <div className="mb-2">
+        <Link href={`/memories/${id}`} passHref prefetch={false}>
+          <a className="block aspect-video relative w-full">
+            <Image className="object-cover" fill sizes="100vw" src={`/api/files/${file?.id}`} alt={title} />
           </a>
         </Link>
       </div>
@@ -73,7 +67,7 @@ export default function MemoryCard({
             <div className="pl-2">{memory._count.memoryLikes || ""}</div>
           </button>
           <div>
-            <Link href={`/memories/${id}`}>Otvori</Link>{" "}
+            <Link href={`/memories/${id}`}>Otvori</Link>
           </div>
         </div>
       </div>
