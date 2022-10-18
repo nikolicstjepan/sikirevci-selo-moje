@@ -105,10 +105,16 @@ const MemoryPage: NextPage = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <div className="pr-2">
-                <div className="bg-white p-2 w-9 md:w-12 h-9 md:h-12 rounded-full">
+                <div className="bg-white p-1 w-9 md:w-12 h-9 md:h-12 rounded-full relative">
                   <Link href={`/users/${user.id}`}>
                     <a>
-                      <Image src={(user.image as string) || "/guest.png"} alt={title} width={32} height={32} />
+                      <Image
+                        className="object-cover rounded-full p-1"
+                        src={(user.image as string) || "/guest.png"}
+                        alt={title}
+                        fill
+                        sizes="10vw"
+                      />
                     </a>
                   </Link>
                 </div>
@@ -118,7 +124,7 @@ const MemoryPage: NextPage = () => {
               </div>
             </div>
             <div>
-              <button disabled={isLoading} className="pr-3 flex items-center" onClick={() => handleToggleLikeClick(id)}>
+              <button disabled={isLoading} className="pr-1 flex items-center" onClick={() => handleToggleLikeClick(id)}>
                 {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
 
                 <div className="pl-2">{_count.memoryLikes || ""}</div>
@@ -187,10 +193,16 @@ function Comment({ createdAt, user, body, id }: any): ReactElement {
   return (
     <>
       <div className="flex items-center mb-2 w-full">
-        <div className="pr-2">
+        <div className="bg-white rounded-full p-1 w-12 h-12 cursor-pointer relative mr-2">
           <Link href={`/users/${user.id}`}>
             <a>
-              <Image src={user.image as string} alt={user.name as string} width={50} height={50} />
+              <Image
+                className="object-cover rounded-full p-1"
+                src={user.image as string}
+                alt={user.name as string}
+                fill
+                sizes="10vw"
+              />
             </a>
           </Link>
         </div>

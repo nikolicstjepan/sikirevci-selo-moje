@@ -47,8 +47,14 @@ export default function MemoryCard({
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <div className="p-1 pr-2">
-            <div className="bg-white p-2 w-9 md:w-12 h-9 md:h-12 rounded-full">
-              <Image src={(user?.image as string) || "/guest.png"} alt={title} width={32} height={32} />
+            <div className="bg-white p-1 w-9 md:w-12 h-9 md:h-12 rounded-full relative">
+              <Image
+                className="object-cover rounded-full p-1"
+                src={(user?.image as string) || "/guest.png"}
+                alt={title}
+                fill
+                sizes="10vw"
+              />
             </div>
           </div>
           <div>
@@ -67,7 +73,9 @@ export default function MemoryCard({
             <div className="pl-2">{memory._count.memoryLikes || ""}</div>
           </button>
           <div>
-            <Link href={`/memories/${id}`}>Otvori</Link>
+            <Link href={`/memories/${id}`} passHref>
+              <a className="btn btn-sm btn-primary mr-1">Otvori</a>
+            </Link>
           </div>
         </div>
       </div>

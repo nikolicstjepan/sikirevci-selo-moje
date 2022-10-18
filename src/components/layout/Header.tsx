@@ -47,16 +47,16 @@ function AuthenticatedMenu() {
 
       <div onClick={toggleUserMenu} className="bg-white rounded-full p-1 w-10 h-10 cursor-pointer relative">
         <Image
-          className="object-contain rounded-full"
+          className="object-cover rounded-full p-1"
           src={userDetails.data?.image || "/guest.png"}
           alt={"Uploaded image"}
-          width={32}
-          height={32}
+          fill
+          sizes="10vw"
         />
         {showMenu && (
           <>
-            <div className="bg-white w-2 h-2 absolute right-4"></div>
-            <div className="flex flex-col gap-4 bg-white text-blue p-4 absolute w-[max-content] right-0 mt-2 rounded">
+            <div className="bg-white w-2 h-2 absolute right-4 top-9"></div>
+            <div className="flex flex-col gap-4 bg-white text-blue p-4 absolute w-[max-content] right-0 mt-2 rounded top-9 z-10">
               <Link href="/memories/create">Dodaj uspomenu</Link>
               <Link href="/memories/my">Moje uspomene</Link>
               <Link href="/profile">Moj profil</Link>
