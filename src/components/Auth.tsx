@@ -1,7 +1,5 @@
-import { ChangeEvent, FormEvent, ReactElement, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 import { signIn } from "next-auth/react";
-import { trpc } from "../utils/trpc";
-import { useRouter } from "next/router";
 
 type Providers = {
   id: string;
@@ -10,7 +8,7 @@ type Providers = {
 
 export default function Auth({ providers }: { providers: Providers }): ReactElement {
   return (
-    <div className="bg-blue text-white">
+    <div className="bg-blue text-white p-4">
       <div className="container flex flex-col items-center justify-center min-h-screen p-10 px-0 mx-auto md:py-20 md:p-10 md:px-0">
         <SignInAuth providers={providers} />
       </div>
@@ -50,7 +48,7 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
           providers.map((provider) => (
             <div key={provider.name}>
               <button className="btn btn-primary" onClick={() => signIn(provider.id, { callbackUrl: "/memories" })}>
-                Prijava pomoću {provider.name} računa
+                Prijava s {provider.name} računom
               </button>
             </div>
           ))}
@@ -60,7 +58,7 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
 
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         <label className="block">
-          <span className="text-white">Unesite svoj email</span>
+          <span className="text-white text-center block">Unesite email</span>
           <input
             type="email"
             required
@@ -79,7 +77,7 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
         </label>
 
         <button className="btn btn-primary" type="submit">
-          Login
+          Prijava
         </button>
       </form>
     </>

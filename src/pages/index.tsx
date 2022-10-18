@@ -25,11 +25,11 @@ const Home: NextPage = () => {
       </Head>
       <MainLayout>
         <div className="max-w-4xl mx-auto text-white">
-          <h1 className="font-extrabold text-center text-5xl mb-8">SikirevciNekada.com</h1>
+          <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Sikirevci Nekada</h1>
 
           <div className="mb-8 leading-6">
             <p className="mb-4">
-              Projekt &quot;SikirevciNekada.com&quot; je (ambiciozni) pokušaj digitalizacije bogate prošlosti sela
+              Projekt &quot;Sikirevci Nekada&quot; je (ambiciozni) pokušaj digitalizacije bogate prošlosti sela
               Sikirevci.
             </p>
 

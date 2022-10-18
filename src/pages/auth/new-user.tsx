@@ -24,10 +24,10 @@ export default function NewUserPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <div className="bg-blue text-white">
+      <div className="bg-blue text-white p-4">
         <div className="container flex flex-col items-center justify-center min-h-screen p-10 px-0 mx-auto md:py-20 md:p-10 md:px-0">
-          <h1 className="font-extrabold text-center text-7xl mb-8">Dobrodošli!!</h1>
-          <span className="text-white mb-8">
+          <h1 className="font-extrabold text-center text-4xl md:text-7xl mb-8">Dobrodošli! :)</h1>
+          <span className="text-white mb-8 text-center">
             Prije nego što krenete koristiti SikirevciNekada.com, molim provjerite/unesite svoje podatke
           </span>
 

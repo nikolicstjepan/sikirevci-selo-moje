@@ -19,8 +19,9 @@ type UserType = {
 function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) {
   const utils = trpc.useContext();
 
-  const { mutateAsync, isLoading } = trpc.useMutation(["user.edit"]);
+  const { mutateAsync } = trpc.useMutation(["user.edit"]);
   const [status, setStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState<UserFormType>({
     name: user.name || "",
@@ -34,6 +35,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     let { name, image } = formData;
 
@@ -45,6 +47,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
     await mutateAsync({ name, id: user.id, image });
     utils.invalidateQueries(["user.myDetails"]);
     setStatus("saved");
+    setIsLoading(false);
     if (onSave) {
       onSave();
     }
@@ -149,7 +152,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
           />
         </label>
 
-        <button className="btn btn-primary" type="submit">
+        <button className="btn btn-primary" type="submit" disabled={isLoading}>
           {isLoading ? "Spremanje..." : "Spremi promjene"}
         </button>
       </form>

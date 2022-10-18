@@ -28,9 +28,9 @@ TODO
 [+] Add landing page that explains what app can do
 [+] Fix onboarding flow
 [+] Fix menu
+[+] Fix responsive problems in onboard flow
+[+] Add better loading indicator on update profile
 [-] Public list users memories update
-[-] Fix responsive problems in onboard flow
-[-] Add loading indicator on update profile
 [-] Update user avatar through the app
 [-] List users comments
 [-] List users liked memories
