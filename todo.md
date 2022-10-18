@@ -29,6 +29,9 @@ TODO
 [+] Fix onboarding flow
 [+] Fix menu
 [-] Public list users memories update
+[-] Fix responsive problems in onboard flow
+[-] Add loading indicator on update profile
+[-] Update user avatar through the app
 [-] List users comments
 [-] List users liked memories
 [-] Handle remove user profile image
