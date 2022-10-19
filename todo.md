@@ -32,11 +32,12 @@ TODO
 [+] Add better loading indicator on update profile
 [+] Add better loading indicator on upload memory
 [+] Update user avatar through the app
+[+] Handle remove user profile image
+[-] Optimize avatar image upload flow
 [-] Public list users memories update
 [-] List users comments
 [-] List users liked memories
-[-] Handle remove user profile image
-[-] Add facebook login
 [-] Add memory stats (view, like and comment count)
 [-] Add new user role (sponsor)
 [-] Add sponsors page
+[-] Add facebook login
