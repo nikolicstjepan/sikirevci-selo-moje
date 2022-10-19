@@ -1,4 +1,17 @@
-export default function Loader() {
+const sizes = {
+  xs: [25, 25],
+  sm: [50, 50],
+  md: [100, 100],
+  lg: [150, 150],
+};
+
+export default function Loader({ size = "md" }: { size?: "sm" | "md" | "lg" | "xs" }) {
+  const [width, height] = sizes[size];
+
+  if (!width || !height) {
+    return null;
+  }
+
   return (
     <div className="mx-auto">
       <svg
@@ -8,26 +21,32 @@ export default function Loader() {
         xmlnsXlink="http://www.w3.org/1999/xlink"
         x="0px"
         y="0px"
-        viewBox="0 0 100 100"
+        viewBox={`0 0 ${width} ${height}`}
         enableBackground="new 0 0 0 0"
         xmlSpace="preserve"
-        width="100px"
-        height="100px"
+        width={`${width}px`}
+        height={`${height}px`}
       >
-        <path
-          fill="#fff"
-          d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50"
+        <circle
+          cx={width / 2}
+          cy={height / 2}
+          r={width / 4}
+          fill="none"
+          strokeWidth={width / 10}
+          stroke="#fff"
+          strokeLinecap="round"
+          strokeDasharray={`${width / 5}, ${width / 5}`}
         >
           <animateTransform
             attributeName="transform"
             attributeType="XML"
             type="rotate"
-            dur="1s"
-            from="0 50 50"
-            to="360 50 50"
+            dur="1.8s"
+            from={`0 ${width / 2} ${height / 2}`}
+            to={`360 ${width / 2} ${height / 2}`}
             repeatCount="indefinite"
           />
-        </path>
+        </circle>
       </svg>
     </div>
   );

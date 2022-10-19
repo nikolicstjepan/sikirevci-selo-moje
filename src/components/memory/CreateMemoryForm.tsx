@@ -18,7 +18,7 @@ const yearOptions = getYearOptions();
 
 export default function CreateMemoryForm(): ReactElement {
   const router = useRouter();
-  const { mutate, data, error } = trpc.useMutation(["memory.create"]);
+  const { mutateAsync, data, error } = trpc.useMutation(["memory.create"]);
   const [showDescription, setShowDescription] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -42,23 +42,19 @@ export default function CreateMemoryForm(): ReactElement {
     const fileId = await uploadToServer(file, setUploadFileError);
 
     if (fileId) {
-      mutate({ title, description, year: +year, fileId });
+      const res = await mutateAsync({ title, description, year: +year, fileId });
+      if (res?.id) {
+        router.push(`/memories/${res.id}`);
+      }
     }
 
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (data?.id) {
-      router.push(`/memories/${data.id}`);
-    }
-  }, [data, router]);
-
   const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (e.target instanceof HTMLInputElement && e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-
       if (file) {
         try {
           const blob = await compressImage(file, 0.8);
@@ -81,6 +77,9 @@ export default function CreateMemoryForm(): ReactElement {
   };
 
   const handleRemoveText = () => {
+    if (isLoading) {
+      return;
+    }
     setShowDescription(false);
     setFormData({ ...formData, description: "" });
   };
@@ -95,12 +94,6 @@ export default function CreateMemoryForm(): ReactElement {
 
   return (
     <div className="relative pb-4">
-      {isLoading && (
-        <div className="absolute flex top-0 bottom-0 left-0 right-0 flex-col justify-center bg-gray-400 bg-opacity-40">
-          <Loader />
-        </div>
-      )}
-
       <div className="max-w-lg mx-auto">
         <h1 className="font-extrabold text-center text-5xl mb-8">Nova uspomena</h1>
         <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
@@ -111,7 +104,12 @@ export default function CreateMemoryForm(): ReactElement {
               </button>
             )}
             {!showDescription && (
-              <button className="btn-sm btn-secondary" onClick={() => setShowDescription(true)} type="button">
+              <button
+                className="btn-sm btn-secondary"
+                onClick={() => setShowDescription(true)}
+                disabled={isLoading}
+                type="button"
+              >
                 Dodaj tekst
               </button>
             )}
@@ -119,11 +117,11 @@ export default function CreateMemoryForm(): ReactElement {
 
           {createObjectURL && (
             <div>
-              <div className="aspect-video  relative">
+              <div className="aspect-video relative">
                 <Image fill sizes="35vw" className="object-contain" src={createObjectURL} alt={"upladed image"} />
               </div>
               <div className="text-right text-red-400 mt-1">
-                <button onClick={handleRemoveImage} type="button">
+                <button onClick={handleRemoveImage} type="button" disabled={isLoading}>
                   Ukloni sliku
                 </button>
               </div>
@@ -136,6 +134,7 @@ export default function CreateMemoryForm(): ReactElement {
             <span className="text-white">Naslov</span>
             <input
               type="text"
+              disabled={isLoading}
               required
               name="title"
               onChange={handleChange}
@@ -155,6 +154,7 @@ export default function CreateMemoryForm(): ReactElement {
             <select
               required
               name="year"
+              disabled={isLoading}
               onChange={handleChange}
               defaultValue=""
               className="
@@ -181,6 +181,7 @@ export default function CreateMemoryForm(): ReactElement {
               <textarea
                 name="description"
                 required
+                disabled={isLoading}
                 onChange={handleChange}
                 rows={10}
                 className="
@@ -193,7 +194,7 @@ export default function CreateMemoryForm(): ReactElement {
                   "
               />
               <div className="text-right text-red-400 mt-1">
-                <button onClick={handleRemoveText} type="button">
+                <button onClick={handleRemoveText} type="button" disabled={isLoading}>
                   Ukloni tekst
                 </button>
               </div>
@@ -204,15 +205,25 @@ export default function CreateMemoryForm(): ReactElement {
             ref={uploadRef}
             type="file"
             required
+            disabled={isLoading}
             name="file"
             title={createObjectURL ? "Promijeni" : "Odaberi"}
             onChange={handleChange}
             className="hidden"
-            accept="image/png, image/jpeg"
+            accept="image/png, image/jpeg, image/jpg"
           />
 
           <button className="btn btn-primary" type="submit" disabled={isLoading}>
-            {isLoading ? "Dodavanje u tjeku..." : "Dodaj uspomenu"}
+            {isLoading ? (
+              <div className="flex justify-center items-center gap-2 cursor-progress">
+                <div>
+                  <Loader size="xs" />
+                </div>
+                <div>Dodavanje u tjeku...</div>
+              </div>
+            ) : (
+              "Dodaj uspomenu"
+            )}
           </button>
         </form>
         {error && <div>{error.message}</div>}
