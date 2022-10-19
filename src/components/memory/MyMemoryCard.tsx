@@ -50,9 +50,17 @@ export default function MyMemoryCard({
   return (
     <div>
       <div className="mb-2">
-        <Link href={`/memories/${id}`}>
-          <a>
-            <Image src={`/api/files/${file?.id}`} alt={title} width={290} height={193} priority />
+        <Link href={`/memories/${id}`} passHref>
+          <a className="block aspect-video relative w-full">
+            <Image
+              className="object-cover"
+              fill
+              sizes="(max-width: 640px) 100vw,
+              (max-width: 768) 50vw,
+              33vw"
+              src={`/api/files/${file?.id}`}
+              alt={title}
+            />
           </a>
         </Link>
       </div>

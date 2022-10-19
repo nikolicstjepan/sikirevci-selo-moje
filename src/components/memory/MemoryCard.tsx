@@ -38,9 +38,17 @@ export default function MemoryCard({
   return (
     <div>
       <div className="mb-2">
-        <Link href={`/memories/${id}`} passHref prefetch={false}>
+        <Link href={`/memories/${id}`} passHref>
           <a className="block aspect-video relative w-full">
-            <Image className="object-cover" fill sizes="100vw" src={`/api/files/${file?.id}`} alt={title} />
+            <Image
+              className="object-cover"
+              fill
+              sizes="(max-width: 640px) 100vw,
+              (max-width: 768) 50vw,
+              33vw"
+              src={`/api/files/${file?.id}`}
+              alt={title}
+            />
           </a>
         </Link>
       </div>
