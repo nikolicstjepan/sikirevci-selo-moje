@@ -105,19 +105,17 @@ const MemoryPage: NextPage = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <div className="pr-2">
-                <div className="bg-white p-1 w-9 md:w-12 h-9 md:h-12 rounded-full relative">
-                  <Link href={`/users/${user.id}`}>
-                    <a>
-                      <Image
-                        className="object-cover rounded-full p-1"
-                        src={(user.image as string) || "/guest.png"}
-                        alt={title}
-                        fill
-                        sizes="10vw"
-                      />
-                    </a>
-                  </Link>
-                </div>
+                <Link href={`/users/${user.id}`}>
+                  <a className="block bg-white p-1 w-9 md:w-12 h-9 md:h-12 rounded-full relative">
+                    <Image
+                      className="object-cover rounded-full p-1"
+                      src={(user.image as string) || "/guest.png"}
+                      alt={title}
+                      fill
+                      sizes="10vw"
+                    />
+                  </a>
+                </Link>
               </div>
               <div>
                 <Link href={`/users/${user.id}`}>{user.name}</Link>
@@ -147,16 +145,17 @@ const MemoryPage: NextPage = () => {
                 onChange={(e) => setComment(e.target.value)}
                 className="
                     mt-1
-                    mb-2
+                    mb-3
                     bg-blue
                     block
                     w-full
                     rounded-md
+                    border-2
                     border-gray-300
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
               />
-              <button disabled={commentIsSending} onClick={handleLeaveComment}>
+              <button className="btn btn-primary" disabled={commentIsSending} onClick={handleLeaveComment}>
                 Komentiraj
               </button>
             </div>
@@ -166,7 +165,11 @@ const MemoryPage: NextPage = () => {
                 return comments.map((c) => <Comment key={c.id} {...c} />);
               })}
 
-              {hasMoreCOmments && <button onClick={() => fetchNextCommentPage()}>Prikaži još komentara</button>}
+              {hasMoreCOmments && (
+                <button className="btn btn-secondary" onClick={() => fetchNextCommentPage()}>
+                  Prikaži još komentara
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -193,21 +196,20 @@ function Comment({ createdAt, user, body, id }: any): ReactElement {
   return (
     <>
       <div className="flex items-center mb-2 w-full">
-        <div className="bg-white rounded-full p-1 w-12 h-12 cursor-pointer relative mr-2">
-          <Link href={`/users/${user.id}`}>
-            <a>
-              <Image
-                className="object-cover rounded-full p-1"
-                src={user.image as string}
-                alt={user.name as string}
-                fill
-                sizes="10vw"
-              />
-            </a>
-          </Link>
-        </div>
+        <Link href={`/users/${user.id}`}>
+          <a className="block bg-white rounded-full p-1 w-12 h-12 cursor-pointer relative mr-2">
+            <Image
+              className="object-cover rounded-full p-1"
+              src={(user.image as string) || "/guest.png"}
+              alt={user.name as string}
+              fill
+              sizes="10vw"
+            />
+          </a>
+        </Link>
         <div>
-          <Link href={`/users/${user.id}`}>{user.name}</Link> {createdAt.toLocaleDateString()}
+          <Link href={`/users/${user.id}`}>{user.name}</Link>{" "}
+          <span className="text-xs ml-0 mt-1 block sm:inline sm:mt-0 sm:ml-2">{createdAt.toLocaleString("hr")}</span>
           <div>{body}</div>
         </div>
         {isUsersComment && (

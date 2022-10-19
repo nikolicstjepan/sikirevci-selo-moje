@@ -30,8 +30,9 @@ TODO
 [+] Fix menu
 [+] Fix responsive problems in onboard flow
 [+] Add better loading indicator on update profile
+[+] Add better loading indicator on upload memory
+[+] Update user avatar through the app
 [-] Public list users memories update
-[-] Update user avatar through the app
 [-] List users comments
 [-] List users liked memories
 [-] Handle remove user profile image
