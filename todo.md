@@ -33,8 +33,9 @@ TODO
 [+] Add better loading indicator on upload memory
 [+] Update user avatar through the app
 [+] Handle remove user profile image
-[-] Optimize avatar image upload flow
 [-] Public list users memories update
+[-] Rework upload memory flow
+[-] Optimize avatar image upload flow
 [-] List users comments
 [-] List users liked memories
 [-] Add memory stats (view, like and comment count)
