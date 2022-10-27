@@ -6,6 +6,7 @@ import getYearOptions from "../../utils/getYearOptions";
 import uploadToServer from "../../utils/uploadToServer";
 import Loader from "../Loader";
 import compressImage from "../../utils/compressImage";
+import AddImageIcon from "../icons/AddImage";
 
 type FormDataType = {
   title: string;
@@ -19,7 +20,6 @@ const yearOptions = getYearOptions();
 export default function CreateMemoryForm(): ReactElement {
   const router = useRouter();
   const { mutateAsync, data, error } = trpc.useMutation(["memory.create"]);
-  const [showDescription, setShowDescription] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -76,14 +76,6 @@ export default function CreateMemoryForm(): ReactElement {
     }
   };
 
-  const handleRemoveText = () => {
-    if (isLoading) {
-      return;
-    }
-    setShowDescription(false);
-    setFormData({ ...formData, description: "" });
-  };
-
   const handleRemoveImage = () => {
     setCreateObjectURL("");
     setFormData({ ...formData, file: undefined });
@@ -99,19 +91,12 @@ export default function CreateMemoryForm(): ReactElement {
         <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
           <div className="text-white flex gap-2">
             {!createObjectURL && (
-              <button type="button" className="btn-sm btn-secondary" onClick={() => uploadRef.current?.click()}>
-                Dodaj sliku
-              </button>
-            )}
-            {!showDescription && (
-              <button
-                className="btn-sm btn-secondary"
-                onClick={() => setShowDescription(true)}
-                disabled={isLoading}
-                type="button"
-              >
-                Dodaj tekst
-              </button>
+              <div className="text-center mx-auto">
+                <button type="button" className="btn-sm btn-secondary" onClick={() => uploadRef.current?.click()}>
+                  <AddImageIcon width="250" height="250" />
+                  Dodaj sliku
+                </button>
+              </div>
             )}
           </div>
 
@@ -175,16 +160,15 @@ export default function CreateMemoryForm(): ReactElement {
             </select>
           </label>
 
-          {showDescription && (
-            <label className="block">
-              <span className="text-white">Opis</span>
-              <textarea
-                name="description"
-                required
-                disabled={isLoading}
-                onChange={handleChange}
-                rows={10}
-                className="
+          <label className="block">
+            <span className="text-white">Opis</span>
+            <textarea
+              name="description"
+              placeholder="Tko ili što je na slici?"
+              disabled={isLoading}
+              onChange={handleChange}
+              rows={10}
+              className="
                     mt-1
                     block
                     w-full
@@ -192,19 +176,12 @@ export default function CreateMemoryForm(): ReactElement {
                     border-gray-300
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
-              />
-              <div className="text-right text-red-400 mt-1">
-                <button onClick={handleRemoveText} type="button" disabled={isLoading}>
-                  Ukloni tekst
-                </button>
-              </div>
-            </label>
-          )}
+            />
+          </label>
 
           <input
             ref={uploadRef}
             type="file"
-            required
             disabled={isLoading}
             name="file"
             title={createObjectURL ? "Promijeni" : "Odaberi"}

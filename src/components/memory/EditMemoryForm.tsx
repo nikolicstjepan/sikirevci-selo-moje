@@ -33,7 +33,6 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
   const router = useRouter();
 
   const { mutate, data, error } = trpc.useMutation(["memory.edit"]);
-  const [showDescription, setShowDescription] = useState(!!memory.description);
 
   const [formData, setFormData] = useState<FormDataType>({
     title: memory.title,
@@ -61,23 +60,10 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleRemoveText = () => {
-    setShowDescription(false);
-    setFormData({ ...formData, description: "" });
-  };
-
   return (
     <div className="max-w-md mx-auto">
       <h1 className="font-extrabold text-center text-5xl mb-8">Uredi uspomenu</h1>
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
-        <div className="text-white flex gap-2">
-          {!showDescription && (
-            <button className="btn-sm btn-secondary" onClick={() => setShowDescription(true)} type="button">
-              Dodaj tekst
-            </button>
-          )}
-        </div>
-
         {memory?.file && (
           <div>
             <Image src={`/api/files/${memory.file?.id}`} alt={"upladed image"} width={448} height={193} />
@@ -109,7 +95,6 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
             name="year"
             onChange={handleChange}
             value={formData.year}
-            defaultValue=""
             className="
                     mt-1
                     block
@@ -128,16 +113,15 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
           </select>
         </label>
 
-        {showDescription && (
-          <label className="block">
-            <span className="text-white">Opis</span>
-            <textarea
-              name="description"
-              required
-              value={formData.description}
-              onChange={handleChange}
-              rows={10}
-              className="
+        <label className="block">
+          <span className="text-white">Opis</span>
+          <textarea
+            name="description"
+            required
+            value={formData.description}
+            onChange={handleChange}
+            rows={10}
+            className="
                     mt-1
                     block
                     w-full
@@ -145,14 +129,8 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
                     border-gray-300
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
-            />
-            <div className="text-right text-red-400 mt-1">
-              <button onClick={handleRemoveText} type="button">
-                Ukloni tekst
-              </button>
-            </div>
-          </label>
-        )}
+          />
+        </label>
 
         <button className="btn btn-primary" type="submit">
           Spremi uspomenu

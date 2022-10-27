@@ -34,7 +34,7 @@ TODO
 [+] Update user avatar through the app
 [+] Handle remove user profile image
 [+] Public list users memories update
-[-] Rework upload memory flow
+[+] Rework upload memory flow
 [-] Optimize avatar image upload flow
 [-] List users comments
 [-] List users liked memories
