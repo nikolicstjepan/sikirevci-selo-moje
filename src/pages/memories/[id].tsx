@@ -44,9 +44,7 @@ const MemoryPage: NextPage = () => {
         </Head>
 
         <MainLayout>
-          <div className="max-w-5xl mx-auto w-full text-center">
-            <Loader />
-          </div>
+          <Loader />
         </MainLayout>
       </>
     );
@@ -77,7 +75,6 @@ const MemoryPage: NextPage = () => {
     }
 
     if (status === "unauthenticated") {
-      console.log("not auth");
       setShowRegisterModal(true);
       return;
     }

@@ -1,6 +1,6 @@
 const MAX_WIDTH = 2048;
 
-export default function compressImage(file: File, quality: number): Promise<Blob> {
+export default function compressImage(file: File, quality: number, maxWidth: number = MAX_WIDTH): Promise<Blob> {
   return new Promise((res, rej) => {
     try {
       // resizing the image
@@ -16,8 +16,8 @@ export default function compressImage(file: File, quality: number): Promise<Blob
 
         let resizingFactor = 1;
 
-        if (originalWidth > MAX_WIDTH) {
-          resizingFactor = MAX_WIDTH / originalWidth;
+        if (originalWidth > maxWidth) {
+          resizingFactor = maxWidth / originalWidth;
         }
 
         const canvasWidth = originalWidth * resizingFactor;

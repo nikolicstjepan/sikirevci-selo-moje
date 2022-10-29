@@ -7,6 +7,7 @@ import uploadToServer from "../../utils/uploadToServer";
 import Loader from "../Loader";
 import compressImage from "../../utils/compressImage";
 import AddImageIcon from "../icons/AddImage";
+import rotateImage from "../../utils/rotateImage";
 
 type FormDataType = {
   title: string;
@@ -84,6 +85,24 @@ export default function CreateMemoryForm(): ReactElement {
     }
   };
 
+  const handleRotate = async () => {
+    const { file } = formData;
+    if (!file) {
+      return;
+    }
+
+    const blob = await rotateImage(file, 90);
+    if (blob) {
+      setCreateObjectURL(URL.createObjectURL(blob));
+      setUploadFileError("");
+
+      setFormData({
+        ...formData,
+        file: new File([blob], file.name, { type: file.type, lastModified: file.lastModified }),
+      });
+    }
+  };
+
   return (
     <div className="relative pb-4">
       <div className="max-w-lg mx-auto">
@@ -105,8 +124,11 @@ export default function CreateMemoryForm(): ReactElement {
               <div className="aspect-video relative">
                 <Image fill sizes="35vw" className="object-contain" src={createObjectURL} alt={"upladed image"} />
               </div>
-              <div className="text-right text-red-400 mt-1">
-                <button onClick={handleRemoveImage} type="button" disabled={isLoading}>
+              <div className="text-right mt-1">
+                <button className="text-white" onClick={handleRotate} type="button" disabled={isLoading}>
+                  Rotiraj sliku
+                </button>
+                <button className="text-red-400 ml-2" onClick={handleRemoveImage} type="button" disabled={isLoading}>
                   Ukloni sliku
                 </button>
               </div>

@@ -35,8 +35,10 @@ TODO
 [+] Handle remove user profile image
 [+] Public list users memories update
 [+] Rework upload memory flow
-[-] Optimize avatar image upload flow
-[-] Rotate image feature
+[+] Optimize avatar image upload flow
+[+] Fix loading user state on front page
+[+] Rotate image feature
+[-] Delete memory, handle comments relations
 [-] List users comments
 [-] List users liked memories
 [-] Add memory stats (view, like and comment count)

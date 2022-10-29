@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import compressImage from "../utils/compressImage";
 import { trpc } from "../utils/trpc";
 import uploadToServer from "../utils/uploadToServer";
 
@@ -53,14 +54,24 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (e.target instanceof HTMLInputElement && e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
-      setCreateObjectURL(URL.createObjectURL(file));
-      setUploadFileError("");
-      setFile(file);
+      if (file) {
+        try {
+          const blob = await compressImage(file, 0.8, 200);
+          if (blob) {
+            setCreateObjectURL(URL.createObjectURL(blob));
+            setUploadFileError("");
+
+            setFile(new File([blob], file.name, { type: file.type, lastModified: file.lastModified }));
+          }
+        } catch (error) {
+          setUploadFileError("Greška prilikom učitavanja slike, molimo pokušajte opet");
+        }
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -107,6 +118,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
           ref={uploadRef}
           type="file"
           name="file"
+          accept="image/png, image/jpeg, image/jpg, image/webp"
           title={createObjectURL ? "Promijeni" : "Odaberi"}
           onChange={handleChange}
           className="hidden"
