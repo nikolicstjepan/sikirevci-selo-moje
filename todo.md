@@ -36,6 +36,7 @@ TODO
 [+] Public list users memories update
 [+] Rework upload memory flow
 [-] Optimize avatar image upload flow
+[-] Rotate image feature
 [-] List users comments
 [-] List users liked memories
 [-] Add memory stats (view, like and comment count)
