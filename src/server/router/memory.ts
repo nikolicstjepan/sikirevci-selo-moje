@@ -52,6 +52,7 @@ export const memoryRouter = createRouter()
       });
       const memories = await ctx.prisma.memory.findMany({
         where: {
+          deleted: false,
           ...(year && { year }),
         },
         take: RECORDS_PER_PAGE,
@@ -71,6 +72,7 @@ export const memoryRouter = createRouter()
     async resolve({ ctx }) {
       const groupByYear = await ctx.prisma.memory.groupBy({
         by: ["year"],
+        where: { deleted: false },
         _count: {
           year: true,
         },
@@ -84,8 +86,8 @@ export const memoryRouter = createRouter()
       id: z.string(),
     }),
     async resolve({ ctx, input }) {
-      return await ctx.prisma.memory.findUnique({
-        where: { id: input.id },
+      return await ctx.prisma.memory.findFirst({
+        where: { id: input.id, deleted: false },
         include: {
           file: { select: { id: true, ext: true } },
           user: true,
@@ -100,7 +102,7 @@ export const memoryRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       return await ctx.prisma.memory.findMany({
-        where: { userId: input.userId },
+        where: { userId: input.userId, deleted: false },
         include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
         orderBy: { createdAt: "desc" },
       });
@@ -121,7 +123,7 @@ export const memoryRouter = createRouter()
         where: { userId },
       });
       const memories = await ctx.prisma.memory.findMany({
-        where: { userId },
+        where: { userId, deleted: false },
         take: RECORDS_PER_PAGE,
         skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
         orderBy: { createdAt: "desc" },
@@ -142,8 +144,8 @@ export const memoryRouter = createRouter()
         return [];
       }
 
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: userId },
+      const user = await ctx.prisma.user.findFirst({
+        where: { id: userId, memoryLikes: { none: { memory: { deleted: true } } } },
         include: { memoryLikes: { select: { memoryId: true } } },
       });
 
@@ -250,15 +252,7 @@ export const memoryRouter = createRouter()
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      await ctx.prisma.memoryLike.deleteMany({
-        where: {
-          memory,
-        },
-      });
-
-      // TODO: delete file and cleanup
-
-      return await ctx.prisma.memory.delete({ where: { id } });
+      return await ctx.prisma.memory.update({ where: { id }, data: { deleted: true } });
     },
   })
   .mutation("removeComment", {

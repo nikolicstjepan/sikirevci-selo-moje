@@ -71,6 +71,7 @@ model Memory {
     user           User            @relation(fields: [userId], references: [id])
     memoryLikes    MemoryLike[]
     memoryComments MemoryComment[]
+    deleted        Boolean         @default(false)
 }
 
 model MemoryLike {
