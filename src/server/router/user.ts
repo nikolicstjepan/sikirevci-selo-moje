@@ -28,4 +28,17 @@ export const userRouter = createRouter()
 
       return await ctx.prisma.user.findUnique({ where: { id: ctx.session.user.id } });
     },
+  })
+  .query("getById", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      return await ctx.prisma.user.findUnique({
+        where: { id: input.id },
+        include: {
+          _count: { select: { memories: true, memoryComments: true, memoryLikes: true } },
+        },
+      });
+    },
   });
