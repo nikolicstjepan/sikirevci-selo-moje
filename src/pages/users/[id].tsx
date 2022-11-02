@@ -19,20 +19,18 @@ const Page: NextPage = () => {
   const id = router.query.id as string;
 
   const { data: user } = trpc.useQuery(["user.getById", { id }]);
-  const { data: memories } = trpc.useQuery(["memory.getByUserId", { userId: id }]);
-  const { data: myLikedList } = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
 
   return (
     <>
       <Head>
-        <title>{`Sikirevci Nekada | ${user?.name || "Korisnik ne postoji"}`}</title>
+        <title>{`Sikirevci Nekada | ${user?.name || ""}`}</title>
         <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <MainLayout>
         {user ? (
-          <UserProfile user={user} memories={memories!} myLikedList={myLikedList} />
+          <UserProfile user={user} />
         ) : (
           <div className="text-center text-4xl">Korisnik ne postoji ili je obrisan</div>
         )}
@@ -43,11 +41,9 @@ const Page: NextPage = () => {
 
 type UserProfileProps = {
   user: NonNullable<InferQueryOutput<"user.getById">>;
-  memories: NonNullable<InferQueryOutput<"memory.getByUserId">>;
-  myLikedList?: InferQueryOutput<"memory.listMyLikedIds">;
 };
 
-function UserProfile({ user, memories, myLikedList }: UserProfileProps) {
+function UserProfile({ user }: UserProfileProps) {
   const [activeTab, setActiveTab] = useState("memories");
 
   return (
@@ -77,8 +73,8 @@ function UserProfile({ user, memories, myLikedList }: UserProfileProps) {
         </Button>
       </div>
 
-      {activeTab === "memories" && <MemoryList memories={memories} myLikedList={myLikedList} />}
-      {activeTab === "liked" && <LikedList myLikedList={myLikedList} />}
+      {activeTab === "memories" && <MemoryList />}
+      {activeTab === "liked" && <LikedList />}
       {activeTab === "comments" && <CommentsList />}
     </div>
   );
@@ -100,42 +96,42 @@ function Button({ children, onClick, isActive }: ButtonProps) {
   );
 }
 
-type MemoryListProps = {
-  memories: NonNullable<InferQueryOutput<"memory.getByUserId">>;
-  myLikedList?: InferQueryOutput<"memory.listMyLikedIds">;
-};
+function MemoryList() {
+  const router = useRouter();
+  const id = router.query.id as string;
 
-function MemoryList({ memories, myLikedList }: MemoryListProps) {
-  const utils = trpc.useContext();
+  const { data: memories, isLoading } = trpc.useQuery(["memory.getByUserId", { userId: id }]);
 
-  const onLikeClick = async () => {
-    utils.invalidateQueries(["memory.getByUserId"]);
-    utils.invalidateQueries(["memory.listMyLikedIds"]);
-  };
+  const { data: myLikedList } = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
+
+  if (isLoading) {
+    return (
+      <div className="flex">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!memories || !memories.length) {
+    return <div className="text-center">Korisnik nema uspomena!</div>;
+  }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-8">
-      {memories.length > 0 ? (
-        memories.map((memory) => {
-          const { id } = memory;
-          const userLiked = !!myLikedList?.some((likedId) => likedId === id);
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 mb-8">
+      {memories.map((memory) => {
+        const { id } = memory;
+        const userLiked = !!myLikedList?.some((likedId) => likedId === id);
 
-          return <MemoryCard key={id} memory={memory} userLiked={userLiked} onLikeClick={onLikeClick} />;
-        })
-      ) : (
-        <div>Ovaj korisnika nema uspomena</div>
-      )}
+        return <LikedMemoryCard key={id} memory={memory} userLiked={userLiked} />;
+      })}
     </div>
   );
 }
 
-type LikedListProps = {
-  myLikedList?: InferQueryOutput<"memory.listMyLikedIds">;
-};
-
-function LikedList({ myLikedList }: LikedListProps) {
+function LikedList() {
   const router = useRouter();
   const { data: memories, isLoading } = trpc.useQuery(["memory.listUsersLiked", { userId: router.query.id as string }]);
+  const { data: myLikedList } = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
 
   if (isLoading) {
     return <Loader />;
@@ -167,6 +163,7 @@ function LikedMemoryCard({ memory, userLiked }: LikedMemoryCardProps) {
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
   const { status } = useSession();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const utils = trpc.useContext();
 
   const handleToggleLikeClick = async (memoryId: string) => {
     if (status === "loading") {
@@ -177,6 +174,8 @@ function LikedMemoryCard({ memory, userLiked }: LikedMemoryCardProps) {
       setShowRegisterModal(true);
       return;
     }
+
+    utils.invalidateQueries(["memory.listMyLikedIds"]);
 
     await toggleLike({ memoryId });
   };
@@ -262,8 +261,8 @@ function CommentCard({ comment }: CommentCardProps) {
               alt={memory.title}
             />
           </div>
-          <div className="absolute flex rounded-md bottom-0 left-0 right-0 p-4 pt-12 justify-between bg-gradient-to-t from-black to-transparent">
-            <h3 className="xxl:text-lg line-clamp-2">{body}</h3>
+          <div className="absolute flex rounded-md bottom-0 left-0 right-0 top-0 p-4 justify-center items-center bg-gradient-to-t from-black to-transparent">
+            <h3 className="xxl:text-lg line-clamp-3 text-center">&quot;{body}&quot;</h3>
           </div>
         </a>
       </Link>

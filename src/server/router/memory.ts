@@ -104,7 +104,11 @@ export const memoryRouter = createRouter()
     async resolve({ ctx, input }) {
       return await ctx.prisma.memory.findMany({
         where: { userId: input.userId, deleted: false },
-        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
+        include: {
+          file: { select: { id: true, ext: true } },
+          user: true,
+          _count: { select: { memoryLikes: true, memoryComments: true } },
+        },
         orderBy: { createdAt: "desc" },
       });
     },
