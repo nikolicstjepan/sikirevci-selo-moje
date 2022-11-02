@@ -47,6 +47,7 @@ export const memoryRouter = createRouter()
       const { year } = input;
       const count = await ctx.prisma.memory.count({
         where: {
+          deleted: false,
           ...(year && { year }),
         },
       });
@@ -120,7 +121,7 @@ export const memoryRouter = createRouter()
       }
 
       const count = await ctx.prisma.memory.count({
-        where: { userId },
+        where: { userId, deleted: false },
       });
       const memories = await ctx.prisma.memory.findMany({
         where: { userId, deleted: false },
@@ -137,6 +138,21 @@ export const memoryRouter = createRouter()
       };
     },
   })
+  .query("listMyLikedIds", {
+    async resolve({ ctx }) {
+      const userId = ctx.session?.user?.id;
+      if (!userId) {
+        return [];
+      }
+
+      const memoryLikes = await ctx.prisma.memoryLike.findMany({
+        where: { userId, memory: { deleted: false } },
+        select: { memoryId: true },
+      });
+
+      return memoryLikes.map((m) => m.memoryId);
+    },
+  })
   .query("listMyLiked", {
     async resolve({ ctx }) {
       const userId = ctx.session?.user?.id;
@@ -144,12 +160,60 @@ export const memoryRouter = createRouter()
         return [];
       }
 
-      const user = await ctx.prisma.user.findFirst({
-        where: { id: userId, memoryLikes: { none: { memory: { deleted: true } } } },
-        include: { memoryLikes: { select: { memoryId: true } } },
+      const memoryLikes = await ctx.prisma.memoryLike.findMany({
+        where: { userId, memory: { deleted: false } },
+        include: {
+          memory: {
+            include: {
+              file: { select: { id: true, ext: true } },
+              user: true,
+              _count: { select: { memoryLikes: true, memoryComments: true } },
+            },
+          },
+        },
       });
 
-      return user?.memoryLikes.map((m) => m.memoryId) || [];
+      return memoryLikes.map((m) => m.memory);
+    },
+  })
+  .query("listUsersLiked", {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const memoryLikes = await ctx.prisma.memoryLike.findMany({
+        where: { userId: input.userId, memory: { deleted: false } },
+        include: {
+          memory: {
+            include: {
+              file: { select: { id: true, ext: true } },
+              user: true,
+              _count: { select: { memoryLikes: true, memoryComments: true } },
+            },
+          },
+        },
+      });
+
+      return memoryLikes.map((m) => m.memory);
+    },
+  })
+  .query("listUsersComments", {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const comments = await ctx.prisma.memoryComment.findMany({
+        where: { userId: input.userId, memory: { deleted: false } },
+        include: {
+          memory: {
+            include: {
+              file: { select: { id: true, ext: true } },
+            },
+          },
+        },
+      });
+
+      return comments;
     },
   })
   .mutation("toggleLike", {

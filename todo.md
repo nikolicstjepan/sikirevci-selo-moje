@@ -39,8 +39,8 @@ TODO
 [+] Fix loading user state on front page
 [+] Rotate image feature
 [+] Delete memory, handle comments relations
-[-] List users comments
-[-] List users liked memories
+[+] List users comments
+[+] List users liked memories
 [-] Add memory stats (view, like and comment count)
 [-] Add new user role (sponsor)
 [-] Add sponsors page

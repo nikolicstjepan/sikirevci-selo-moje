@@ -29,7 +29,7 @@ const MemoryPage: NextPage = () => {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
-  const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
+  const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
   const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -66,7 +66,7 @@ const MemoryPage: NextPage = () => {
     await toggleLike({ memoryId });
 
     utils.invalidateQueries(["memory.getById", { id: router.query.id as string }]);
-    utils.invalidateQueries(["memory.listMyLiked"]);
+    utils.invalidateQueries(["memory.listMyLikedIds"]);
   };
 
   const handleLeaveComment = async () => {

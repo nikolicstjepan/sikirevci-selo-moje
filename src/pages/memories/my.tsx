@@ -11,11 +11,11 @@ const MemoriesListPage: NextPage = () => {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     ssr: false,
   });
-  const myLikedList = trpc.useQuery(["memory.listMyLiked"], { ssr: false });
+  const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
 
   const onLikeClick = async () => {
     utils.invalidateQueries(["memory.listMy"]);
-    utils.invalidateQueries(["memory.listMyLiked"]);
+    utils.invalidateQueries(["memory.listMyLikedIds"]);
   };
 
   const handleLoadMore = () => list.fetchNextPage();
