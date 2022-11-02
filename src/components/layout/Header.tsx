@@ -45,9 +45,9 @@ function AuthenticatedMenu() {
         <a className="px-1 text-sm sm:text-base sm:px-2">Uspomene</a>
       </Link>
 
-      <div onClick={toggleUserMenu} className="bg-white rounded-full p-1 w-10 h-10 cursor-pointer relative">
+      <div onClick={toggleUserMenu} className="bg-white rounded-full w-10 h-10 cursor-pointer relative">
         <Image
-          className="object-cover rounded-full p-1"
+          className="object-cover rounded-full"
           src={userDetails.data?.image || "/guest.png"}
           alt={"Uploaded image"}
           fill
