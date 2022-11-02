@@ -1,16 +1,12 @@
-import type { NextPage, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import superjson from "superjson";
-import { createSSGHelpers } from "@trpc/react/ssg";
 
 import MainLayout from "../../components/layout/MainLayout";
 import MemoryCard from "../../components/memory/MemoryCard";
 import { InferQueryOutput, trpc } from "../../utils/trpc";
-import { appRouter } from "../../server/router";
-import { createContext } from "../../server/router/context";
 import Image from "next/future/image";
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 import Loader from "../../components/Loader";
 import { useRouter } from "next/router";
 import HeartFilled from "../../components/icons/HeartFilled";
@@ -18,9 +14,12 @@ import HeartOutlined from "../../components/icons/HeartOutlined";
 import { useSession } from "next-auth/react";
 import RegisterModal from "../../components/RegisterModal";
 
-const Page = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data: user } = trpc.useQuery(["user.getById", { id: props.id }]);
-  const { data: memories } = trpc.useQuery(["memory.getByUserId", { userId: props.id }]);
+const Page: NextPage = () => {
+  const router = useRouter();
+  const id = router.query.id as string;
+
+  const { data: user } = trpc.useQuery(["user.getById", { id }]);
+  const { data: memories } = trpc.useQuery(["memory.getByUserId", { userId: id }]);
   const { data: myLikedList } = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
 
   return (
@@ -270,31 +269,6 @@ function CommentCard({ comment }: CommentCardProps) {
       </Link>
     </div>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext<{ id: string }>) {
-  const id = context.params?.id as string;
-
-  const ssg = createSSGHelpers({
-    router: appRouter,
-    ctx: await createContext(),
-    transformer: superjson,
-  });
-
-  await ssg.prefetchQuery("memory.getByUserId", {
-    userId: id,
-  });
-
-  await ssg.prefetchQuery("user.getById", {
-    id,
-  });
-
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-      id,
-    },
-  };
 }
 
 export default Page;
