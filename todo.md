@@ -41,6 +41,8 @@ TODO
 [+] Delete memory, handle comments relations
 [+] List users comments
 [+] List users liked memories
+[-] Rework memory card
+[-] Add sharing options
 [-] Add memory stats (view, like and comment count)
 [-] Add new user role (sponsor)
 [-] Add sponsors page
