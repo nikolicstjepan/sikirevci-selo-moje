@@ -34,21 +34,26 @@ export const userRouter = createRouter()
       id: z.string(),
     }),
     async resolve({ ctx, input }) {
-      // TODO: optimize
       const user = await ctx.prisma.user.findUnique({
         where: { id: input.id },
-        include: {
-          _count: { select: { memories: true, memoryComments: true, memoryLikes: true } },
-        },
       });
 
       if (!user) {
         return null;
       }
 
-      user._count.memoryLikes = await ctx.prisma.memoryLike.count({ where: { memory: { deleted: false } } });
-      user._count.memoryComments = await ctx.prisma.memoryComment.count({ where: { memory: { deleted: false } } });
+      const _count = {
+        memories: await ctx.prisma.memory.count({
+          where: { userId: user.id, deleted: false },
+        }),
+        memoryLikes: await ctx.prisma.memoryLike.count({
+          where: { userId: user.id, memory: { deleted: false } },
+        }),
+        memoryComments: await ctx.prisma.memoryComment.count({
+          where: { userId: user.id, memory: { deleted: false } },
+        }),
+      };
 
-      return user;
+      return { ...user, _count };
     },
   });
