@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { NextSeo } from "next-seo";
 import Head from "next/head";
 import Link from "next/link";
 import MainLayout from "../components/layout/MainLayout";
@@ -9,10 +10,16 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>SikirevciNekada.com</title>
-        <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NextSeo
+        title="Sikirevci Nekad"
+        description="Uspomene iz Sikirevaca"
+        openGraph={{
+          images: [{ url: "/siki.png" }],
+          siteName: "Sikirevci Nekad",
+        }}
+      />
       <MainLayout>
         <Page />
       </MainLayout>

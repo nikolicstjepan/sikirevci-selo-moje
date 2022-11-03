@@ -42,7 +42,7 @@ TODO
 [+] List users comments
 [+] List users liked memories
 [+] Rework memory card
-[-] Add sharing options
+[+] Add sharing options
 [-] Profile connect with edit
 [-] Add memory stats (view, like and comment count)
 [-] Add new user role (sponsor)

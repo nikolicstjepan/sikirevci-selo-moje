@@ -8,7 +8,7 @@ import { trpc } from "../../utils/trpc";
 
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
-import { MouseEvent, ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import RegisterModal from "../../components/RegisterModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
@@ -98,13 +98,10 @@ const MemoryPage: NextPage = () => {
       </Head>
 
       <NextSeo
-        title={`${title} - Uspomene`}
-        description="Uspomene iz Sikirevaca"
+        title={`${title}, ${year} godina | Sikirevci Nekad`}
+        description={description || "Uspomene iz Sikirevaca"}
         openGraph={{
-          url: "https://siki.teuzcode.hr",
-          title: `${title} - Uspomene`,
-          description: "Uspomene iz Sikirevaca",
-          images: [{ url: `https://siki.teuzcode.hr/api/files/${file?.id}` }],
+          images: [{ url: `/api/files/${file?.id}` }],
           siteName: "Sikirevci Nekad",
         }}
       />
