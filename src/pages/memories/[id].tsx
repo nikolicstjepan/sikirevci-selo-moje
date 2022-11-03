@@ -8,7 +8,7 @@ import { trpc } from "../../utils/trpc";
 
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
-import { ReactElement, useState } from "react";
+import { MouseEvent, ReactElement, useState } from "react";
 import RegisterModal from "../../components/RegisterModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
@@ -159,9 +159,55 @@ const MemoryPage: NextPage = () => {
         </div>
       </MainLayout>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
+      <ShareOptions title={title} year={year} />
     </>
   );
 };
+
+function ShareOptions({ title, year }: { title: string; year: number }) {
+  const openWindow = (link: string) => {
+    window.open(link, "newwindow", "width=400, height=400");
+  };
+
+  const popup = () => {
+    openWindow(`https://www.facebook.com/sharer/sharer.php?u=${window.document.location.href}`);
+  };
+
+  const getText = () => {
+    if (typeof window === "undefined") {
+      return "";
+    }
+    return `${title}, ${year}. godina: ${window.document.location.href}`;
+  };
+
+  return (
+    <div className="fixed bottom-0 right-0">
+      <div className="flex items-center p-4 bg-white rounded-tl-md">
+        {/* <span className="mr-2">PODIJELI: </span> */}
+        <div className="flex gap-2 items-center">
+          <button className="block relative w-6 h-6" onClick={popup} id="facebook">
+            <Image sizes="5vw" fill src="/facebook.svg" alt="facebook-icon" />
+          </button>
+
+          <a className="block relative w-6 h-6" href={`whatsapp://send?text=${getText()}`}>
+            <Image sizes="5vw" fill src="/whatsapp.svg" alt="whatsapp-icon" />
+          </a>
+
+          <a className="block relative w-6 h-6" href={`viber://forward?text=${getText()}`}>
+            <Image sizes="5vw" fill src="/viber.svg" alt="viber-icon" />
+          </a>
+
+          <a
+            className="block relative w-6 h-6"
+            href={`mailto:?subject=${encodeURIComponent("Uspomena iz Sikirevaca")}&body=${getText()}`}
+          >
+            <Image sizes="5vw" fill src="/email.svg" alt="envelope-icon" />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Comment({ createdAt, user, body, id }: any): ReactElement {
   const utils = trpc.useContext();
@@ -179,22 +225,12 @@ function Comment({ createdAt, user, body, id }: any): ReactElement {
 
   return (
     <>
-      <div className="flex items-center mb-2 w-full">
-        <Link href={`/users/${user.id}`}>
-          <a className="block bg-white rounded-full p-1 w-12 h-12 cursor-pointer relative mr-2">
-            <Image
-              className="object-cover rounded-full p-1"
-              src={(user.image as string) || "/guest.png"}
-              alt={user.name as string}
-              fill
-              sizes="10vw"
-            />
-          </a>
-        </Link>
+      <div className="flex gap-2 items-center mb-2 w-full">
+        <UserAvatar user={user} size="md" />
         <div>
           <Link href={`/users/${user.id}`}>{user.name}</Link>{" "}
-          <span className="text-xs ml-0 mt-1 block sm:inline sm:mt-0 sm:ml-2">{createdAt.toLocaleString("hr")}</span>
-          <div>{body}</div>
+          <span className="text-xs ml-0  block sm:inline sm:ml-2">{createdAt.toLocaleString("hr")}</span>
+          <div className="mt-1">{body}</div>
         </div>
         {isUsersComment && (
           <button onClick={() => setShowDeleteModal(true)} className="ml-auto btn btn-sm text-red-400">
