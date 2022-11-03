@@ -8,7 +8,7 @@ import { trpc } from "../../utils/trpc";
 
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
-import { MouseEvent, ReactElement, useState } from "react";
+import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import RegisterModal from "../../components/RegisterModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
@@ -165,45 +165,54 @@ const MemoryPage: NextPage = () => {
 };
 
 function ShareOptions({ title, year }: { title: string; year: number }) {
-  const openWindow = (link: string) => {
-    window.open(link, "newwindow", "width=400, height=400");
-  };
+  const [url, setUrl] = useState("");
+  const [show, setShow] = useState(false);
 
-  const popup = () => {
-    openWindow(`https://www.facebook.com/sharer/sharer.php?u=${window.document.location.href}`);
-  };
+  useEffect(() => {
+    setUrl(window.document.location.href);
+  }, []);
 
   const getText = () => {
-    if (typeof window === "undefined") {
-      return "";
-    }
-    return `${title}, ${year}. godina: ${window.document.location.href}`;
+    return `${title}, ${year}. godina. Link: ${url}`;
+  };
+
+  const showShare = () => {
+    setShow(true);
   };
 
   return (
     <div className="fixed bottom-0 right-0">
-      <div className="flex items-center p-4 bg-white rounded-tl-md">
-        {/* <span className="mr-2">PODIJELI: </span> */}
-        <div className="flex gap-2 items-center">
-          <button className="block relative w-6 h-6" onClick={popup} id="facebook">
-            <Image sizes="5vw" fill src="/facebook.svg" alt="facebook-icon" />
+      <div className="flex items-center p-3 bg-white rounded-md m-2">
+        {show ? (
+          <div className="flex gap-2 items-center">
+            <a
+              className="block relative w-6 h-6"
+              href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
+              id="facebook"
+            >
+              <Image sizes="5vw" fill src="/facebook.svg" alt="facebook-icon" />
+            </a>
+
+            <a className="block relative w-6 h-6" href={`whatsapp://send?text=${getText()}`}>
+              <Image sizes="5vw" fill src="/whatsapp.svg" alt="whatsapp-icon" />
+            </a>
+
+            <a className="block relative w-6 h-6" href={`viber://forward?text=${getText()}`}>
+              <Image sizes="5vw" fill src="/viber.svg" alt="viber-icon" />
+            </a>
+
+            <a
+              className="block relative w-6 h-6"
+              href={`mailto:?subject=${encodeURIComponent("Uspomena iz Sikirevaca")}&body=${getText()}`}
+            >
+              <Image sizes="5vw" fill src="/email.svg" alt="envelope-icon" />
+            </a>
+          </div>
+        ) : (
+          <button onClick={showShare} className="font-bold">
+            PODIJELI
           </button>
-
-          <a className="block relative w-6 h-6" href={`whatsapp://send?text=${getText()}`}>
-            <Image sizes="5vw" fill src="/whatsapp.svg" alt="whatsapp-icon" />
-          </a>
-
-          <a className="block relative w-6 h-6" href={`viber://forward?text=${getText()}`}>
-            <Image sizes="5vw" fill src="/viber.svg" alt="viber-icon" />
-          </a>
-
-          <a
-            className="block relative w-6 h-6"
-            href={`mailto:?subject=${encodeURIComponent("Uspomena iz Sikirevaca")}&body=${getText()}`}
-          >
-            <Image sizes="5vw" fill src="/email.svg" alt="envelope-icon" />
-          </a>
-        </div>
+        )}
       </div>
     </div>
   );
