@@ -2,24 +2,26 @@ import { useSession } from "next-auth/react";
 import Image from "next/future/image";
 import Link from "next/link";
 import { useState } from "react";
-import { trpc } from "../../utils/trpc";
+import { InferQueryOutput, trpc } from "../../utils/trpc";
 import HeartFilled from "../icons/HeartFilled";
 import HeartOutlined from "../icons/HeartOutlined";
 import RegisterModal from "../RegisterModal";
+import UserAvatar from "../UserAvatar";
+import MemoryCardActions from "./MemoryCardActions";
 
-export default function MemoryCard({
-  memory,
-  userLiked,
-  onLikeClick,
-}: {
-  memory: any;
+type MemoryCardProps = {
+  memory: NonNullable<InferQueryOutput<"memory.getById">>;
   userLiked: boolean;
-  onLikeClick: () => void;
-}) {
+  showUserAvatar?: boolean;
+  showActions?: boolean;
+};
+
+export default function MemoryCard({ memory, userLiked, showUserAvatar = true, showActions = false }: MemoryCardProps) {
   const { id, title, file, user } = memory;
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
   const { status } = useSession();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const utils = trpc.useContext();
 
   const handleToggleLikeClick = async (memoryId: string) => {
     if (status === "loading") {
@@ -32,62 +34,53 @@ export default function MemoryCard({
     }
 
     await toggleLike({ memoryId });
-    onLikeClick();
+
+    utils.invalidateQueries(["memory.listMyLikedIds"]);
+    utils.invalidateQueries(["memory.listMy"]);
+    utils.invalidateQueries(["memory.list"]);
   };
 
   return (
     <div>
-      <div className="mb-2">
+      <div className="relative rounded-md">
         <Link href={`/memories/${id}`} passHref>
-          <a className="block aspect-video relative w-full">
-            <Image
-              className="object-cover"
-              fill
-              sizes="(max-width: 640px) 100vw,
-              (max-width: 768) 50vw,
-              33vw"
-              src={`/api/files/${file?.id}`}
-              alt={title}
-            />
-          </a>
-        </Link>
-      </div>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          <div className="p-1 pr-2">
-            <div className="bg-white p-1 w-9 md:w-12 h-9 md:h-12 rounded-full relative">
+          <a className="block">
+            <div className="aspect-video relative w-full rounded-md">
               <Image
-                className="object-cover rounded-full p-1"
-                src={(user?.image as string) || "/guest.png"}
-                alt={title}
+                className="object-cover rounded-md"
                 fill
-                sizes="10vw"
+                sizes="(max-width: 640px) 100vw,
+            (max-width: 768) 50vw,
+            33vw"
+                src={`/api/files/${file?.id}`}
+                alt={title}
               />
             </div>
-          </div>
-          <div>
-            <Link href={`/memories/${id}`}>
-              <a className="mb-0.5 text-xl block">{title}</a>
-            </Link>
-            <Link href={`/users/${user.id}`}>
-              <a className="text-sm">{user.name}</a>
-            </Link>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <button disabled={isLoading} className="pr-3 flex items-center" onClick={() => handleToggleLikeClick(id)}>
-            {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
+            <div className="absolute gap-2 flex rounded-md bottom-0 left-0 right-0 p-2 pt-12 justify-between bg-gradient-to-t from-black to-transparent">
+              <div className="flex gap-2 items-center">
+                {showUserAvatar && <UserAvatar user={user} />}
+                <h3 className="xxl:text-lg line-clamp-1">{title}</h3>
+              </div>
+              <div className="flex items-center">
+                <button
+                  disabled={isLoading}
+                  className="pr-3 flex items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleToggleLikeClick(id);
+                  }}
+                >
+                  {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
 
-            <div className="pl-2">{memory._count.memoryLikes || ""}</div>
-          </button>
-          <div>
-            <Link href={`/memories/${id}`} passHref>
-              <a className="btn btn-sm btn-primary mr-1">Otvori</a>
-            </Link>
-          </div>
-        </div>
+                  <div className="pl-2">{memory._count.memoryLikes || ""}</div>
+                </button>
+              </div>
+            </div>
+          </a>
+        </Link>
+        {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
       </div>
-      {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
+      {showActions && <MemoryCardActions id={id} />}
     </div>
   );
 }

@@ -59,7 +59,11 @@ export const memoryRouter = createRouter()
         take: RECORDS_PER_PAGE,
         skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
         orderBy: { createdAt: "desc" },
-        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
+        include: {
+          file: { select: { id: true, ext: true } },
+          user: true,
+          _count: { select: { memoryLikes: true, memoryComments: true } },
+        },
       });
 
       return {
@@ -132,7 +136,11 @@ export const memoryRouter = createRouter()
         take: RECORDS_PER_PAGE,
         skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
         orderBy: { createdAt: "desc" },
-        include: { file: { select: { id: true, ext: true } }, user: true, _count: { select: { memoryLikes: true } } },
+        include: {
+          file: { select: { id: true, ext: true } },
+          user: true,
+          _count: { select: { memoryLikes: true, memoryComments: true } },
+        },
       });
 
       return {

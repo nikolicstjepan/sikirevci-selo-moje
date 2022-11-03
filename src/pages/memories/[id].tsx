@@ -13,6 +13,7 @@ import RegisterModal from "../../components/RegisterModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
 import Loader from "../../components/Loader";
+import UserAvatar from "../../components/UserAvatar";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ const MemoryPage: NextPage = () => {
   }
 
   const { id, title, description, year, file, user, _count } = memory;
-  const userLiked = myLikedList.data?.some((likedId) => likedId === id);
+  const userLiked = myLikedList.data?.some((likedId: string) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
     if (status === "loading") {
@@ -100,23 +101,9 @@ const MemoryPage: NextPage = () => {
       <MainLayout>
         <div className="max-w-5xl mx-auto w-full">
           <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center">
-              <div className="pr-2">
-                <Link href={`/users/${user.id}`}>
-                  <a className="block bg-white p-1 w-9 md:w-12 h-9 md:h-12 rounded-full relative">
-                    <Image
-                      className="object-cover rounded-full p-1"
-                      src={(user.image as string) || "/guest.png"}
-                      alt={title}
-                      fill
-                      sizes="10vw"
-                    />
-                  </a>
-                </Link>
-              </div>
-              <div>
-                <Link href={`/users/${user.id}`}>{user.name}</Link>
-              </div>
+            <div className="flex gap-2 items-center">
+              <UserAvatar user={user} size="md" />
+              <Link href={`/users/${user.id}`}>{user.name}</Link>
             </div>
             <div>
               <button disabled={isLoading} className="pr-1 flex items-center" onClick={() => handleToggleLikeClick(id)}>
@@ -126,7 +113,7 @@ const MemoryPage: NextPage = () => {
               </button>
             </div>
           </div>
-          <div className="h-[65vh] relative mb-8">
+          <div className="h-[45vh] relative mb-8">
             <Image src={`/api/files/${file?.id}`} fill alt={title} sizes="100vw" priority className="object-contain" />
           </div>
           <div className="max-w-2xl mx-auto w-full">

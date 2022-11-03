@@ -9,10 +9,6 @@ import Image from "next/future/image";
 import { ReactNode, useState } from "react";
 import Loader from "../../components/Loader";
 import { useRouter } from "next/router";
-import HeartFilled from "../../components/icons/HeartFilled";
-import HeartOutlined from "../../components/icons/HeartOutlined";
-import { useSession } from "next-auth/react";
-import RegisterModal from "../../components/RegisterModal";
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -122,7 +118,7 @@ function MemoryList() {
         const { id } = memory;
         const userLiked = !!myLikedList?.some((likedId) => likedId === id);
 
-        return <LikedMemoryCard key={id} memory={memory} userLiked={userLiked} />;
+        return <MemoryCard key={id} memory={memory} userLiked={userLiked} />;
       })}
     </div>
   );
@@ -144,70 +140,11 @@ function LikedList() {
           const { id } = memory;
           const userLiked = !!myLikedList?.some((likedId) => likedId === id);
 
-          return <LikedMemoryCard memory={memory} key={id} userLiked={userLiked} />;
+          return <MemoryCard memory={memory} key={id} userLiked={userLiked} />;
         })
       ) : (
         <div>Ovaj korisnika nema sviđanih uspomena</div>
       )}
-    </div>
-  );
-}
-
-type LikedMemoryCardProps = {
-  memory: NonNullable<InferQueryOutput<"memory.getById">>;
-  userLiked: boolean;
-};
-
-function LikedMemoryCard({ memory, userLiked }: LikedMemoryCardProps) {
-  const { id, title, file } = memory;
-  const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
-  const { status } = useSession();
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const utils = trpc.useContext();
-
-  const handleToggleLikeClick = async (memoryId: string) => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (status === "unauthenticated") {
-      setShowRegisterModal(true);
-      return;
-    }
-
-    utils.invalidateQueries(["memory.listMyLikedIds"]);
-
-    await toggleLike({ memoryId });
-  };
-
-  return (
-    <div className="relative rounded-md group">
-      <Link href={`/memories/${id}`} passHref>
-        <a className="block">
-          <div className="aspect-video relative w-full rounded-md">
-            <Image
-              className="object-cover rounded-md"
-              fill
-              sizes="(max-width: 640px) 100vw,
-            (max-width: 768) 50vw,
-            33vw"
-              src={`/api/files/${file?.id}`}
-              alt={title}
-            />
-          </div>
-          <div className="absolute flex md:hidden group-hover:flex rounded-md bottom-0 left-0 right-0 p-4 pt-12 justify-between bg-gradient-to-t from-black to-transparent">
-            <h3 className="xxl:text-lg line-clamp-1">{title}</h3>
-            <div className="flex items-center">
-              <button disabled={isLoading} className="pr-3 flex items-center" onClick={() => handleToggleLikeClick(id)}>
-                {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
-
-                <div className="pl-2">{memory._count.memoryLikes || ""}</div>
-              </button>
-            </div>
-          </div>
-        </a>
-      </Link>
-      {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </div>
   );
 }

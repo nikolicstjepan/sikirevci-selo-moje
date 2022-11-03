@@ -3,12 +3,13 @@ import Image from "next/future/image";
 import Link from "next/link";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
+import UserAvatar from "../UserAvatar";
 
 export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
 
   return (
-    <div className="flex justify-between items-center max-w-5xl mx-auto pb-2 mb-6 w-full">
+    <div className="flex justify-between items-center pb-4 mb-6 w-full">
       <Link href="/memories" passHref>
         <a className="px-1 text-sm sm:text-base sm:px-2 font-bold">Sikirevci Nekada</a>
       </Link>
@@ -45,14 +46,8 @@ function AuthenticatedMenu() {
         <a className="px-1 text-sm sm:text-base sm:px-2">Uspomene</a>
       </Link>
 
-      <div onClick={toggleUserMenu} className="bg-white rounded-full w-10 h-10 cursor-pointer relative">
-        <Image
-          className="object-cover rounded-full"
-          src={userDetails.data?.image || "/guest.png"}
-          alt={"Uploaded image"}
-          fill
-          sizes="10vw"
-        />
+      <div onClick={toggleUserMenu} className="rounded-full w-9 h-9 cursor-pointer relative">
+        <UserAvatar user={userDetails.data} />
         {showMenu && (
           <>
             <div className="bg-white w-2 h-2 absolute right-4 top-9"></div>
@@ -67,11 +62,6 @@ function AuthenticatedMenu() {
           </>
         )}
       </div>
-      {/* <div>
-        {userDetails.data?.name}{" "}
-        
-      </div>
-      */}
     </div>
   );
 }

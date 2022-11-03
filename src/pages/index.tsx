@@ -2,21 +2,10 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import MainLayout from "../components/layout/MainLayout";
 import Loader from "../components/Loader";
 
 const Home: NextPage = () => {
-  const router = useRouter();
-  const { status } = useSession();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/memories");
-    }
-  }, [status, router]);
-
   return (
     <>
       <Head>
@@ -24,12 +13,16 @@ const Home: NextPage = () => {
         <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MainLayout>{status === "loading" ? <Loader /> : <Page />}</MainLayout>
+      <MainLayout>
+        <Page />
+      </MainLayout>
     </>
   );
 };
 
 function Page() {
+  const { status } = useSession();
+
   return (
     <div className="max-w-4xl mx-auto text-white">
       <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Sikirevci Nekada</h1>
@@ -109,9 +102,11 @@ function Page() {
         <Link href="/memories">
           <a className="btn btn-primary">Sve uspomene</a>
         </Link>
-        <Link href="/sign-in" passHref>
-          <a className="btn">Prijava</a>
-        </Link>
+        {status !== "authenticated" && status !== "loading" && (
+          <Link href="/sign-in" passHref>
+            <a className="btn">Prijava</a>
+          </Link>
+        )}
       </div>
     </div>
   );
