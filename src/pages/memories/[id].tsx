@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
 import Loader from "../../components/Loader";
 import UserAvatar from "../../components/UserAvatar";
+import { NextSeo } from "next-seo";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
@@ -93,10 +94,20 @@ const MemoryPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{`${title} - Uspomene`}</title>
-        <meta name="description" content="Uspomene iz Sikirevaca" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <NextSeo
+        title={`${title} - Uspomene`}
+        description="Uspomene iz Sikirevaca"
+        openGraph={{
+          url: "https://siki.teuzcode.hr",
+          title: `${title} - Uspomene`,
+          description: "Uspomene iz Sikirevaca",
+          images: [{ url: `/api/files/${file?.id}` }],
+          siteName: "Sikirevci Nekad",
+        }}
+      />
 
       <MainLayout>
         <div className="max-w-5xl mx-auto w-full">
