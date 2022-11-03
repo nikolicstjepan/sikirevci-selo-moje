@@ -104,7 +104,7 @@ const MemoryPage: NextPage = () => {
           url: "https://siki.teuzcode.hr",
           title: `${title} - Uspomene`,
           description: "Uspomene iz Sikirevaca",
-          images: [{ url: `/api/files/${file?.id}` }],
+          images: [{ url: `https://siki.teuzcode.hr/api/files/${file?.id}` }],
           siteName: "Sikirevci Nekad",
         }}
       />
