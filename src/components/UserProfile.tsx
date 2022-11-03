@@ -6,6 +6,7 @@ import { InferQueryOutput, trpc } from "../utils/trpc";
 import Image from "next/future/image";
 import Loader from "./Loader";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 type UserProfileProps = {
   user: NonNullable<InferQueryOutput<"user.getById">>;
@@ -13,6 +14,7 @@ type UserProfileProps = {
 
 export default function UserProfile({ user }: UserProfileProps) {
   const [activeTab, setActiveTab] = useState("memories");
+  const { data } = useSession();
 
   return (
     <div className="text-white">
@@ -27,6 +29,11 @@ export default function UserProfile({ user }: UserProfileProps) {
           />
         </div>
         <h1 className="text-4xl font-extrabold">{user.name}</h1>
+        {data?.user.id === user.id && (
+          <Link href="/edit-profile">
+            <a className="btn btn-sm btn-secondary">Uredi profil</a>
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-3 justify-items-center max-w-xl mx-auto mb-8">

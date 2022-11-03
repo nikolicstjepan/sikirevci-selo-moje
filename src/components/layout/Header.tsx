@@ -54,7 +54,7 @@ function AuthenticatedMenu() {
             <div className="flex flex-col gap-4 bg-white text-blue p-4 absolute w-[max-content] right-0 mt-2 rounded top-9 z-10">
               <Link href="/memories/create">Dodaj uspomenu</Link>
               <Link href="/memories/my">Moje uspomene</Link>
-              <Link href="/profile">Moj profil</Link>
+              <Link href={`/users/${userDetails.data?.id}`}>Moj profil</Link>
               <span className="block cursor-pointer" onClick={() => signOut()}>
                 Odjava
               </span>

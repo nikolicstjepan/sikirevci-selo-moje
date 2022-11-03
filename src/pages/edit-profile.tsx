@@ -4,10 +4,9 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
 
-import UserProfile from "../components/UserProfile";
 import MainLayout from "../components/layout/MainLayout";
 import Loader from "../components/Loader";
-import { trpc } from "../utils/trpc";
+import EditProfile from "../components/EditProfile";
 
 const ProfilePage: NextPage = () => {
   const router = useRouter();
@@ -18,12 +17,6 @@ const ProfilePage: NextPage = () => {
       router.push("/sign-in");
     }
   }, [status, router]);
-
-  useEffect(() => {
-    if (data?.user.id) {
-      router.push(`/users/${data?.user.id}`);
-    }
-  }, [data, router]);
 
   return (
     <>
@@ -36,17 +29,15 @@ const ProfilePage: NextPage = () => {
       <MainLayout>
         <div className="max-w-4xl mx-auto text-white">
           <h1 className="font-extrabold text-center text-5xl mb-8">Moj profil</h1>
-          {data?.user ? <UserProfilePage id={data.user.id} /> : <Loader />}
+          {data?.user ? (
+            <EditProfile user={data.user} onSave={() => router.push(`/users/${data.user.id}`)} />
+          ) : (
+            <Loader />
+          )}
         </div>
       </MainLayout>
     </>
   );
 };
-
-function UserProfilePage({ id }: { id: string }) {
-  const { data: user } = trpc.useQuery(["user.getById", { id }]);
-
-  return <div>{user ? <UserProfile user={user} /> : <Loader />}</div>;
-}
 
 export default ProfilePage;
