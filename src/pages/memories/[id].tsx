@@ -1,20 +1,21 @@
+import { ReactElement, useState } from "react";
 import type { NextPage } from "next";
 import Image from "next/future/image";
 import Head from "next/head";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import MainLayout from "../../components/layout/MainLayout";
-import { trpc } from "../../utils/trpc";
+import { NextSeo } from "next-seo";
 
+import { trpc } from "../../utils/trpc";
+import MainLayout from "../../components/layout/MainLayout";
 import HeartOutlined from "../../components/icons/HeartOutlined";
 import HeartFilled from "../../components/icons/HeartFilled";
-import { ReactElement, useEffect, useState } from "react";
 import RegisterModal from "../../components/RegisterModal";
-import { useSession } from "next-auth/react";
 import DeleteModal from "../../components/DeleteModal";
 import Loader from "../../components/Loader";
 import UserAvatar from "../../components/UserAvatar";
-import { NextSeo } from "next-seo";
+import ShareOptions from "../../components/ShareOptions";
 
 const MemoryPage: NextPage = () => {
   const router = useRouter();
@@ -167,64 +168,10 @@ const MemoryPage: NextPage = () => {
         </div>
       </MainLayout>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
-      <ShareOptions title={title} year={year} />
+      <ShareOptions text={`${title}, ${year}. godina.`} />
     </>
   );
 };
-
-function ShareOptions({ title, year }: { title: string; year: number }) {
-  const [url, setUrl] = useState("");
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setUrl(window.document.location.href);
-  }, []);
-
-  const getText = () => {
-    return `${title}, ${year}. godina. Link: ${url}`;
-  };
-
-  const showShare = () => {
-    setShow(true);
-  };
-
-  return (
-    <div className="fixed bottom-0 right-0">
-      <div className="flex items-center p-3 bg-white rounded-md m-2">
-        {show ? (
-          <div className="flex gap-2 items-center">
-            <a
-              className="block relative w-6 h-6"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
-              id="facebook"
-            >
-              <Image sizes="5vw" fill src="/facebook.svg" alt="facebook-icon" />
-            </a>
-
-            <a className="block relative w-6 h-6" href={`whatsapp://send?text=${getText()}`}>
-              <Image sizes="5vw" fill src="/whatsapp.svg" alt="whatsapp-icon" />
-            </a>
-
-            <a className="block relative w-6 h-6" href={`viber://forward?text=${getText()}`}>
-              <Image sizes="5vw" fill src="/viber.svg" alt="viber-icon" />
-            </a>
-
-            <a
-              className="block relative w-6 h-6"
-              href={`mailto:?subject=${encodeURIComponent("Uspomena iz Sikirevaca")}&body=${getText()}`}
-            >
-              <Image sizes="5vw" fill src="/email.svg" alt="envelope-icon" />
-            </a>
-          </div>
-        ) : (
-          <button onClick={showShare} className="font-bold">
-            PODIJELI
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function Comment({ createdAt, user, body, id }: any): ReactElement {
   const utils = trpc.useContext();
