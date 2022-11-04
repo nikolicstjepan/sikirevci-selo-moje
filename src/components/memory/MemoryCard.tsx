@@ -3,6 +3,7 @@ import Image from "next/future/image";
 import Link from "next/link";
 import { useState } from "react";
 import { InferQueryOutput, trpc } from "../../utils/trpc";
+import CommentIcon from "../icons/Comment";
 import HeartFilled from "../icons/HeartFilled";
 import HeartOutlined from "../icons/HeartOutlined";
 import RegisterModal from "../RegisterModal";
@@ -17,7 +18,7 @@ type MemoryCardProps = {
 };
 
 export default function MemoryCard({ memory, userLiked, showUserAvatar = true, showActions = false }: MemoryCardProps) {
-  const { id, title, file, user } = memory;
+  const { id, title, file, user, _count } = memory;
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
   const { status } = useSession();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -40,6 +41,8 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
     utils.invalidateQueries(["memory.list"]);
   };
 
+  const HartIcon = userLiked ? HeartFilled : HeartOutlined;
+
   return (
     <div>
       <div className="relative rounded-md">
@@ -61,18 +64,23 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
                 {showUserAvatar && <UserAvatar user={user} />}
                 <h3 className="xxl:text-lg line-clamp-1">{title}</h3>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center gap-4">
+                {!!_count.memoryComments && (
+                  <div className="flex items-center gap-2">
+                    <CommentIcon width="1.25rem" color="white" />
+                    {_count.memoryComments}
+                  </div>
+                )}
                 <button
                   disabled={isLoading}
-                  className="pr-3 flex items-center"
+                  className="flex gap-2 items-center"
                   onClick={(e) => {
                     e.preventDefault();
                     handleToggleLikeClick(id);
                   }}
                 >
-                  {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
-
-                  <div className="pl-2">{memory._count.memoryLikes || ""}</div>
+                  <HartIcon width="1.25rem" />
+                  {_count.memoryLikes || ""}
                 </button>
               </div>
             </div>
