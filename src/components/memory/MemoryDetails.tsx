@@ -1,60 +1,5 @@
-import { useState } from "react";
-import type { NextPage } from "next";
-import Image from "next/future/image";
-import Head from "next/head";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { NextSeo } from "next-seo";
-
-import { trpc } from "../../utils/trpc";
-import MainLayout from "../../components/layout/MainLayout";
-import HeartOutlined from "../../components/icons/HeartOutlined";
-import HeartFilled from "../../components/icons/HeartFilled";
-import RegisterModal from "../../components/RegisterModal";
-import Loader from "../../components/Loader";
-import UserAvatar from "../../components/UserAvatar";
-import ShareOptions from "../../components/ShareOptions";
-import MemoryComment from "../../components/memory/MemoryComment";
-
-// TODO: Extract mem det comp
-const MemoryPage: NextPage = () => {
-  const router = useRouter();
-  const utils = trpc.useContext();
-  const { status } = useSession();
-  const [comment, setComment] = useState("");
-
-  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
-  const {
-    data: commentList,
-    hasNextPage: hasMoreCOmments,
-    fetchNextPage: fetchNextCommentPage,
-  } = trpc.useInfiniteQuery(["memory.getCommentsByMemoryId", { memoryId: router.query.id as string }], {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
-
-  const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
-  const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
-  const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-
-  if (!memory) {
-    return (
-      <>
-        <Head>
-          <title>{`Uspomene`}</title>
-          <meta name="description" content="Uspomene iz Sikirevaca" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <MainLayout>
-          <Loader />
-        </MainLayout>
-      </>
-    );
-  }
-
-  const { id, title, description, year, file, user, _count } = memory;
+export default function MemoryDetails({}: any) {
+  /* const { id, title, description, year, file, user, _count } = memory;
   const userLiked = myLikedList.data?.some((likedId: string) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
@@ -171,7 +116,5 @@ const MemoryPage: NextPage = () => {
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
       <ShareOptions text={`${title}, ${year}. godina.`} />
     </>
-  );
-};
-
-export default MemoryPage;
+  ); */
+}
