@@ -48,6 +48,7 @@ model User {
     memories       Memory[]
     memoryLikes    MemoryLike[]
     memoryComments MemoryComment[]
+    memoryViews    MemoryView[]
 }
 
 model VerificationToken {
@@ -71,6 +72,7 @@ model Memory {
     user           User            @relation(fields: [userId], references: [id])
     memoryLikes    MemoryLike[]
     memoryComments MemoryComment[]
+    views          MemoryView[]
     deleted        Boolean         @default(false)
 }
 
@@ -105,4 +107,13 @@ model File {
     height       Int?
     mimeType     String?
     Memory       Memory?
+}
+
+model MemoryView {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    memoryId  String
+    memory    Memory   @relation(fields: [memoryId], references: [id])
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
 }
