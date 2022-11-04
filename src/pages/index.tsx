@@ -1,23 +1,18 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { NextSeo } from "next-seo";
-import Head from "next/head";
 import Link from "next/link";
 import MainLayout from "../components/layout/MainLayout";
-import Loader from "../components/Loader";
 
 const Home: NextPage = () => {
   return (
     <>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <NextSeo
-        title="Sikirevci Nekad"
+        title="Naslovnica | Sikirevci Nekada"
         description="Uspomene iz Sikirevaca"
         openGraph={{
           images: [{ url: "/siki.png" }],
-          siteName: "Sikirevci Nekad",
+          siteName: "Sikirevci Nekada",
         }}
       />
       <MainLayout>

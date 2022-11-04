@@ -15,9 +15,8 @@ const Page: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{`Sikirevci Nekada | ${user?.name || ""}`}</title>
-        <meta name="description" content="Uspomene iz Sikirevaca" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{`${user?.name || ""} | Sikirevci Nekada`}</title>
+        <meta name="description" content="Korisnički račun" />
       </Head>
 
       <MainLayout>

@@ -183,6 +183,7 @@ export const memoryRouter = createRouter()
             },
           },
         },
+        orderBy: { memory: { createdAt: "desc" } },
       });
 
       return memoryLikes.map((m) => m.memory);
@@ -204,6 +205,7 @@ export const memoryRouter = createRouter()
             },
           },
         },
+        orderBy: { memory: { createdAt: "desc" } },
       });
 
       return memoryLikes.map((m) => m.memory);
@@ -223,6 +225,7 @@ export const memoryRouter = createRouter()
             },
           },
         },
+        orderBy: { createdAt: "desc" },
       });
 
       return comments;

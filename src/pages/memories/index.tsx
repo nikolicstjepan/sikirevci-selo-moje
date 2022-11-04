@@ -4,10 +4,9 @@ import { trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
 import { ChangeEvent, useState } from "react";
 import MemoryCard from "../../components/memory/MemoryCard";
+import { NextSeo } from "next-seo";
 
 const MemoriesListPage: NextPage = () => {
-  const utils = trpc.useContext();
-
   const [year, setYear] = useState<number | null>(null);
   const list = trpc.useInfiniteQuery(["memory.list", { year }], {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -24,10 +23,17 @@ const MemoriesListPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>SikirevciNekada.com - Uspomene</title>
-        <meta name="description" content="Uspomene iz Sikirevaca" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Uspomene | Sikirevci Nekada</title>
       </Head>
+
+      <NextSeo
+        title="Uspomene | Sikirevci Nekada"
+        description="Uspomene iz Sikirevaca"
+        openGraph={{
+          images: [{ url: "/siki.png" }],
+          siteName: "Sikirevci Nekada",
+        }}
+      />
 
       <MainLayout>
         <div className="text-white">

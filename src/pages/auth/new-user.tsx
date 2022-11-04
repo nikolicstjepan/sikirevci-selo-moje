@@ -18,9 +18,7 @@ export default function NewUserPage() {
   return (
     <>
       <Head>
-        <title>SikirevciNekada.com - Novi korisnik</title>
-        <meta name="description" content="SikirevciNekada.com - Prijava" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Novi korisnik | Sikirevci Nekada</title>
         <meta name="robots" content="noindex" />
       </Head>
 

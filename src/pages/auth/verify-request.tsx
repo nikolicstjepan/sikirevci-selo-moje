@@ -4,9 +4,7 @@ export default function NewUserPage() {
   return (
     <>
       <Head>
-        <title>SikirevciNekada.com - Potvrda email</title>
-        <meta name="description" content="SikirevciNekada.com - Prijava" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Potvrda emaila | Sikirevci Nekada</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="bg-blue text-white p-4">

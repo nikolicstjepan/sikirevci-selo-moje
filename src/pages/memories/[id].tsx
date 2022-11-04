@@ -98,11 +98,11 @@ const MemoryPage: NextPage = () => {
       </Head>
 
       <NextSeo
-        title={`${title}, ${year} godina | Sikirevci Nekad`}
-        description={description || "Uspomene iz Sikirevaca"}
+        title={`${title}, ${year} godina | Sikirevci Nekada`}
+        description={description || "Uspomena iz Sikirevaca"}
         openGraph={{
           images: [{ url: `/api/files/${file?.id}` }],
-          siteName: "Sikirevci Nekad",
+          siteName: "Sikirevci Nekada",
         }}
       />
 

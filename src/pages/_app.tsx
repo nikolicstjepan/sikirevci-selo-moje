@@ -6,10 +6,14 @@ import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
 import { NextRouter } from "next/router";
+import Head from "next/head";
 
 const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }: AppPropsType<NextRouter, any>) => {
   return (
     <SessionProvider session={session}>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Component {...pageProps} />
     </SessionProvider>
   );

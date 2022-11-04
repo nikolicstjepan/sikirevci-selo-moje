@@ -11,9 +11,8 @@ const EditMemoryPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Dodaj uspomenu - SikirevciNekada.com</title>
-        <meta name="description" content="Uspomene iz Sikirevaca" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Uredi uspomenu - Sikirevci Nekada</title>
+        <meta name="robots" content="noindex" />
       </Head>
 
       <MainLayout>

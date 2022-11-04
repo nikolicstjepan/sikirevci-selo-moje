@@ -14,9 +14,8 @@ const SignIn: NextPage<{ providers: Providers }> = ({ providers }) => {
   return (
     <>
       <Head>
-        <title>SikirevciNekada.com - Prijava</title>
-        <meta name="description" content="SikirevciNekada.com - Prijava" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Stranica prijave | Sikirevci Nekada</title>
+        <meta name="description" content="Napravi korisnički račun" />
       </Head>
 
       {status === "loading" ? (
