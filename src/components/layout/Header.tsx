@@ -55,6 +55,7 @@ function AuthenticatedMenu() {
               <Link href="/memories/create">Dodaj uspomenu</Link>
               <Link href="/memories/my">Moje uspomene</Link>
               <Link href={`/users/${userDetails.data?.id}`}>Moj profil</Link>
+              <Link href="/users">Korisnici</Link>
               <span className="block cursor-pointer" onClick={() => signOut()}>
                 Odjava
               </span>
