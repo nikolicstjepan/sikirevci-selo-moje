@@ -360,4 +360,19 @@ export const memoryRouter = createRouter()
         },
       });
     },
+  })
+  .mutation("createView", {
+    input: z.object({
+      memoryId: z.string(),
+    }),
+    async resolve({ ctx, input: { memoryId } }) {
+      const userId = ctx.session?.user?.id;
+
+      return await ctx.prisma.memoryView.create({
+        data: {
+          userId,
+          memoryId,
+        },
+      });
+    },
   });

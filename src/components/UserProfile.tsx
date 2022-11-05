@@ -7,6 +7,7 @@ import Image from "next/future/image";
 import Loader from "./Loader";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import UserAvatar from "./UserAvatar";
 
 type UserProfileProps = {
   user: NonNullable<InferQueryOutput<"user.getById">>;
@@ -19,14 +20,8 @@ export default function UserProfile({ user }: UserProfileProps) {
   return (
     <div className="text-white">
       <div className="mb-8 text-center">
-        <div className="bg-white inline-block w-16 md:w-20 h-16 md:h-20 rounded-full relative">
-          <Image
-            className="object-cover rounded-full"
-            src={(user.image as string) || "/guest.png"}
-            alt={user.name || ""}
-            fill
-            sizes="10vw"
-          />
+        <div className="inline-block">
+          <UserAvatar user={user} size="lg" />
         </div>
         <h1 className="text-4xl font-extrabold">{user.name}</h1>
         {data?.user.id === user.id && (

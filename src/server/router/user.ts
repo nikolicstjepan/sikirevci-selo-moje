@@ -56,4 +56,15 @@ export const userRouter = createRouter()
 
       return { ...user, _count };
     },
+  })
+  .query("listAll", {
+    async resolve({ ctx }) {
+      const users = await ctx.prisma.user.findMany({
+        include: {
+          _count: { select: { memories: true } },
+        },
+      });
+
+      return users;
+    },
   });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import Image from "next/future/image";
 import Head from "next/head";
@@ -22,35 +22,23 @@ const MemoryPage: NextPage = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const { status } = useSession();
-  const [comment, setComment] = useState("");
 
   const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
-  const {
-    data: commentList,
-    hasNextPage: hasMoreCOmments,
-    fetchNextPage: fetchNextCommentPage,
-  } = trpc.useInfiniteQuery(["memory.getCommentsByMemoryId", { memoryId: router.query.id as string }], {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
 
   const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
   const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
-  const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
+  const { mutate: createView } = trpc.useMutation(["memory.createView"]);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+  useEffect(() => {
+    createView({ memoryId: router.query.id as string });
+  }, [createView, router]);
 
   if (!memory) {
     return (
-      <>
-        <Head>
-          <title>{`Uspomene`}</title>
-          <meta name="description" content="Uspomene iz Sikirevaca" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <MainLayout>
-          <Loader />
-        </MainLayout>
-      </>
+      <MainLayout>
+        <Loader />
+      </MainLayout>
     );
   }
 
@@ -71,26 +59,6 @@ const MemoryPage: NextPage = () => {
 
     utils.invalidateQueries(["memory.getById", { id: router.query.id as string }]);
     utils.invalidateQueries(["memory.listMyLikedIds"]);
-  };
-
-  const handleLeaveComment = async () => {
-    if (status === "loading") {
-      return;
-    }
-
-    if (status === "unauthenticated") {
-      setShowRegisterModal(true);
-      return;
-    }
-
-    if (!comment) {
-      return;
-    }
-
-    await leaveComment({ memoryId: id, body: comment });
-    setComment("");
-
-    utils.invalidateQueries(["memory.getCommentsByMemoryId"]);
   };
 
   return (
@@ -131,13 +99,61 @@ const MemoryPage: NextPage = () => {
               {title} <span className="text-base">{year}</span>
             </h1>
             <p className="mb-8">{description}</p>
-            <div className="text-right mb-8">
-              <textarea
-                name="description"
-                value={comment}
-                required
-                onChange={(e) => setComment(e.target.value)}
-                className="
+            <Comments memoryId={id} />
+          </div>
+        </div>
+      </MainLayout>
+      {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
+      <ShareOptions text={`${title}, ${year}. godina.`} />
+    </>
+  );
+};
+
+function Comments({ memoryId }: { memoryId: string }) {
+  const { status } = useSession();
+  const utils = trpc.useContext();
+
+  const [comment, setComment] = useState("");
+  const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+  const {
+    data: commentList,
+    hasNextPage: hasMoreCOmments,
+    fetchNextPage: fetchNextCommentPage,
+  } = trpc.useInfiniteQuery(["memory.getCommentsByMemoryId", { memoryId }], {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+
+  const handleLeaveComment = async () => {
+    if (status === "loading") {
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      setShowRegisterModal(true);
+      return;
+    }
+
+    if (!comment) {
+      return;
+    }
+
+    await leaveComment({ memoryId, body: comment });
+    setComment("");
+
+    utils.invalidateQueries(["memory.getCommentsByMemoryId"]);
+  };
+
+  return (
+    <>
+      <div className="text-right mb-8">
+        <textarea
+          name="description"
+          value={comment}
+          required
+          onChange={(e) => setComment(e.target.value)}
+          className="
                     mt-1
                     mb-3
                     bg-blue
@@ -148,30 +164,26 @@ const MemoryPage: NextPage = () => {
                     border-gray-300
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
-              />
-              <button className="btn btn-primary" disabled={commentIsSending} onClick={handleLeaveComment}>
-                Komentiraj
-              </button>
-            </div>
+        />
+        <button className="btn btn-primary" disabled={commentIsSending} onClick={handleLeaveComment}>
+          Komentiraj
+        </button>
+      </div>
 
-            <div className="mb-8">
-              {commentList?.pages.map(({ comments }) => {
-                return comments.map((c) => <MemoryComment key={c.id} {...c} />);
-              })}
+      <div className="mb-8">
+        {commentList?.pages.map(({ comments }) => {
+          return comments.map((c) => <MemoryComment key={c.id} {...c} />);
+        })}
 
-              {hasMoreCOmments && (
-                <button className="btn btn-secondary" onClick={() => fetchNextCommentPage()}>
-                  Prikaži još komentara
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </MainLayout>
+        {hasMoreCOmments && (
+          <button className="btn btn-secondary" onClick={() => fetchNextCommentPage()}>
+            Prikaži još komentara
+          </button>
+        )}
+      </div>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
-      <ShareOptions text={`${title}, ${year}. godina.`} />
     </>
   );
-};
+}
 
 export default MemoryPage;
