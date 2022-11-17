@@ -60,8 +60,11 @@ export const userRouter = createRouter()
   .query("listAll", {
     async resolve({ ctx }) {
       const users = await ctx.prisma.user.findMany({
-        include: {
-          _count: { select: { memories: true } },
+        select: {
+          name: true,
+          image: true,
+          id: true,
+          _count: { select: { memories: { where: { deleted: false } } } },
         },
       });
 
