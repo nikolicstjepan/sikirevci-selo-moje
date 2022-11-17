@@ -42,7 +42,7 @@ const MemoryPage: NextPage = () => {
     );
   }
 
-  const { id, title, description, year, file, user, _count } = memory;
+  const { id, title, description, year, file, user, _count, createdAt, modifiedAt } = memory;
   const userLiked = myLikedList.data?.some((likedId: string) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
@@ -73,6 +73,12 @@ const MemoryPage: NextPage = () => {
         openGraph={{
           images: [{ url: `/api/files/${file?.id}` }],
           siteName: "Sikirevci Nekada",
+          type: "article",
+          article: {
+            authors: [user.name || ""],
+            publishedTime: createdAt.toISOString(),
+            modifiedTime: modifiedAt.toISOString(),
+          },
         }}
       />
 

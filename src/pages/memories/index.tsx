@@ -32,6 +32,7 @@ const MemoriesListPage: NextPage = () => {
         openGraph={{
           images: [{ url: "/siki.png" }],
           siteName: "Sikirevci Nekada",
+          type: "website",
         }}
       />
 
