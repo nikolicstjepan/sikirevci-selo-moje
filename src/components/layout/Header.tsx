@@ -11,7 +11,9 @@ export default function Header(): React.ReactElement {
   return (
     <div className="flex justify-between items-center pb-4 mb-6 w-full">
       <Link href="/memories" passHref>
-        <a className="px-1 text-sm sm:text-base sm:px-2 font-bold">Sikirevci Nekada</a>
+        <a className="w-14 md:w-20 aspect-square sm:px-2 relative">
+          <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci nekad logo" fill sizes="10vw" />
+        </a>
       </Link>
       {status === "unauthenticated" && <UnauthenticatedMenu />}
       {status === "authenticated" && session?.user && <AuthenticatedMenu />}
