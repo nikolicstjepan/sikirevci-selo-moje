@@ -71,7 +71,7 @@ const MemoryPage: NextPage = () => {
         title={`${title}, ${year} godina | Sikirevci Nekada`}
         description={description || "Uspomena iz Sikirevaca"}
         openGraph={{
-          images: [{ url: `/api/files/${file?.id}` }],
+          images: [{ url: `${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}` }],
           siteName: "Sikirevci Nekada",
           type: "article",
           article: {
@@ -98,7 +98,14 @@ const MemoryPage: NextPage = () => {
             </div>
           </div>
           <div className="h-[45vh] relative mb-8">
-            <Image src={`/api/files/${file?.id}`} fill alt={title} sizes="100vw" priority className="object-contain" />
+            <Image
+              src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
+              fill
+              alt={title}
+              sizes="100vw"
+              priority
+              className="object-contain"
+            />
           </div>
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">

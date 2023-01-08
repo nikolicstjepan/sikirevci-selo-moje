@@ -7,6 +7,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "eu2.contabostorage.com",
+      },
     ],
   },
   i18n: {

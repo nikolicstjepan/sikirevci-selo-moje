@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "prisma": "prisma migrate dev"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.245.0",
     "@next-auth/prisma-adapter": "^1.0.3",
     "@prisma/client": "^4.3.0",
     "@tailwindcss/line-clamp": "^0.4.2",

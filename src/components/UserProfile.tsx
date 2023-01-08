@@ -168,7 +168,7 @@ function CommentCard({ comment }: CommentCardProps) {
               sizes="(max-width: 640px) 100vw,
           (max-width: 768) 50vw,
           33vw"
-              src={`/api/files/${memory.file?.id}`}
+              src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${memory.file?.id}`}
               alt={memory.title}
             />
           </div>

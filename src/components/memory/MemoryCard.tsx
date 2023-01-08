@@ -55,7 +55,7 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
                 sizes="(max-width: 640px) 100vw,
             (max-width: 768) 50vw,
             33vw"
-                src={`/api/files/${file?.id}`}
+                src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
                 alt={title}
               />
             </div>

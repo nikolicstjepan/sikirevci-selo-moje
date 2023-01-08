@@ -42,7 +42,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
 
     if (file) {
       const fileId = await uploadToServer(file, setUploadFileError);
-      image = `/api/files/${fileId}`;
+      image = `${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${fileId}`;
     }
 
     await mutateAsync({ name, id: user.id, image });

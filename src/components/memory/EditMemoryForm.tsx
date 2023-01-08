@@ -66,7 +66,12 @@ function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memo
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         {memory?.file && (
           <div>
-            <Image src={`/api/files/${memory.file?.id}`} alt={"upladed image"} width={448} height={193} />
+            <Image
+              src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${memory.file?.id}`}
+              alt={"upladed image"}
+              width={448}
+              height={193}
+            />
           </div>
         )}
         <label className="block">
