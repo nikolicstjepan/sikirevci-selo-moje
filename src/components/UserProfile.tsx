@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import MemoryCard from "./memory/MemoryCard";
 import { InferQueryOutput, trpc } from "../utils/trpc";
-import Image from "next/future/image";
+import Image from "next/image";
 import Loader from "./Loader";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -25,8 +25,8 @@ export default function UserProfile({ user }: UserProfileProps) {
         </div>
         <h1 className="text-4xl font-extrabold">{user.name}</h1>
         {data?.user.id === user.id && (
-          <Link href="/edit-profile">
-            <a className="btn btn-sm btn-secondary">Uredi profil</a>
+          <Link className="btn btn-sm btn-secondary" href="/edit-profile">
+            Uredi profil
           </Link>
         )}
       </div>
@@ -159,8 +159,8 @@ function CommentCard({ comment }: CommentCardProps) {
   const { body, memory } = comment;
   return (
     <div className="relative rounded-md">
-      <Link href={`/memories/${memory.id}`} passHref>
-        <a className="block">
+      <Link href={`/memories/${memory.id}`}>
+        <div className="block">
           <div className="aspect-video relative w-full rounded-md">
             <Image
               className="object-cover rounded-md"
@@ -175,7 +175,7 @@ function CommentCard({ comment }: CommentCardProps) {
           <div className="absolute flex rounded-md bottom-0 left-0 right-0 top-0 p-4 justify-center items-center bg-gradient-to-t from-black to-transparent">
             <h3 className="xxl:text-lg line-clamp-3 text-center">&quot;{body}&quot;</h3>
           </div>
-        </a>
+        </div>
       </Link>
     </div>
   );

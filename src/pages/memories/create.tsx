@@ -21,8 +21,8 @@ const CreateMemoriesPage: NextPage = () => {
           {status === "unauthenticated" && (
             <div className="text-center">
               Samo registrirano korisnici mogu dodati novu uspomenu.{" "}
-              <Link href="/sign-in">
-                <a className="text-indigo-300 hover:underline">Prijava/registracija</a>
+              <Link className="text-indigo-300 hover:underline" href="/sign-in">
+                Prijava/registracija
               </Link>
             </div>
           )}

@@ -41,7 +41,7 @@ export default function MemoryDetails({}: any) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
+        <Link legacyBehavior rel="icon" href="/favicon.ico" />
       </Head>
 
       <NextSeo
@@ -58,7 +58,7 @@ export default function MemoryDetails({}: any) {
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-2 items-center">
               <UserAvatar user={user} size="md" />
-              <Link href={`/users/${user.id}`}>{user.name}</Link>
+              <Link legacyBehavior href={`/users/${user.id}`}>{user.name}</Link>
             </div>
             <div>
               <button disabled={isLoading} className="pr-1 flex items-center" onClick={() => handleToggleLikeClick(id)}>

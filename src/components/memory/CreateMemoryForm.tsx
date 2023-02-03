@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, ReactElement, useEffect, useRef, useState } from "react";
-import Image from "next/future/image";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import getYearOptions from "../../utils/getYearOptions";

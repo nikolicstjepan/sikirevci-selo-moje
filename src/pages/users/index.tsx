@@ -46,14 +46,12 @@ function UserList({ users }: { users: NonNullable<InferQueryOutput<"user.listAll
           const { id } = user;
 
           return (
-            <Link key={id} href={`/users/${user.id}`} passHref>
-              <a className="flex justify-between items-center">
-                <div className="flex gap-2 items-center">
-                  <UserAvatar user={user} />
-                  <div>{user.name}</div>
-                </div>
-                <div>{user._count.memories}</div>
-              </a>
+            <Link className="flex justify-between items-center" key={id} href={`/users/${user.id}`}>
+              <div className="flex gap-2 items-center">
+                <UserAvatar user={user} />
+                <div>{user.name}</div>
+              </div>
+              <div>{user._count.memories}</div>
             </Link>
           );
         })}

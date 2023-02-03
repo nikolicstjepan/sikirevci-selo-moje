@@ -27,7 +27,7 @@ export default function MemoryComment({ createdAt, user, body, id }: MemoryComme
       <div className="flex gap-3 items-start mb-6 w-full">
         <UserAvatar user={user} size="md" />
         <div>
-          <Link href={`/users/${user.id}`}>
+          <Link legacyBehavior href={`/users/${user.id}`}>
             <a className="text-sm">{user.name}</a>
           </Link>{" "}
           <span className="text-xs ml-0  block sm:inline sm:ml-2">{createdAt.toLocaleString("hr")}</span>

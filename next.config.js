@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "eu2.contabostorage.com",
+        hostname: "**.contabostorage.com",
       },
     ],
   },

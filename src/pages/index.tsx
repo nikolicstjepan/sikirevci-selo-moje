@@ -101,12 +101,12 @@ function Page() {
       </div>
 
       <div className="flex gap-2">
-        <Link href="/memories">
-          <a className="btn btn-primary">Sve uspomene</a>
+        <Link className="btn btn-primary" href="/memories">
+          Sve uspomene
         </Link>
         {status !== "authenticated" && status !== "loading" && (
-          <Link href="/sign-in" passHref>
-            <a className="btn">Prijava</a>
+          <Link className="btn" href="/sign-in" passHref>
+            Prijava
           </Link>
         )}
       </div>

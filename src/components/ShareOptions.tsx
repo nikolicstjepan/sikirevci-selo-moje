@@ -1,4 +1,4 @@
-import Image from "next/future/image";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function ShareOptions({ text }: { text: string }) {

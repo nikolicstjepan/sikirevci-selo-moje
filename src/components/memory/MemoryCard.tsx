@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import Image from "next/future/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { InferQueryOutput, trpc } from "../../utils/trpc";
@@ -46,8 +46,8 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
   return (
     <div>
       <div className="relative rounded-md">
-        <Link href={`/memories/${id}`} passHref>
-          <a className="block">
+        <Link href={`/memories/${id}`}>
+          <div className="block">
             <div className="aspect-video relative w-full rounded-md">
               <Image
                 className="object-cover rounded-md"
@@ -84,7 +84,7 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
                 </button>
               </div>
             </div>
-          </a>
+          </div>
         </Link>
         {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
       </div>

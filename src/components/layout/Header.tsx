@@ -1,5 +1,5 @@
 import { useSession, signOut } from "next-auth/react";
-import Image from "next/future/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
@@ -10,10 +10,8 @@ export default function Header(): React.ReactElement {
 
   return (
     <div className="flex justify-between items-center pb-4 mb-6 w-full">
-      <Link href="/memories" passHref>
-        <a className="w-14 md:w-20 aspect-square sm:px-2 relative">
-          <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci nekad logo" fill sizes="10vw" />
-        </a>
+      <Link className="w-14 md:w-20 aspect-square sm:px-2 relative" href="/memories">
+        <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci nekad logo" fill sizes="10vw" />
       </Link>
       {status === "unauthenticated" && <UnauthenticatedMenu />}
       {status === "authenticated" && session?.user && <AuthenticatedMenu />}
@@ -24,11 +22,11 @@ export default function Header(): React.ReactElement {
 function UnauthenticatedMenu() {
   return (
     <div className="flex gap-2 items-center">
-      <Link href="/memories" passHref>
-        <a className="px-1 text-sm sm:text-base sm:px-2">Uspomene</a>
+      <Link className="px-1 text-sm sm:text-base sm:px-2" href="/memories" passHref>
+        Uspomene
       </Link>
-      <Link href="/sign-in" passHref>
-        <a className="btn btn-primary">Prijava</a>
+      <Link className="btn btn-primary" href="/sign-in" passHref>
+        Prijava
       </Link>
     </div>
   );
@@ -44,8 +42,8 @@ function AuthenticatedMenu() {
 
   return (
     <div className="flex gap-2 items-center">
-      <Link href="/memories" passHref>
-        <a className="px-1 text-sm sm:text-base sm:px-2">Uspomene</a>
+      <Link className="px-1 text-sm sm:text-base sm:px-2" href="/memories">
+        Uspomene
       </Link>
 
       <div onClick={toggleUserMenu} className="rounded-full w-9 h-9 cursor-pointer relative">

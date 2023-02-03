@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import Image from "next/future/image";
-import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -63,10 +62,6 @@ const MemoryPage: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <NextSeo
         title={`${title}, ${year} godina | Sikirevci Nekada`}
         description={description || "Uspomena iz Sikirevaca"}
