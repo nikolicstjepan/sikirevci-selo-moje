@@ -22,11 +22,11 @@ const MemoryPage: NextPage = () => {
   const utils = trpc.useContext();
   const { status } = useSession();
 
-  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const { data: memory } = trpc.memory.getById.useQuery({ id: router.query.id as string });
 
-  const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
-  const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
-  const { mutate: createView } = trpc.useMutation(["memory.createView"]);
+  const myLikedList = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
+  const { mutateAsync: toggleLike, isLoading } = trpc.memory.toggleLike.useMutation();
+  const { mutate: createView } = trpc.memory.createView.useMutation();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   useEffect(() => {
@@ -56,8 +56,8 @@ const MemoryPage: NextPage = () => {
 
     await toggleLike({ memoryId });
 
-    utils.invalidateQueries(["memory.getById", { id: router.query.id as string }]);
-    utils.invalidateQueries(["memory.listMyLikedIds"]);
+    utils.memory.getById.invalidate({ id: router.query.id as string });
+    utils.memory.listMyLikedMemoriesIds.invalidate();
   };
 
   return (
@@ -122,16 +122,19 @@ function Comments({ memoryId }: { memoryId: string }) {
   const utils = trpc.useContext();
 
   const [comment, setComment] = useState("");
-  const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.useMutation(["memory.leaveComment"]);
+  const { mutateAsync: leaveComment, isLoading: commentIsSending } = trpc.memory.leaveComment.useMutation();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const {
     data: commentList,
     hasNextPage: hasMoreCOmments,
     fetchNextPage: fetchNextCommentPage,
-  } = trpc.useInfiniteQuery(["memory.getCommentsByMemoryId", { memoryId }], {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
+  } = trpc.memory.getCommentsByMemoryId.useInfiniteQuery(
+    { memoryId },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
 
   const handleLeaveComment = async () => {
     if (status === "loading") {
@@ -150,7 +153,7 @@ function Comments({ memoryId }: { memoryId: string }) {
     await leaveComment({ memoryId, body: comment });
     setComment("");
 
-    utils.invalidateQueries(["memory.getCommentsByMemoryId"]);
+    utils.memory.getCommentsByMemoryId.invalidate();
   };
 
   return (

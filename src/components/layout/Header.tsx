@@ -33,7 +33,7 @@ function UnauthenticatedMenu() {
 }
 
 function AuthenticatedMenu() {
-  const userDetails = trpc.useQuery(["user.myDetails"], { ssr: false });
+  const userDetails = trpc.user.myDetails.useQuery(undefined, { trpc: { ssr: false } });
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleUserMenu = () => {

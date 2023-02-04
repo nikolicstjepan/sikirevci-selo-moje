@@ -11,7 +11,7 @@ import Comment from "../icons/Delete";
 export default function MemoryComment({ createdAt, user, body, id }: MemoryCommentType & { user: User }): ReactElement {
   const utils = trpc.useContext();
   const { status, data } = useSession();
-  const { mutateAsync: remove } = trpc.useMutation(["memory.removeComment"]);
+  const { mutateAsync: remove } = trpc.memory.removeComment.useMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const isUsersComment = status === "authenticated" && data.user.id === user.id;
@@ -19,7 +19,7 @@ export default function MemoryComment({ createdAt, user, body, id }: MemoryComme
   const onConfirmDelete = async () => {
     await remove({ id });
     setShowDeleteModal(false);
-    utils.invalidateQueries(["memory.getCommentsByMemoryId"]);
+    utils.memory.getCommentsByMemoryId.invalidate();
   };
 
   return (

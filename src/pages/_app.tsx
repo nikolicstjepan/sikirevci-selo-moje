@@ -1,5 +1,4 @@
-// src/pages/_app.tsx
-import { withTRPC } from "@trpc/next";
+import { createTRPCNext } from "@trpc/next";
 import type { AppRouter } from "../server/router";
 import type { AppPropsType, AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
@@ -7,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
 import { NextRouter } from "next/router";
 import Head from "next/head";
+import { httpBatchLink } from "@trpc/client";
 
 const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }: AppPropsType<NextRouter, any>) => {
   return (
@@ -29,25 +29,27 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
-export default withTRPC<AppRouter>({
+export default createTRPCNext<AppRouter>({
   config({ ctx }) {
-    /**
-     * If you want to use SSR, you need to use the server's full URL
-     * @link https://trpc.io/docs/ssr
-     */
-    const url = `${getBaseUrl()}/api/trpc`;
-
     return {
-      url,
+      links: [
+        httpBatchLink({
+          /**
+           * If you want to use SSR, you need to use the server's full URL
+           * @link https://trpc.io/docs/ssr
+           **/
+          url: `${getBaseUrl()}/api/trpc`,
+        }),
+      ],
       transformer: superjson,
       /**
-       * @link https://react-query.tanstack.com/reference/QueryClient
-       */
+       * @link https://tanstack.com/query/v4/docs/reference/QueryClient
+       **/
       // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
     };
   },
   /**
    * @link https://trpc.io/docs/ssr
-   */
+   **/
   ssr: true,
-})(MyApp);
+}).withTRPC(MyApp);

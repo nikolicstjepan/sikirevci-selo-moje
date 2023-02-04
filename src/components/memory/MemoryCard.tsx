@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { InferQueryOutput, trpc } from "../../utils/trpc";
+import { RouterOutput, trpc } from "../../utils/trpc";
 import CommentIcon from "../icons/Comment";
 import HeartFilled from "../icons/HeartFilled";
 import HeartOutlined from "../icons/HeartOutlined";
@@ -11,7 +11,7 @@ import UserAvatar from "../UserAvatar";
 import MemoryCardActions from "./MemoryCardActions";
 
 type MemoryCardProps = {
-  memory: NonNullable<InferQueryOutput<"memory.getById">>;
+  memory: NonNullable<RouterOutput["memory"]["getById"]>;
   userLiked: boolean;
   showUserAvatar?: boolean;
   showActions?: boolean;
@@ -19,7 +19,7 @@ type MemoryCardProps = {
 
 export default function MemoryCard({ memory, userLiked, showUserAvatar = true, showActions = false }: MemoryCardProps) {
   const { id, title, file, user, _count } = memory;
-  const { mutateAsync: toggleLike, isLoading } = trpc.useMutation(["memory.toggleLike"]);
+  const { mutateAsync: toggleLike, isLoading } = trpc.memory.toggleLike.useMutation();
   const { status } = useSession();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const utils = trpc.useContext();
@@ -36,9 +36,9 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
 
     await toggleLike({ memoryId });
 
-    utils.invalidateQueries(["memory.listMyLikedIds"]);
-    utils.invalidateQueries(["memory.listMy"]);
-    utils.invalidateQueries(["memory.list"]);
+    utils.memory.listMyLikedMemoriesIds.invalidate();
+    utils.memory.listMy.invalidate();
+    utils.memory.listMemories.invalidate();
   };
 
   const HartIcon = userLiked ? HeartFilled : HeartOutlined;

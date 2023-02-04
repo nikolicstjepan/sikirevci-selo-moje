@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import Link from "next/link";
 
 import MemoryCard from "./memory/MemoryCard";
-import { InferQueryOutput, trpc } from "../utils/trpc";
+import { RouterOutput, trpc } from "../utils/trpc";
 import Image from "next/image";
 import Loader from "./Loader";
 import { useRouter } from "next/router";
@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import UserAvatar from "./UserAvatar";
 
 type UserProfileProps = {
-  user: NonNullable<InferQueryOutput<"user.getById">>;
+  user: NonNullable<RouterOutput["user"]["getById"]>;
 };
 
 export default function UserProfile({ user }: UserProfileProps) {
@@ -70,9 +70,9 @@ function MemoryList() {
   const router = useRouter();
   const id = router.query.id as string;
 
-  const { data: memories, isLoading } = trpc.useQuery(["memory.getByUserId", { userId: id }]);
+  const { data: memories, isLoading } = trpc.memory.getByUserId.useQuery({ userId: id });
 
-  const { data: myLikedList } = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
+  const { data: myLikedList } = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
 
   if (isLoading) {
     return (
@@ -100,8 +100,8 @@ function MemoryList() {
 
 function LikedList() {
   const router = useRouter();
-  const { data: memories, isLoading } = trpc.useQuery(["memory.listUsersLiked", { userId: router.query.id as string }]);
-  const { data: myLikedList } = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
+  const { data: memories, isLoading } = trpc.memory.listUsersLiked.useQuery({ userId: router.query.id as string });
+  const { data: myLikedList } = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
 
   if (isLoading) {
     return <Loader />;
@@ -125,10 +125,7 @@ function LikedList() {
 
 function CommentsList() {
   const router = useRouter();
-  const { data: comments, isLoading } = trpc.useQuery([
-    "memory.listUsersComments",
-    { userId: router.query.id as string },
-  ]);
+  const { data: comments, isLoading } = trpc.memory.listUsersComments.useQuery({ userId: router.query.id as string });
 
   if (isLoading) {
     return <Loader />;

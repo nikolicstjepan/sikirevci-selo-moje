@@ -4,7 +4,7 @@ import { trpc } from "../../utils/trpc";
 import DeleteMemoryModal from "../DeleteModal";
 
 export default function MemoryCardActions({ id }: { id: string }) {
-  const { mutateAsync: remove } = trpc.useMutation(["memory.remove"]);
+  const { mutateAsync: remove } = trpc.memory.remove.useMutation();
   const utils = trpc.useContext();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -15,7 +15,7 @@ export default function MemoryCardActions({ id }: { id: string }) {
 
   const onConfirmDelete = async () => {
     await remove({ id });
-    utils.invalidateQueries(["memory.listMy"]);
+    utils.memory.listMy.invalidate();
     setShowDeleteModal(false);
   };
 

@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, ReactElement, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { InferQueryOutput, trpc } from "../../utils/trpc";
+import { RouterOutput, trpc } from "../../utils/trpc";
 import getYearOptions from "../../utils/getYearOptions";
 import { useSession } from "next-auth/react";
 
@@ -15,7 +15,7 @@ const yearOptions = getYearOptions();
 
 export default function EditMemoryFormContainer(): ReactElement | null {
   const router = useRouter();
-  const { data: memory } = trpc.useQuery(["memory.getById", { id: router.query.id as string }]);
+  const { data: memory } = trpc.memory.getById.useQuery({ id: router.query.id as string });
   const { data } = useSession();
 
   if (!memory) {
@@ -29,10 +29,10 @@ export default function EditMemoryFormContainer(): ReactElement | null {
   return <EditMemoryForm memory={memory} />;
 }
 
-function EditMemoryForm({ memory }: { memory: NonNullable<InferQueryOutput<"memory.getById">> }): ReactElement {
+function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]["getById"]> }): ReactElement {
   const router = useRouter();
 
-  const { mutate, data, error } = trpc.useMutation(["memory.edit"]);
+  const { mutate, data, error } = trpc.memory.edit.useMutation();
 
   const [formData, setFormData] = useState<FormDataType>({
     title: memory.title,

@@ -1,15 +1,17 @@
-import { createRouter } from "./context";
+import { publicProcedure, router } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
-export const userRouter = createRouter()
-  .mutation("edit", {
-    input: z.object({
-      id: z.string(),
-      name: z.string(),
-      image: z.string(),
-    }),
-    async resolve({ input, ctx }) {
+export const userRouter = router({
+  edit: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        image: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
@@ -18,22 +20,21 @@ export const userRouter = createRouter()
         where: { id: input.id },
         data: { ...input },
       });
-    },
-  })
-  .query("myDetails", {
-    async resolve({ ctx }) {
-      if (!ctx.session?.user?.id) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-
-      return await ctx.prisma.user.findUnique({ where: { id: ctx.session.user.id } });
-    },
-  })
-  .query("getById", {
-    input: z.object({
-      id: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  myDetails: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.session?.user?.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return await ctx.prisma.user.findUnique({ where: { id: ctx.session.user.id } });
+  }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
         where: { id: input.id },
       });
@@ -55,19 +56,17 @@ export const userRouter = createRouter()
       };
 
       return { ...user, _count };
-    },
-  })
-  .query("listAll", {
-    async resolve({ ctx }) {
-      const users = await ctx.prisma.user.findMany({
-        select: {
-          name: true,
-          image: true,
-          id: true,
-          _count: { select: { memories: { where: { deleted: false } } } },
-        },
-      });
+    }),
+  listAll: publicProcedure.query(async ({ ctx }) => {
+    const users = await ctx.prisma.user.findMany({
+      select: {
+        name: true,
+        image: true,
+        id: true,
+        _count: { select: { memories: { where: { deleted: false } } } },
+      },
+    });
 
-      return users;
-    },
-  });
+    return users;
+  }),
+});

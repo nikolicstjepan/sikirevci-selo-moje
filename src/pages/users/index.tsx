@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { InferQueryOutput, trpc } from "../../utils/trpc";
+import { RouterOutput, trpc } from "../../utils/trpc";
 import MainLayout from "../../components/layout/MainLayout";
 import { NextSeo } from "next-seo";
 import Loader from "../../components/Loader";
@@ -7,7 +7,7 @@ import UserAvatar from "../../components/UserAvatar";
 import Link from "next/link";
 
 const MemoriesListPage: NextPage = () => {
-  const listQuery = trpc.useQuery(["user.listAll"]);
+  const listQuery = trpc.user.listAll.useQuery();
 
   return (
     <>
@@ -32,7 +32,7 @@ const MemoriesListPage: NextPage = () => {
   );
 };
 
-function UserList({ users }: { users: NonNullable<InferQueryOutput<"user.listAll">> }) {
+function UserList({ users }: { users: NonNullable<RouterOutput["user"]["listAll"]> }) {
   return (
     <div className="max-w-xl mx-auto w-full">
       <div className="grid grid-cols-1 gap-4 md:gap-6 mb-8">

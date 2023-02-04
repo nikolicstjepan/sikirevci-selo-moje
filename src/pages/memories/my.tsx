@@ -5,11 +5,16 @@ import MainLayout from "../../components/layout/MainLayout";
 import MemoryCard from "../../components/memory/MemoryCard";
 
 const MemoriesListPage: NextPage = () => {
-  const list = trpc.useInfiniteQuery(["memory.listMy", {}], {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-    ssr: false,
-  });
-  const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
+  const list = trpc.memory.listMy.useInfiniteQuery(
+    {},
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      trpc: {
+        ssr: false,
+      },
+    }
+  );
+  const myLikedList = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
 
   const handleLoadMore = () => list.fetchNextPage();
 

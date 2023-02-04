@@ -8,11 +8,14 @@ import { NextSeo } from "next-seo";
 
 const MemoriesListPage: NextPage = () => {
   const [year, setYear] = useState<number | null>(null);
-  const list = trpc.useInfiniteQuery(["memory.list", { year }], {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
+  const list = trpc.memory.listMemories.useInfiniteQuery(
+    { year },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
 
-  const myLikedList = trpc.useQuery(["memory.listMyLikedIds"], { ssr: false });
+  const myLikedList = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
 
   const handleLoadMore = () => list.fetchNextPage();
 
@@ -62,7 +65,7 @@ const MemoriesListPage: NextPage = () => {
 };
 
 function YearsFilter({ handleYearChange }: { handleYearChange: (year: number | null) => void }) {
-  const years = trpc.useQuery(["memory.getMemoriesYears"], { ssr: false });
+  const years = trpc.memory.getMemoriesYears.useQuery();
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     handleYearChange(+e.target.value || null);

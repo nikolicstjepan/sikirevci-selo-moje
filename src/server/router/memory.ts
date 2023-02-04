@@ -1,33 +1,37 @@
-import { createRouter } from "./context";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { publicProcedure, router } from "../trpc";
 
 const RECORDS_PER_PAGE = 10;
 
-export const memoryRouter = createRouter()
-  .mutation("create", {
-    input: z.object({
-      title: z.string(),
-      description: z.string(),
-      year: z.number(),
-      fileId: z.string(),
-    }),
-    async resolve({ input, ctx }) {
+export const memoryRouter = router({
+  create: publicProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+        year: z.number(),
+        fileId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
       if (!ctx.session?.user?.id) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
       return await ctx.prisma.memory.create({ data: { ...input, userId: ctx.session.user.id } });
-    },
-  })
-  .mutation("edit", {
-    input: z.object({
-      id: z.string(),
-      title: z.string(),
-      description: z.string(),
-      year: z.number(),
     }),
-    async resolve({ input, ctx }) {
+
+  edit: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        description: z.string(),
+        year: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
       if (!ctx.session?.user?.id) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
@@ -36,14 +40,16 @@ export const memoryRouter = createRouter()
         where: { id: input.id },
         data: { ...input, userId: ctx.session.user.id, modifiedAt: new Date() },
       });
-    },
-  })
-  .query("list", {
-    input: z.object({
-      cursor: z.number().nullish(),
-      year: z.number().nullish(),
     }),
-    async resolve({ ctx, input }) {
+
+  listMemories: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().nullish(),
+        year: z.number().nullish(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
       const { year } = input;
       const count = await ctx.prisma.memory.count({
         where: {
@@ -71,26 +77,26 @@ export const memoryRouter = createRouter()
           ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE + memories.length < count ? (input?.cursor || 1) + 1 : null,
         memories,
       };
-    },
-  })
-  .query("getMemoriesYears", {
-    async resolve({ ctx }) {
-      const groupByYear = await ctx.prisma.memory.groupBy({
-        by: ["year"],
-        where: { deleted: false },
-        _count: {
-          year: true,
-        },
-      });
-
-      return groupByYear;
-    },
-  })
-  .query("getById", {
-    input: z.object({
-      id: z.string(),
     }),
-    async resolve({ ctx, input }) {
+
+  getMemoriesYears: publicProcedure.query(async ({ ctx }) => {
+    const groupByYear = await ctx.prisma.memory.groupBy({
+      by: ["year"],
+      where: { deleted: false },
+      _count: {
+        year: true,
+      },
+    });
+
+    return groupByYear;
+  }),
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
       return await ctx.prisma.memory.findFirst({
         where: { id: input.id, deleted: false },
         include: {
@@ -99,13 +105,14 @@ export const memoryRouter = createRouter()
           _count: { select: { memoryLikes: true, memoryComments: true } },
         },
       });
-    },
-  })
-  .query("getByUserId", {
-    input: z.object({
-      userId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  getByUserId: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       return await ctx.prisma.memory.findMany({
         where: { userId: input.userId, deleted: false },
         include: {
@@ -115,13 +122,14 @@ export const memoryRouter = createRouter()
         },
         orderBy: { createdAt: "desc" },
       });
-    },
-  })
-  .query("listMy", {
-    input: z.object({
-      cursor: z.number().nullish(),
     }),
-    async resolve({ ctx, input }) {
+  listMy: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id;
 
       if (!userId) {
@@ -148,52 +156,49 @@ export const memoryRouter = createRouter()
           ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE + memories.length < count ? (input?.cursor || 1) + 1 : null,
         memories,
       };
-    },
-  })
-  .query("listMyLikedIds", {
-    async resolve({ ctx }) {
-      const userId = ctx.session?.user?.id;
-      if (!userId) {
-        return [];
-      }
+    }),
+  listMyLikedMemoriesIds: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user?.id;
+    if (!userId) {
+      return [];
+    }
 
-      const memoryLikes = await ctx.prisma.memoryLike.findMany({
-        where: { userId, memory: { deleted: false } },
-        select: { memoryId: true },
-      });
+    const memoryLikes = await ctx.prisma.memoryLike.findMany({
+      where: { userId, memory: { deleted: false } },
+      select: { memoryId: true },
+    });
 
-      return memoryLikes.map((m) => m.memoryId);
-    },
-  })
-  .query("listMyLiked", {
-    async resolve({ ctx }) {
-      const userId = ctx.session?.user?.id;
-      if (!userId) {
-        return [];
-      }
+    return memoryLikes.map((m) => m.memoryId);
+  }),
+  listMyLiked: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user?.id;
+    if (!userId) {
+      return [];
+    }
 
-      const memoryLikes = await ctx.prisma.memoryLike.findMany({
-        where: { userId, memory: { deleted: false } },
-        include: {
-          memory: {
-            include: {
-              file: { select: { id: true, ext: true } },
-              user: true,
-              _count: { select: { memoryLikes: true, memoryComments: true } },
-            },
+    const memoryLikes = await ctx.prisma.memoryLike.findMany({
+      where: { userId, memory: { deleted: false } },
+      include: {
+        memory: {
+          include: {
+            file: { select: { id: true, ext: true } },
+            user: true,
+            _count: { select: { memoryLikes: true, memoryComments: true } },
           },
         },
-        orderBy: { memory: { createdAt: "desc" } },
-      });
+      },
+      orderBy: { memory: { createdAt: "desc" } },
+    });
 
-      return memoryLikes.map((m) => m.memory);
-    },
-  })
-  .query("listUsersLiked", {
-    input: z.object({
-      userId: z.string(),
-    }),
-    async resolve({ ctx, input }) {
+    return memoryLikes.map((m) => m.memory);
+  }),
+  listUsersLiked: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const memoryLikes = await ctx.prisma.memoryLike.findMany({
         where: { userId: input.userId, memory: { deleted: false } },
         include: {
@@ -209,13 +214,14 @@ export const memoryRouter = createRouter()
       });
 
       return memoryLikes.map((m) => m.memory);
-    },
-  })
-  .query("listUsersComments", {
-    input: z.object({
-      userId: z.string(),
     }),
-    async resolve({ ctx, input }) {
+  listUsersComments: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const comments = await ctx.prisma.memoryComment.findMany({
         where: { userId: input.userId, memory: { deleted: false } },
         include: {
@@ -229,13 +235,14 @@ export const memoryRouter = createRouter()
       });
 
       return comments;
-    },
-  })
-  .mutation("toggleLike", {
-    input: z.object({
-      memoryId: z.string(),
     }),
-    async resolve({ ctx, input: { memoryId } }) {
+  toggleLike: publicProcedure
+    .input(
+      z.object({
+        memoryId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { memoryId } }) => {
       const userId = ctx.session?.user?.id;
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -259,14 +266,15 @@ export const memoryRouter = createRouter()
       }
 
       return;
-    },
-  })
-  .mutation("leaveComment", {
-    input: z.object({
-      memoryId: z.string(),
-      body: z.string(),
     }),
-    async resolve({ ctx, input: { memoryId, body } }) {
+  leaveComment: publicProcedure
+    .input(
+      z.object({
+        memoryId: z.string(),
+        body: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { memoryId, body } }) => {
       const userId = ctx.session?.user?.id;
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -279,14 +287,15 @@ export const memoryRouter = createRouter()
           body,
         },
       });
-    },
-  })
-  .query("getCommentsByMemoryId", {
-    input: z.object({
-      memoryId: z.string(),
-      cursor: z.number().nullish(),
     }),
-    async resolve({ ctx, input: { memoryId, cursor } }) {
+  getCommentsByMemoryId: publicProcedure
+    .input(
+      z.object({
+        memoryId: z.string(),
+        cursor: z.number().nullish(),
+      })
+    )
+    .query(async ({ ctx, input: { memoryId, cursor } }) => {
       const count = await ctx.prisma.memoryComment.count({
         where: { memoryId },
       });
@@ -309,13 +318,14 @@ export const memoryRouter = createRouter()
         nextCursor: ((cursor || 1) - 1) * RECORDS_PER_PAGE + comments.length < count ? (cursor || 1) + 1 : null,
         comments,
       };
-    },
-  })
-  .mutation("remove", {
-    input: z.object({
-      id: z.string(),
     }),
-    async resolve({ ctx, input: { id } }) {
+  remove: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { id } }) => {
       const userId = ctx.session?.user?.id;
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -332,13 +342,14 @@ export const memoryRouter = createRouter()
       }
 
       return await ctx.prisma.memory.update({ where: { id }, data: { deleted: true } });
-    },
-  })
-  .mutation("removeComment", {
-    input: z.object({
-      id: z.string(),
     }),
-    async resolve({ ctx, input: { id } }) {
+  removeComment: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { id } }) => {
       const userId = ctx.session?.user?.id;
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -359,13 +370,14 @@ export const memoryRouter = createRouter()
           id,
         },
       });
-    },
-  })
-  .mutation("createView", {
-    input: z.object({
-      memoryId: z.string(),
     }),
-    async resolve({ ctx, input: { memoryId } }) {
+  createView: publicProcedure
+    .input(
+      z.object({
+        memoryId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input: { memoryId } }) => {
       const userId = ctx.session?.user?.id;
 
       return await ctx.prisma.memoryView.create({
@@ -374,5 +386,5 @@ export const memoryRouter = createRouter()
           memoryId,
         },
       });
-    },
-  });
+    }),
+});

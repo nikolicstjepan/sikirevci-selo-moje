@@ -10,7 +10,7 @@ const Page: NextPage = () => {
   const router = useRouter();
   const id = router.query.id as string;
 
-  const { data: user } = trpc.useQuery(["user.getById", { id }]);
+  const { data: user } = trpc.user.getById.useQuery({ id });
 
   return (
     <>

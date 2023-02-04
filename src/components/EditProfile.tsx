@@ -20,7 +20,7 @@ type UserType = {
 function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) {
   const utils = trpc.useContext();
 
-  const { mutateAsync } = trpc.useMutation(["user.edit"]);
+  const { mutateAsync } = trpc.user.edit.useMutation();
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,7 +46,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
     }
 
     await mutateAsync({ name, id: user.id, image });
-    utils.invalidateQueries(["user.myDetails"]);
+    utils.user.myDetails.invalidate();
     setStatus("saved");
     setIsLoading(false);
     if (onSave) {
@@ -90,13 +90,14 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         {createObjectURL || formData.image ? (
           <div className="text-center">
-            <Image
-              className="object-contain"
-              src={createObjectURL || formData.image}
-              alt={"Uploaded image"}
-              width={100}
-              height={100}
-            />
+            <div className="relative aspect-square h-52 mx-auto mb-2">
+              <Image
+                className="object-cover bg-white rounded-full"
+                src={createObjectURL || formData.image}
+                alt={"Uploaded image"}
+                fill
+              />
+            </div>
             <div className="text-center mt-1">
               <button className="text-white mr-2" onClick={() => uploadRef.current?.click()} type="button">
                 Promijeni sliku

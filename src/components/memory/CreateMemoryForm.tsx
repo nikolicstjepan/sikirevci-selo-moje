@@ -20,7 +20,7 @@ const yearOptions = getYearOptions();
 
 export default function CreateMemoryForm(): ReactElement {
   const router = useRouter();
-  const { mutateAsync, data, error } = trpc.useMutation(["memory.create"]);
+  const { mutateAsync, data, error } = trpc.memory.create.useMutation();
   const [isLoading, setIsLoading] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
 
