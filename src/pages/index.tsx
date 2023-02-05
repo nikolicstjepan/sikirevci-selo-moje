@@ -26,10 +26,10 @@ function Page() {
   const { status } = useSession();
 
   return (
-    <div className="max-w-4xl mx-auto text-white">
+    <div className="max-w-4xl mx-auto">
       <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Sikirevci Nekada</h1>
 
-      <div className="mb-8 leading-6">
+      <div className="mb-8 text-lg">
         <p className="mb-4">
           Projekt &quot;Sikirevci Nekada&quot; je (ambiciozni) pokušaj digitalizacije bogate prošlosti sela Sikirevci.
         </p>

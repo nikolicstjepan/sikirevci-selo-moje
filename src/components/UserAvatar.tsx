@@ -22,9 +22,9 @@ export default function UserAvatar({ user, size = "sm" }: UserAvatarProps) {
   }
 
   return (
-    <div className={`flex-shrink-0 ${sizeClass} rounded-full relative`}>
+    <div className={`flex-shrink-0 ${sizeClass} rounded-full relative shadow-lg`}>
       <Image
-        className="bg-white object-cover rounded-full"
+        className="bg-white object-cover rounded-full "
         src={(user.image as string) || "/guest.png"}
         alt={(user.name as string) || ""}
         fill
