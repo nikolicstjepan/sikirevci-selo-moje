@@ -26,21 +26,21 @@ const MemoriesListPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Uspomene | Sikirevci Nekada</title>
+        <title>Uspomene | sikirevci.com.hr</title>
       </Head>
 
       <NextSeo
-        title="Uspomene | Sikirevci Nekada"
+        title="Uspomene | sikirevci.com.hr"
         description="Uspomene iz Sikirevaca"
         openGraph={{
           images: [{ url: "/siki.png" }],
-          siteName: "Sikirevci Nekada",
+          siteName: "sikirevci.com.hr",
           type: "website",
         }}
       />
 
       <MainLayout>
-        <div className="text-white">
+        <div className="w-full">
           <h1 className="font-extrabold text-center text-5xl mb-8">Uspomene</h1>
           <YearsFilter handleYearChange={handleYearChange} />
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 mb-8">
@@ -75,8 +75,8 @@ function YearsFilter({ handleYearChange }: { handleYearChange: (year: number | n
     <div className="text-right mb-4">
       <label>
         Godina:
-        <select onChange={handleChange} className="bg-blue ml-2">
-          <option value="">Odaberi</option>
+        <select onChange={handleChange} className="ml-2">
+          <option value="">Sve</option>
           {years.data?.map((y) => {
             return (
               <option value={y.year} key={y.year}>

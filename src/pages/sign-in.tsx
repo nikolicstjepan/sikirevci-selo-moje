@@ -14,7 +14,7 @@ const SignIn: NextPage<{ providers: Providers }> = ({ providers }) => {
   return (
     <>
       <Head>
-        <title>Stranica prijave | Sikirevci Nekada</title>
+        <title>Stranica prijave | sikirevci.com.hr</title>
         <meta name="description" content="Napravi korisnički račun" />
       </Head>
 

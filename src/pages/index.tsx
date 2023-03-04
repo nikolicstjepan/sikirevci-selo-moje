@@ -8,11 +8,11 @@ const Home: NextPage = () => {
   return (
     <>
       <NextSeo
-        title="Naslovnica | Sikirevci Nekada"
+        title="Naslovnica | sikirevci.com.hr"
         description="Uspomene iz Sikirevaca"
         openGraph={{
           images: [{ url: "/siki.png" }],
-          siteName: "Sikirevci Nekada",
+          siteName: "sikirevci.com.hr",
         }}
       />
       <MainLayout>
@@ -27,11 +27,13 @@ function Page() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Sikirevci Nekada</h1>
+      <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">
+        sikirevci.com.hr - Uspomene iz Sikirevaca
+      </h1>
 
       <div className="mb-8 text-lg">
         <p className="mb-4">
-          Projekt &quot;Sikirevci Nekada&quot; je (ambiciozni) pokušaj digitalizacije bogate prošlosti sela Sikirevci.
+          Projekt &quot;sikirevci.com.hr&quot; je pokušaj digitalizacije bogate prošlosti sela Sikirevci.
         </p>
 
         <p className="mb-4">
@@ -40,8 +42,8 @@ function Page() {
         </p>
 
         <p className="mb-4">
-          Isto tako promocija Sikirevaca bi uvelike imala korist od web mjesta koji korisnicima mogu služiti kao
-          svojevrsni vremeplov.
+          Isto tako domaći proizvodi i turistička ponuda Sikirevaca bi uvelike imala korist od web mjesta koji
+          korisnicima mogu služiti kao svojevrsni vremeplov.
         </p>
 
         <p className="mb-4">
@@ -55,7 +57,7 @@ function Page() {
         </p>
 
         <p className="mb-4">
-          Naš cilj je imati 50 slika koji govore o prošlosti Sikirevaca do kraja ove (2022.) godine.
+          Naš cilj je imati 100 slika koji govore o prošlosti Sikirevaca do kraja ove (2023.) godine.
         </p>
 
         <p className="mb-4">
@@ -94,15 +96,15 @@ function Page() {
         </ul>
 
         <p className="mb-4">
-          <strong>Napomena:</strong> Ovo je volonterski projekt, tj. napravljen je bez ikakvog vanjskog financiranja,
-          tako da vas molimo za strpljenju ukoliko naiđete na greške. Isto tako imajte na umu da je projekt tek u
-          začetku i još puno toga je u planu (npr. video uradci iz prošlosti).
+          <strong>Napomena:</strong> Ovo je volonterski projekt koji se radi u slobodno vrijeme, tako da vas molimo za
+          strpljenju ukoliko naiđete na greške. Isto tako imajte na umu da je projekt tek u začetku i još puno toga je u
+          planu (npr. video uradci iz prošlosti).
         </p>
       </div>
 
       <div className="flex gap-2">
         <Link className="btn btn-primary" href="/memories">
-          Sve uspomene
+          Pogledaj uspomene
         </Link>
         {status !== "authenticated" && status !== "loading" && (
           <Link className="btn" href="/sign-in" passHref>

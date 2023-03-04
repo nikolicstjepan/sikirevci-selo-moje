@@ -63,11 +63,11 @@ const MemoryPage: NextPage = () => {
   return (
     <>
       <NextSeo
-        title={`${title}, ${year} godina | Sikirevci Nekada`}
+        title={`${title}, ${year} godina | sikirevci.com.hr`}
         description={description || "Uspomena iz Sikirevaca"}
         openGraph={{
           images: [{ url: `${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}` }],
-          siteName: "Sikirevci Nekada",
+          siteName: "sikirevci.com.hr",
           type: "article",
           article: {
             authors: [user.name || ""],

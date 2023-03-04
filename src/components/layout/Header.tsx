@@ -10,7 +10,7 @@ export default function Header(): React.ReactElement {
 
   return (
     <div className="bg-blue text-white mb-6 py-2">
-      <div className="flex justify-between items-center w-full max-w-6xl mx-auto">
+      <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-2 md:px-0">
         <Link className="w-12 md:w-16 aspect-square sm:px-2 relative" href="/memories">
           <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci nekad logo" fill sizes="10vw" />
         </Link>

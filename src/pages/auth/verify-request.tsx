@@ -4,7 +4,7 @@ export default function NewUserPage() {
   return (
     <>
       <Head>
-        <title>Potvrda emaila | Sikirevci Nekada</title>
+        <title>Potvrda emaila | sikirevci.com.hr</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="bg-blue text-white p-4">

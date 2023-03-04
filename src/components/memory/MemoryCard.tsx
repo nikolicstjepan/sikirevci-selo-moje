@@ -59,7 +59,7 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
                 alt={title}
               />
             </div>
-            <div className="absolute gap-2 flex rounded-md bottom-0 left-0 right-0 p-2 pt-12 justify-between bg-gradient-to-t from-black to-transparent">
+            <div className="absolute gap-2 flex rounded-md bottom-0 left-0 right-0 p-2 pt-12 justify-between bg-gradient-to-t from-black to-transparent text-white">
               <div className="flex gap-2 items-center">
                 {showUserAvatar && <UserAvatar user={user} />}
                 <h3 className="xxl:text-lg line-clamp-1">{title}</h3>

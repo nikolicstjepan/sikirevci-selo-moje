@@ -11,7 +11,7 @@ const CreateMemoriesPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Dodaj uspomenu | Sikirevci Nekada</title>
+        <title>Dodaj uspomenu | sikirevci.com.hr</title>
         <meta name="robots" content="noindex" />
       </Head>
 

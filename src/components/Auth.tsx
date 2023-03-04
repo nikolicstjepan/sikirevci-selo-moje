@@ -8,10 +8,8 @@ type Providers = {
 
 export default function Auth({ providers }: { providers: Providers }): ReactElement {
   return (
-    <div className="bg-blue text-white p-4">
-      <div className="container flex flex-col items-center justify-center min-h-screen p-10 px-0 mx-auto md:py-20 md:p-10 md:px-0">
-        <SignInAuth providers={providers} />
-      </div>
+    <div className="container flex flex-col items-center mx-auto p-4 md:p-0">
+      <SignInAuth providers={providers} />
     </div>
   );
 }
@@ -41,7 +39,19 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
 
   return (
     <>
-      <h1 className="font-extrabold text-center text-7xl mb-8">Prijava</h1>
+      <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-4">Registracija i prijava</h1>
+
+      <div className="max-w-lg mx-auto mb-8">
+        <p className="mb-2">Registrirati i prijaviti se može na dva načina:</p>
+
+        <ol className="list-decimal pl-8">
+          <li>pomoću svog Google računa</li>
+          <li>
+            pomoću email adrese na način da prvo unesete svoju email adresu te nakon toga kliknete na link koji vam
+            pošaljemo na uneseni email
+          </li>
+        </ol>
+      </div>
 
       <div className="">
         {providers &&
@@ -54,11 +64,11 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
           ))}
       </div>
 
-      <span className="my-6 text-xl">ILI</span>
+      <span className="my-6 font-extrabold text-xl">ILI</span>
 
       <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         <label className="block">
-          <span className="text-white text-center block">Unesite email</span>
+          <span className="text-center block">Unesite email:</span>
           <input
             type="email"
             required

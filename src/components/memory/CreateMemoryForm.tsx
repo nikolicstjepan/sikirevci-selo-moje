@@ -108,10 +108,10 @@ export default function CreateMemoryForm(): ReactElement {
       <div className="max-w-lg mx-auto">
         <h1 className="font-extrabold text-center text-5xl mb-8">Nova uspomena</h1>
         <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
-          <div className="text-white flex gap-2">
+          <div className="flex gap-2">
             {!createObjectURL && (
               <div className="text-center mx-auto">
-                <button type="button" className="btn-sm btn-secondary" onClick={() => uploadRef.current?.click()}>
+                <button type="button" className="btn-sm btn" onClick={() => uploadRef.current?.click()}>
                   <AddImageIcon width="250" height="250" />
                   Dodaj sliku
                 </button>
@@ -138,7 +138,7 @@ export default function CreateMemoryForm(): ReactElement {
           {uploadFileError && <span className="text-red-400">{uploadFileError}</span>}
 
           <label className="block">
-            <span className="text-white">Naslov</span>
+            <span>Naslov</span>
             <input
               type="text"
               disabled={isLoading}
@@ -157,7 +157,7 @@ export default function CreateMemoryForm(): ReactElement {
           </label>
 
           <label className="block">
-            <span className="text-white">Godina</span>
+            <span>Godina</span>
             <select
               required
               name="year"
@@ -183,7 +183,7 @@ export default function CreateMemoryForm(): ReactElement {
           </label>
 
           <label className="block">
-            <span className="text-white">Opis</span>
+            <span>Opis</span>
             <textarea
               name="description"
               placeholder="Tko ili što je na slici?"
