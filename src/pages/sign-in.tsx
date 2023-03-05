@@ -2,6 +2,9 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useSession, signOut, getProviders } from "next-auth/react";
 import Auth from "../components/Auth";
+import Link from "next/link";
+import MainLayout from "../components/layout/MainLayout";
+import Loader from "../components/Loader";
 
 type Providers = {
   id: string;
@@ -17,21 +20,23 @@ const SignIn: NextPage<{ providers: Providers }> = ({ providers }) => {
         <title>Stranica prijave | sikirevci.com.hr</title>
         <meta name="description" content="Napravi korisnički račun" />
       </Head>
-
-      {status === "loading" ? (
-        <div>Učitavanje...</div>
-      ) : status === "authenticated" ? (
-        <div className="bg-blue text-white">
-          <div className="container flex flex-col items-center justify-center min-h-screen p-10 px-0 mx-auto md:py-20 md:p-10 md:px-0">
+      <MainLayout>
+        {status === "loading" ? (
+          <div className="flex justify-center">
+            <Loader />
+          </div>
+        ) : status === "authenticated" ? (
+          <div className="container text-center">
             <div className="mb-4">Prijavljeni se kao {session.user.name}</div>
+
             <button className="btn btn-secondary btn-sm" onClick={() => signOut()}>
               Odjava
             </button>
           </div>
-        </div>
-      ) : (
-        <Auth providers={providers} />
-      )}
+        ) : (
+          <Auth providers={providers} />
+        )}
+      </MainLayout>
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import UserAvatar from "../UserAvatar";
@@ -24,10 +25,7 @@ export default function Header(): React.ReactElement {
 function UnauthenticatedMenu() {
   return (
     <div className="flex gap-2 items-center">
-      <Link className="px-1 text-sm sm:text-lg sm:px-2" href="/memories" passHref>
-        Uspomene
-      </Link>
-      <Link className="btn btn-primary" href="/sign-in" passHref>
+      <Link className="btn btn-primary" href="/sign-in">
         Prijava
       </Link>
     </div>
@@ -37,18 +35,59 @@ function UnauthenticatedMenu() {
 function AuthenticatedMenu() {
   const userDetails = trpc.user.myDetails.useQuery(undefined, { trpc: { ssr: false } });
   const [showMenu, setShowMenu] = useState(false);
+  const router = useRouter();
 
   const toggleUserMenu = () => {
     setShowMenu((showMenu) => !showMenu);
   };
 
+  console.log(router.pathname);
+
+  const navigation = [
+    { name: "Sve uspomene", href: "/memories", current: false },
+    { name: "Dodaj uspomenu", href: "/memories/create", current: false },
+    { name: "Moje uspomene", href: "/memories/my", current: false },
+    { name: "Moj profil", href: `/users/${userDetails.data?.id}`, current: false },
+    { name: "Korisnici", href: "/users", current: false },
+  ].map((item) => ({
+    ...item,
+    current: router.asPath === item.href,
+  }));
+
   return (
     <div className="flex gap-2 items-center">
-      <Link className="px-1 text-sm sm:text-lg sm:px-2" href="/memories">
-        Uspomene
-      </Link>
+      <div className="hidden md:flex gap-4 items-center">
+        {navigation.map((item) => (
+          <Link
+            key={item.name}
+            className={`${item.current ? "underline" : ""} hover:underline font-bold`}
+            href={item.href}
+          >
+            {item.name}
+          </Link>
+        ))}
 
-      <div onClick={toggleUserMenu} className="rounded-full w-9 h-9 cursor-pointer relative">
+        {/* <Link className="hover:underline" href="/memories">
+          Sve uspomene
+        </Link>
+        <Link className="hover:underline" href="/memories/create">
+          Dodaj uspomenu
+        </Link>
+        <Link className="hover:underline" href="/memories/my">
+          Moje uspomene
+        </Link>
+        <Link className="hover:underline" href={`/users/${userDetails.data?.id}`}>
+          Moj profil
+        </Link>
+        <Link className="hover:underline" href="/users">
+          Korisnici
+        </Link> */}
+        <span className="block hover:underline cursor-pointer font-bold" onClick={() => signOut()}>
+          Odjava
+        </span>
+      </div>
+
+      <div onClick={toggleUserMenu} className="rounded-full w-9 h-9 cursor-pointer relative md:hidden">
         <UserAvatar user={userDetails.data} />
         {showMenu && (
           <>

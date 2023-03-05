@@ -19,8 +19,8 @@ html {
   @apply text-slate-300 border-slate-300;
 }
 .btn-secondary {
-  @apply bg-blue text-white border-b-white border-b-2;
+  @apply text-blue border-b-blue border-b-2;
 }
 .btn-secondary:hover {
-  @apply text-slate-300 border-slate-300;
+  @apply text-slate-600 border-slate-600;
 }

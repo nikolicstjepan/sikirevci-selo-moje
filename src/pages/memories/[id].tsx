@@ -167,7 +167,6 @@ function Comments({ memoryId }: { memoryId: string }) {
           className="
                     mt-1
                     mb-3
-                    bg-blue
                     block
                     w-full
                     rounded-md

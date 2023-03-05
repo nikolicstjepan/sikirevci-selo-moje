@@ -8,7 +8,7 @@ type Providers = {
 
 export default function Auth({ providers }: { providers: Providers }): ReactElement {
   return (
-    <div className="container flex flex-col items-center mx-auto p-4 md:p-0">
+    <div className="container flex flex-col items-center">
       <SignInAuth providers={providers} />
     </div>
   );
@@ -39,7 +39,7 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
 
   return (
     <>
-      <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-4">Registracija i prijava</h1>
+      <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Registracija i prijava</h1>
 
       <div className="max-w-lg mx-auto mb-8">
         <p className="mb-2">Registrirati i prijaviti se može na dva načina:</p>
@@ -53,7 +53,7 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
         </ol>
       </div>
 
-      <div className="">
+      <div>
         {providers &&
           providers.map((provider) => (
             <div key={provider.name}>

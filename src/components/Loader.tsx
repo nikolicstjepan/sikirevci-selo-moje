@@ -33,7 +33,7 @@ export default function Loader({ size = "md" }: { size?: "sm" | "md" | "lg" | "x
           r={width / 4}
           fill="none"
           strokeWidth={width / 10}
-          stroke="#fff"
+          stroke="#001D49"
           strokeLinecap="round"
           strokeDasharray={`${width / 5}, ${width / 5}`}
         >
