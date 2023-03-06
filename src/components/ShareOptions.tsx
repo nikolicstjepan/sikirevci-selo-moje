@@ -13,7 +13,7 @@ export default function ShareOptions({ text }: { text: string }) {
   };
 
   return (
-    <div className="fixed bottom-0 right-0 left-0">
+    <div className="">
       <div className="flex gap-4 items-center justify-center p-3 bg-white">
         <div className="hidden md:block font-bold">PODIJELI: </div>
         <div className="flex gap-2 items-center">

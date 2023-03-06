@@ -18,7 +18,7 @@ export default function UserProfile({ user }: UserProfileProps) {
   const { data } = useSession();
 
   return (
-    <div className="text-white">
+    <div>
       <div className="mb-8 text-center">
         <div className="inline-block">
           <UserAvatar user={user} size="lg" />
@@ -57,7 +57,7 @@ type ButtonProps = {
 };
 
 function Button({ children, onClick, isActive }: ButtonProps) {
-  let className = isActive ? "text-white" : "text-gray-500";
+  let className = isActive ? "font-bold" : "";
 
   return (
     <button className={className} onClick={onClick}>
@@ -170,7 +170,7 @@ function CommentCard({ comment }: CommentCardProps) {
             />
           </div>
           <div className="absolute flex rounded-md bottom-0 left-0 right-0 top-0 p-4 justify-center items-center bg-gradient-to-t from-black to-transparent">
-            <h3 className="xxl:text-lg line-clamp-3 text-center">&quot;{body}&quot;</h3>
+            <h3 className="xxl:text-lg line-clamp-3 text-center text-white">&quot;{body}&quot;</h3>
           </div>
         </div>
       </Link>

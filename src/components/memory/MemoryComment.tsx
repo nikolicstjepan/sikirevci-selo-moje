@@ -24,17 +24,17 @@ export default function MemoryComment({ createdAt, user, body, id }: MemoryComme
 
   return (
     <>
-      <div className="flex gap-3 items-start mb-6 w-full">
+      <div className="flex gap-3 items-start mb-6 w-full border p-2 rounded-xl">
         <UserAvatar user={user} size="md" />
         <div>
-          <Link legacyBehavior href={`/users/${user.id}`}>
-            <a className="text-sm">{user.name}</a>
-          </Link>{" "}
+          <Link className="text-sm font-bold" href={`/users/${user.id}`}>
+            {user.name}
+          </Link>
           <span className="text-xs ml-0  block sm:inline sm:ml-2">{createdAt.toLocaleString("hr")}</span>
-          <div className="mt-1">{body}</div>
+          <div className="mt-0.5">{body}</div>
         </div>
         {isUsersComment && (
-          <button onClick={() => setShowDeleteModal(true)} className="ml-auto btn btn-sm">
+          <button onClick={() => setShowDeleteModal(true)} className="ml-auto btn btn-sm my-auto">
             <Comment className="fill-red-400" width="1.25rem" />
           </button>
         )}

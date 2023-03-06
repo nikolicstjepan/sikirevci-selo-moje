@@ -25,7 +25,7 @@ const ProfilePage: NextPage = () => {
         <meta name="robots" content="noindex" />
       </Head>
       <MainLayout>
-        <div className="max-w-4xl mx-auto text-white">
+        <div className="max-w-md mx-auto">
           <h1 className="font-extrabold text-center text-5xl mb-8">Moj profil</h1>
           {data?.user ? (
             <EditProfile user={data.user} onSave={() => router.push(`/users/${data.user.id}`)} />

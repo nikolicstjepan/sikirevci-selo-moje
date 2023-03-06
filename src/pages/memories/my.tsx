@@ -26,8 +26,8 @@ const MemoriesListPage: NextPage = () => {
       </Head>
 
       <MainLayout>
-        <div className="text-white">
-          <h1 className="font-extrabold text-center text-5xl mb-8">Moje uspomene</h1>
+        <div>
+          <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Moje uspomene</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 mb-8">
             {list.data?.pages.map(({ memories }) =>
               memories.map((memory) => {

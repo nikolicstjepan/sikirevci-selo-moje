@@ -7,6 +7,9 @@ module.exports = {
       colors: {
         blue: "#001D49",
       },
+      fontFamily: {
+        sans: ["var(--font-inter)"],
+      },
     },
   },
   plugins: [

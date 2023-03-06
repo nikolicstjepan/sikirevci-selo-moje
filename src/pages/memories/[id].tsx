@@ -82,7 +82,9 @@ const MemoryPage: NextPage = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-2 items-center">
               <UserAvatar user={user} size="md" />
-              <Link href={`/users/${user.id}`}>{user.name}</Link>
+              <Link className="font-bold hover:underline" href={`/users/${user.id}`}>
+                {user.name}
+              </Link>
             </div>
             <div>
               <button disabled={isLoading} className="pr-1 flex items-center" onClick={() => handleToggleLikeClick(id)}>
@@ -108,11 +110,11 @@ const MemoryPage: NextPage = () => {
             </h1>
             <p className="mb-8">{description}</p>
             <Comments memoryId={id} />
+            <ShareOptions text={`${title}, ${year}. godina.`} />
           </div>
         </div>
       </MainLayout>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
-      <ShareOptions text={`${title}, ${year}. godina.`} />
     </>
   );
 };
@@ -158,7 +160,24 @@ function Comments({ memoryId }: { memoryId: string }) {
 
   return (
     <>
-      <div className="text-right mb-8">
+      <div className="mb-8">
+        {commentIsSending && (
+          <div className="grid mb-4">
+            <Loader />
+          </div>
+        )}
+        {commentList?.pages.map(({ comments }) => {
+          return comments.map((c) => <MemoryComment key={c.id} {...c} />);
+        })}
+
+        {hasMoreCOmments && (
+          <button className="btn btn-secondary" onClick={() => fetchNextCommentPage()}>
+            Prikaži još komentara
+          </button>
+        )}
+      </div>
+
+      <div className="text-right">
         <textarea
           name="description"
           value={comment}
@@ -176,21 +195,10 @@ function Comments({ memoryId }: { memoryId: string }) {
                   "
         />
         <button className="btn btn-primary" disabled={commentIsSending} onClick={handleLeaveComment}>
-          Komentiraj
+          {commentIsSending ? "Slanje..." : "Komentiraj"}
         </button>
       </div>
 
-      <div className="mb-8">
-        {commentList?.pages.map(({ comments }) => {
-          return comments.map((c) => <MemoryComment key={c.id} {...c} />);
-        })}
-
-        {hasMoreCOmments && (
-          <button className="btn btn-secondary" onClick={() => fetchNextCommentPage()}>
-            Prikaži još komentara
-          </button>
-        )}
-      </div>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </>
   );

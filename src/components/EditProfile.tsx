@@ -87,7 +87,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
 
   return (
     <div>
-      <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
+      <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         {createObjectURL || formData.image ? (
           <div className="text-center">
             <div className="relative aspect-square h-52 mx-auto mb-2">
@@ -128,7 +128,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
         {uploadFileError && <span className="text-red-400">{uploadFileError}</span>}
 
         <label className="block">
-          <span className="text-white">Ime i prezime</span>
+          <span>Ime i prezime</span>
           <input
             type="text"
             required
@@ -146,7 +146,7 @@ function EditProfile({ user, onSave }: { user: UserType; onSave?: () => void }) 
           />
         </label>
         <label className="block">
-          <span className="text-white">Email</span>
+          <span>Email</span>
           <input
             type="email"
             required

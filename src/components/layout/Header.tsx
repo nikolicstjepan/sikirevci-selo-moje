@@ -11,7 +11,7 @@ export default function Header(): React.ReactElement {
 
   return (
     <div className="bg-blue text-white mb-6 py-2">
-      <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-2 md:px-0">
+      <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-2 xl:px-0">
         <Link className="w-12 md:w-16 aspect-square sm:px-2 relative" href="/memories">
           <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci nekad logo" fill sizes="10vw" />
         </Link>
@@ -41,8 +41,6 @@ function AuthenticatedMenu() {
     setShowMenu((showMenu) => !showMenu);
   };
 
-  console.log(router.pathname);
-
   const navigation = [
     { name: "Sve uspomene", href: "/memories", current: false },
     { name: "Dodaj uspomenu", href: "/memories/create", current: false },
@@ -58,31 +56,11 @@ function AuthenticatedMenu() {
     <div className="flex gap-2 items-center">
       <div className="hidden md:flex gap-4 items-center">
         {navigation.map((item) => (
-          <Link
-            key={item.name}
-            className={`${item.current ? "underline" : ""} hover:underline font-bold`}
-            href={item.href}
-          >
+          <Link key={item.name} className={`${item.current ? "underline" : ""} hover:underline`} href={item.href}>
             {item.name}
           </Link>
         ))}
-
-        {/* <Link className="hover:underline" href="/memories">
-          Sve uspomene
-        </Link>
-        <Link className="hover:underline" href="/memories/create">
-          Dodaj uspomenu
-        </Link>
-        <Link className="hover:underline" href="/memories/my">
-          Moje uspomene
-        </Link>
-        <Link className="hover:underline" href={`/users/${userDetails.data?.id}`}>
-          Moj profil
-        </Link>
-        <Link className="hover:underline" href="/users">
-          Korisnici
-        </Link> */}
-        <span className="block hover:underline cursor-pointer font-bold" onClick={() => signOut()}>
+        <span className="block hover:underline cursor-pointer" onClick={() => signOut()}>
           Odjava
         </span>
       </div>

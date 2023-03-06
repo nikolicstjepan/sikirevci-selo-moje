@@ -21,7 +21,7 @@ const MemoriesListPage: NextPage = () => {
       />
 
       <MainLayout>
-        <div className="text-white">
+        <div>
           <h1 className="font-extrabold text-center text-5xl mb-8">Korisnici</h1>
 
           {listQuery.isLoading && <Loader />}
@@ -36,7 +36,7 @@ function UserList({ users }: { users: NonNullable<RouterOutput["user"]["listAll"
   return (
     <div className="max-w-xl mx-auto w-full">
       <div className="grid grid-cols-1 gap-4 md:gap-6 mb-8">
-        <div className="flex font-bold justify-between items-center border-b border-b-white">
+        <div className="flex font-bold justify-between items-center border-b">
           <div className="flex gap-2 items-center">
             <div>Korisničko ime</div>
           </div>

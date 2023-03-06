@@ -32,7 +32,7 @@ export default function EditMemoryFormContainer(): ReactElement | null {
 function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]["getById"]> }): ReactElement {
   const router = useRouter();
 
-  const { mutate, data, error } = trpc.memory.edit.useMutation();
+  const { mutate, data, error, isLoading } = trpc.memory.edit.useMutation();
 
   const [formData, setFormData] = useState<FormDataType>({
     title: memory.title,
@@ -62,8 +62,8 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="font-extrabold text-center text-5xl mb-8">Uredi uspomenu</h1>
-      <form className="text-blue grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
+      <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Uredi uspomenu</h1>
+      <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         {memory?.file && (
           <div>
             <Image
@@ -71,11 +71,12 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
               alt={"upladed image"}
               width={448}
               height={193}
+              className="mx-auto"
             />
           </div>
         )}
         <label className="block">
-          <span className="text-white">Naslov</span>
+          <span>Naslov</span>
           <input
             type="text"
             required
@@ -94,7 +95,7 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
         </label>
 
         <label className="block">
-          <span className="text-white">Godina</span>
+          <span>Godina</span>
           <select
             required
             name="year"
@@ -119,7 +120,7 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
         </label>
 
         <label className="block">
-          <span className="text-white">Opis</span>
+          <span>Opis</span>
           <textarea
             name="description"
             required
@@ -137,8 +138,8 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
           />
         </label>
 
-        <button className="btn btn-primary" type="submit">
-          Spremi uspomenu
+        <button className="btn btn-primary" disabled={isLoading} type="submit">
+          {isLoading ? "Spremanje..." : "Spremi uspomenu"}
         </button>
       </form>
       {error && <div>{error.message}</div>}
