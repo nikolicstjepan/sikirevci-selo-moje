@@ -17,6 +17,9 @@ const nextConfig = {
     locales: ["hr"],
     defaultLocale: "hr",
   },
+  experimental: {
+    scrollRestoration: true,
+  },
 };
 
 module.exports = nextConfig;
