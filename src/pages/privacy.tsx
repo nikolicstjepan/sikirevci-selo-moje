@@ -32,7 +32,8 @@ const SignIn: NextPage = () => {
           <h2 className="text-xl md:text-2xl mb-2">Pristup, ispravak i brisanje osobnih podataka</h2>
           <p className="mb-4">
             Korisnici mogu pregledati i ažurirati svoje osobne podatke na stranici svog profila. Za brisanje osobnih
-            podataka, korisnici mogu poslati e-mail na info@teuzcode.hr s naslovom 'Brisanje korisničkih podataka'.
+            podataka, korisnici mogu poslati e-mail na info@teuzcode.hr s naslovom &apos;Brisanje korisničkih
+            podataka&apos;.
           </p>
           <h2 className="text-xl md:text-2xl mb-2">Obavještavanje korisnika o promjenama</h2>
           <p className="mb-4">
