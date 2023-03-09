@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 type Providers = {
   id: string;
@@ -8,7 +9,7 @@ type Providers = {
 
 export default function Auth({ providers }: { providers: Providers }): ReactElement {
   return (
-    <div className="container flex flex-col items-center">
+    <div className="flex flex-col items-center justify-center">
       <SignInAuth providers={providers} />
     </div>
   );
@@ -44,13 +45,25 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
       <div className="max-w-lg mx-auto mb-8">
         <p className="mb-2">Registrirati i prijaviti se može na dva načina:</p>
 
-        <ol className="list-decimal pl-8">
+        <ol className="list-decimal pl-8 pb-4">
           <li>pomoću svog Google računa</li>
           <li>
             pomoću email adrese na način da prvo unesete svoju email adresu te nakon toga kliknete na link koji vam
             pošaljemo na uneseni email
           </li>
         </ol>
+
+        <p className="mb-2 p-2 border-2">
+          Registracijom prihvaćate i slažete se s{" "}
+          <Link href="/terms" className="underline">
+            Uvjetima korištenja
+          </Link>{" "}
+          i{" "}
+          <Link href="/privacy" className="underline">
+            Politikom privatnosti
+          </Link>
+          .
+        </p>
       </div>
 
       <div>
