@@ -5,12 +5,13 @@ import MainLayout from "../../components/layout/MainLayout";
 import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
 import UserProfile from "../../components/UserProfile";
+import Loader from "../../components/Loader";
 
 const Page: NextPage = () => {
   const router = useRouter();
   const id = router.query.id as string;
 
-  const { data: user } = trpc.user.getById.useQuery({ id });
+  const { data: user, isLoading } = trpc.user.getById.useQuery({ id });
 
   return (
     <>
@@ -22,6 +23,10 @@ const Page: NextPage = () => {
       <MainLayout>
         {user ? (
           <UserProfile user={user} />
+        ) : isLoading ? (
+          <div className="flex justify-center pt-8">
+            <Loader />
+          </div>
         ) : (
           <div className="text-center text-4xl">Korisnik ne postoji ili je obrisan</div>
         )}

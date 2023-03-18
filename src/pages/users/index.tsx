@@ -13,7 +13,7 @@ const MemoriesListPage: NextPage = () => {
     <>
       <NextSeo
         title="Korisnici | sikirevci.com.hr"
-        description="Korisnici iz Sikirevaca"
+        description="Svi korisnici koji su objavili uspomenu na sikirevci.com.hr"
         openGraph={{
           images: [{ url: "/siki.png" }],
           siteName: "sikirevci.com.hr",
@@ -24,7 +24,11 @@ const MemoriesListPage: NextPage = () => {
         <div>
           <h1 className="font-extrabold text-center text-5xl mb-8">Korisnici</h1>
 
-          {listQuery.isLoading && <Loader />}
+          {listQuery.isLoading && (
+            <div className="flex justify-center pt-8">
+              <Loader />
+            </div>
+          )}
           {listQuery.data && <UserList users={listQuery.data} />}
         </div>
       </MainLayout>
@@ -43,15 +47,19 @@ function UserList({ users }: { users: NonNullable<RouterOutput["user"]["listAll"
           <div>Broj uspomena</div>
         </div>
         {users.map((user) => {
-          const { id } = user;
+          const { id, name, _count } = user;
+
+          if (!_count.memories) {
+            return null;
+          }
 
           return (
-            <Link className="flex justify-between items-center" key={id} href={`/users/${user.id}`}>
+            <Link className="flex justify-between items-center" key={id} href={`/users/${id}`}>
               <div className="flex gap-2 items-center">
                 <UserAvatar user={user} />
-                <div>{user.name}</div>
+                <div>{name}</div>
               </div>
-              <div>{user._count.memories}</div>
+              <div>{_count.memories}</div>
             </Link>
           );
         })}

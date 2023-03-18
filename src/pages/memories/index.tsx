@@ -55,7 +55,9 @@ const MemoriesListPage: NextPage = () => {
           </div>
           {list.hasNextPage && (
             <div className="text-center">
-              <button onClick={handleLoadMore}>Prikaži još uspomena</button>
+              <button className="btn btn-secondary mb-4" onClick={handleLoadMore}>
+                Prikaži još uspomena
+              </button>
             </div>
           )}
         </div>
