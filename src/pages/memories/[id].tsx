@@ -20,7 +20,7 @@ import MemoryComment from "../../components/memory/MemoryComment";
 const MemoryPage: NextPage = () => {
   const router = useRouter();
   const utils = trpc.useContext();
-  const { status } = useSession();
+  const { status, data } = useSession();
 
   const { data: memory } = trpc.memory.getById.useQuery({ id: router.query.id as string });
 
@@ -60,6 +60,7 @@ const MemoryPage: NextPage = () => {
     utils.memory.listMyLikedMemoriesIds.invalidate();
   };
 
+  const userIsOwner = status === "authenticated" && user.id === data?.user.id;
   return (
     <>
       <NextSeo
@@ -86,7 +87,12 @@ const MemoryPage: NextPage = () => {
                 {user.name}
               </Link>
             </div>
-            <div>
+            <div className="flex gap-4 items-center">
+              {userIsOwner && (
+                <Link className="btn btn-sm btn-secondary" href={`/memories/edit/${id}`}>
+                  Uredi
+                </Link>
+              )}
               <button disabled={isLoading} className="pr-1 flex items-center" onClick={() => handleToggleLikeClick(id)}>
                 {userLiked ? <HeartFilled width="1.25rem" /> : <HeartOutlined width="1.25rem" />}
 
@@ -109,6 +115,7 @@ const MemoryPage: NextPage = () => {
               {title} <span className="text-base">{year}</span>
             </h1>
             <p className="mb-8">{description}</p>
+
             <Comments memoryId={id} />
             <ShareOptions text={`${title}, ${year}. godina.`} />
           </div>
