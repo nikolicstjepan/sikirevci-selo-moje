@@ -4,16 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
-import UserAvatar from "../UserAvatar";
 
 export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
 
   return (
     <div className="bg-blue text-white mb-6 py-2">
-      <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-2 xl:px-0">
+      <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-2 2xl:px-0">
         <Link className="w-12 md:w-16 aspect-square sm:px-2 relative" href="/memories">
-          <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci nekad logo" fill sizes="10vw" />
+          <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci.com.hr logo" fill sizes="10vw" />
         </Link>
         {status === "unauthenticated" && <UnauthenticatedMenu />}
         {status === "authenticated" && session?.user && <AuthenticatedMenu />}
@@ -66,7 +65,9 @@ function AuthenticatedMenu() {
       </div>
 
       <div onClick={toggleUserMenu} className="rounded-full w-9 h-9 cursor-pointer relative md:hidden">
-        <UserAvatar user={userDetails.data} />
+        <button>
+          <Image src={showMenu ? "/close.svg" : "/menu.svg"} alt="menu icon" fill />
+        </button>
         {showMenu && (
           <>
             <div className="shadow-2xl flex flex-col gap-4 bg-white text-blue p-4 absolute w-[max-content] right-0 mt-2 rounded top-9 z-10">
