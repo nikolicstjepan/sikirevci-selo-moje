@@ -1,4 +1,6 @@
-import Viewer from "react-viewer";
+import dynamic from "next/dynamic";
+
+const Viewer = dynamic(() => import("react-viewer"), { ssr: false });
 
 type ImageViewerProps = {
   visible: boolean;
