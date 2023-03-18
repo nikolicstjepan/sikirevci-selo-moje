@@ -15,7 +15,8 @@ import Loader from "../../components/Loader";
 import UserAvatar from "../../components/UserAvatar";
 import ShareOptions from "../../components/ShareOptions";
 import MemoryComment from "../../components/memory/MemoryComment";
-import ImageViewer from "../../components/ImageViewer";
+import { Controlled as Zoom } from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 // TODO: Extract mem det comp
 const MemoryPage: NextPage = () => {
@@ -102,17 +103,20 @@ const MemoryPage: NextPage = () => {
               </button>
             </div>
           </div>
-          <div className="h-[45vh] relative mb-2">
-            <Image
-              onClick={() => setVisible(true)}
-              src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
-              fill
-              alt={title}
-              sizes="100vw"
-              priority
-              className="object-contain cursor-zoom-in"
-            />
-          </div>
+          <Zoom isZoomed={visible} onZoomChange={setVisible}>
+            <div className={`h-[65vh] relative mb-2`}>
+              <Image
+                onClick={() => setVisible(true)}
+                src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
+                fill
+                alt={title}
+                sizes="100vw"
+                priority
+                quality={visible ? 100 : 75}
+                className="object-contain cursor-zoom-in"
+              />
+            </div>
+          </Zoom>
           <p className="text-center text-xs mb-8">Klik na sliku za povećanje</p>
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
@@ -124,16 +128,6 @@ const MemoryPage: NextPage = () => {
             <ShareOptions text={`${title}, ${year}. godina.`} />
           </div>
         </div>
-        {visible ? (
-          <ImageViewer
-            visible
-            src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
-            alt={title}
-            onClose={() => setVisible(false)}
-          />
-        ) : (
-          <div />
-        )}
       </MainLayout>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </>

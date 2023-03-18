@@ -30,3 +30,7 @@ html {
 .btn-secondary:hover {
   @apply text-slate-600 border-slate-600;
 }
+
+.test .react-viewer-canvas {
+  overflow: auto !important;
+}
