@@ -15,12 +15,14 @@ import Loader from "../../components/Loader";
 import UserAvatar from "../../components/UserAvatar";
 import ShareOptions from "../../components/ShareOptions";
 import MemoryComment from "../../components/memory/MemoryComment";
+import ImageViewer from "../../components/ImageViewer";
 
 // TODO: Extract mem det comp
 const MemoryPage: NextPage = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const { status, data } = useSession();
+  const [visible, setVisible] = useState(false);
 
   const { data: memory } = trpc.memory.getById.useQuery({ id: router.query.id as string });
 
@@ -100,16 +102,18 @@ const MemoryPage: NextPage = () => {
               </button>
             </div>
           </div>
-          <div className="h-[45vh] relative mb-8">
+          <div className="h-[45vh] relative mb-2">
             <Image
+              onClick={() => setVisible(true)}
               src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
               fill
               alt={title}
               sizes="100vw"
               priority
-              className="object-contain"
+              className="object-contain cursor-zoom-in"
             />
           </div>
+          <p className="text-center text-xs mb-8">Klik na sliku za povećanje</p>
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
               {title} <span className="text-base">{year}</span>
@@ -120,6 +124,16 @@ const MemoryPage: NextPage = () => {
             <ShareOptions text={`${title}, ${year}. godina.`} />
           </div>
         </div>
+        {visible ? (
+          <ImageViewer
+            visible
+            src={`${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}`}
+            alt={title}
+            onClose={() => setVisible(false)}
+          />
+        ) : (
+          <div />
+        )}
       </MainLayout>
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </>
