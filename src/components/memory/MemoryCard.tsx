@@ -39,6 +39,9 @@ export default function MemoryCard({ memory, userLiked, showUserAvatar = true, s
     utils.memory.listMyLikedMemoriesIds.invalidate();
     utils.memory.listMy.invalidate();
     utils.memory.listMemories.invalidate();
+    utils.memory.getByUserId.invalidate({ userId: user.id });
+    utils.memory.listUsersLiked.invalidate({ userId: user.id });
+    utils.user.getById.invalidate({ id: user.id });
   };
 
   const HartIcon = userLiked ? HeartFilled : HeartOutlined;

@@ -145,6 +145,7 @@ function CommentsList() {
     </div>
   );
 }
+
 type CommentCardProps = {
   comment: {
     body: string;
