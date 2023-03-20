@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "../trpc";
+import { ADMIN_ROLE, USER_ROLE } from "../../const";
 
 const RECORDS_PER_PAGE = 20;
 
@@ -36,13 +37,26 @@ export const memoryRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.session?.user?.id) {
+      const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const memory = await ctx.prisma.memory.findUnique({ where: { id: input.id } });
+
+      if (!memory) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      if (memory.userId !== userId && role !== ADMIN_ROLE) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
       return await ctx.prisma.memory.update({
         where: { id: input.id },
-        data: { ...input, userId: ctx.session.user.id, modifiedAt: new Date() },
+        data: { ...input, modifiedAt: new Date() },
       });
     }),
 
@@ -135,6 +149,7 @@ export const memoryRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
 
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -144,7 +159,7 @@ export const memoryRouter = router({
         where: { userId, deleted: false },
       });
       const memories = await ctx.prisma.memory.findMany({
-        where: { userId, deleted: false },
+        where: { ...(role === USER_ROLE && { userId }), deleted: false },
         take: RECORDS_PER_PAGE,
         skip: ((input?.cursor || 1) - 1) * RECORDS_PER_PAGE,
         orderBy: { createdAt: "desc" },
@@ -331,6 +346,8 @@ export const memoryRouter = router({
     )
     .mutation(async ({ ctx, input: { id } }) => {
       const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
@@ -341,7 +358,7 @@ export const memoryRouter = router({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      if (memory.userId !== userId) {
+      if (memory.userId !== userId && role !== ADMIN_ROLE) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
@@ -355,6 +372,8 @@ export const memoryRouter = router({
     )
     .mutation(async ({ ctx, input: { id } }) => {
       const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
@@ -365,7 +384,7 @@ export const memoryRouter = router({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      if (comment.userId !== userId) {
+      if (comment.userId !== userId && role !== ADMIN_ROLE) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 

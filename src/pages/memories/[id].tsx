@@ -17,6 +17,7 @@ import ShareOptions from "../../components/ShareOptions";
 import MemoryComment from "../../components/memory/MemoryComment";
 import { Controlled as Zoom } from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import { ADMIN_ROLE } from "../../const";
 
 // TODO: Extract mem det comp
 const MemoryPage: NextPage = () => {
@@ -63,7 +64,7 @@ const MemoryPage: NextPage = () => {
     utils.memory.listMyLikedMemoriesIds.invalidate();
   };
 
-  const userIsOwner = status === "authenticated" && user.id === data?.user.id;
+  const userCanEdit = status === "authenticated" && (user.id === data?.user.id || data?.user.role === ADMIN_ROLE);
   return (
     <>
       <NextSeo
@@ -91,7 +92,7 @@ const MemoryPage: NextPage = () => {
               </Link>
             </div>
             <div className="flex gap-4 items-center">
-              {userIsOwner && (
+              {userCanEdit && (
                 <Link className="btn btn-sm btn-secondary" href={`/memories/edit/${id}`}>
                   Uredi
                 </Link>

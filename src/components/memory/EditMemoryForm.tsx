@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { RouterOutput, trpc } from "../../utils/trpc";
 import getYearOptions from "../../utils/getYearOptions";
 import { useSession } from "next-auth/react";
-import { notSureAboutYear } from "../../const";
+import { ADMIN_ROLE, notSureAboutYear } from "../../const";
 import getDecadeOptions from "../../utils/getDecadeOptions";
 
 type FormDataType = {
@@ -26,7 +26,7 @@ export default function EditMemoryFormContainer(): ReactElement | null {
     return null;
   }
 
-  if (memory.userId !== data?.user.id) {
+  if (memory.userId !== data?.user.id && data?.user.role !== ADMIN_ROLE) {
     return <div className="max-w-md mx-auto text-center">Korisnik može samo svoje uspomene uređivati</div>;
   }
 

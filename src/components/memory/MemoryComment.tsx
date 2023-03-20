@@ -7,6 +7,7 @@ import { trpc } from "../../utils/trpc";
 import DeleteModal from "../DeleteModal";
 import UserAvatar from "../UserAvatar";
 import Comment from "../icons/Delete";
+import { ADMIN_ROLE } from "../../const";
 
 export default function MemoryComment({ createdAt, user, body, id }: MemoryCommentType & { user: User }): ReactElement {
   const utils = trpc.useContext();
@@ -14,7 +15,7 @@ export default function MemoryComment({ createdAt, user, body, id }: MemoryComme
   const { mutateAsync: remove } = trpc.memory.removeComment.useMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const isUsersComment = status === "authenticated" && data.user.id === user.id;
+  const userCanEdit = status === "authenticated" && (user.id === data?.user.id || data?.user.role === ADMIN_ROLE);
 
   const onConfirmDelete = async () => {
     await remove({ id });
@@ -33,7 +34,7 @@ export default function MemoryComment({ createdAt, user, body, id }: MemoryComme
           <span className="text-xs ml-0  block sm:inline sm:ml-2">{createdAt.toLocaleString("hr")}</span>
           <div className="mt-0.5">{body}</div>
         </div>
-        {isUsersComment && (
+        {userCanEdit && (
           <button onClick={() => setShowDeleteModal(true)} className="ml-auto btn btn-sm my-auto">
             <Comment className="fill-red-400" width="1.25rem" />
           </button>
