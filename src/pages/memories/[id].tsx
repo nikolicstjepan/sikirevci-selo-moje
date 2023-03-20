@@ -44,7 +44,7 @@ const MemoryPage: NextPage = () => {
     );
   }
 
-  const { id, title, description, year, file, user, _count, createdAt, modifiedAt } = memory;
+  const { id, title, description, year, file, user, _count, createdAt, modifiedAt, yearMin, yearMax } = memory;
   const userLiked = myLikedList.data?.some((likedId: string) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
@@ -67,7 +67,7 @@ const MemoryPage: NextPage = () => {
   return (
     <>
       <NextSeo
-        title={`${title}, ${year} godina | sikirevci.com.hr`}
+        title={`${title}, ${year || `${yearMin}-${yearMax}`} godina | sikirevci.com.hr`}
         description={description || "Uspomena iz Sikirevaca"}
         openGraph={{
           images: [{ url: `${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}` }],
@@ -120,12 +120,19 @@ const MemoryPage: NextPage = () => {
           <p className="text-center text-xs mb-8">Klik na sliku za povećanje</p>
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
-              {title} <span className="text-base">{year}</span>
+              {title} <span className="text-base">{`${year || `${yearMin}-${yearMax}`}`}</span>
             </h1>
             <p className="mb-8">{description}</p>
 
+            {!year && (
+              <p className="text-sm border p-2 rounded-md">
+                Za ovu uspomenu korisnik nije bio siguran koja je točno godina bila, da li vi možda znate? Ostavite
+                komentar!
+              </p>
+            )}
+
             <Comments memoryId={id} />
-            <ShareOptions text={`${title}, ${year}. godina.`} />
+            <ShareOptions text={`${title}, ${year || `${yearMin}-${yearMax}`}. godina.`} />
           </div>
         </div>
       </MainLayout>

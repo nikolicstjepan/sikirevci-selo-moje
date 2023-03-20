@@ -80,6 +80,10 @@ function YearsFilter({ handleYearChange }: { handleYearChange: (year: number | n
         <select onChange={handleChange} className="ml-2">
           <option value="">Sve</option>
           {years.data?.map((y) => {
+            if (!y.year) {
+              return null;
+            }
+
             return (
               <option value={y.year} key={y.year}>
                 {y.year} ({y._count.year})

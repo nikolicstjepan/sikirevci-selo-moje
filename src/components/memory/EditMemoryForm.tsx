@@ -4,14 +4,18 @@ import { useRouter } from "next/router";
 import { RouterOutput, trpc } from "../../utils/trpc";
 import getYearOptions from "../../utils/getYearOptions";
 import { useSession } from "next-auth/react";
+import { notSureAboutYear } from "../../const";
+import getDecadeOptions from "../../utils/getDecadeOptions";
 
 type FormDataType = {
   title: string;
   description: string;
   year: string;
+  decade: string;
 };
 
 const yearOptions = getYearOptions();
+const decadeOptions = getDecadeOptions();
 
 export default function EditMemoryFormContainer(): ReactElement | null {
   const router = useRouter();
@@ -37,15 +41,19 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
   const [formData, setFormData] = useState<FormDataType>({
     title: memory.title,
     description: memory.description || "",
-    year: String(memory.year || ""),
+    year: String(memory.year || notSureAboutYear),
+    decade: !memory.year ? `${memory.yearMin}-${memory.yearMax}` : "",
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year } = formData;
+    const { title, description, year, decade } = formData;
 
-    mutate({ id: memory?.id!, title, description, year: +year });
+    const yearMin = year === notSureAboutYear ? +decade.split("-")[0]! : null;
+    const yearMax = year === notSureAboutYear ? +decade.split("-")[1]! : null;
+
+    mutate({ id: memory?.id!, title, description, year: +year || null, yearMin, yearMax });
   };
 
   useEffect(() => {
@@ -118,6 +126,33 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
             })}
           </select>
         </label>
+
+        {formData.year === notSureAboutYear && (
+          <label className="block">
+            <span>Desetljeće</span>
+            <select
+              required
+              name="decade"
+              onChange={handleChange}
+              value={formData.decade}
+              className="
+                    mt-1
+                    block
+                    w-full
+                    rounded-md
+                    border-gray-300
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                  "
+            >
+              <option value="" disabled>
+                Odaberi
+              </option>
+              {decadeOptions.map((y) => {
+                return <option key={y}>{y}</option>;
+              })}
+            </select>
+          </label>
+        )}
 
         <label className="block">
           <span>Opis</span>

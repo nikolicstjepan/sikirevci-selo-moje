@@ -8,15 +8,19 @@ import Loader from "../Loader";
 import compressImage from "../../utils/compressImage";
 import AddImageIcon from "../icons/AddImage";
 import rotateImage from "../../utils/rotateImage";
+import { notSureAboutYear } from "../../const";
+import getDecadeOptions from "../../utils/getDecadeOptions";
 
 type FormDataType = {
   title: string;
   description: string;
   year: string;
+  decade: string;
   file?: File;
 };
 
 const yearOptions = getYearOptions();
+const decadeOptions = getDecadeOptions();
 
 export default function CreateMemoryForm(): ReactElement {
   const router = useRouter();
@@ -24,17 +28,22 @@ export default function CreateMemoryForm(): ReactElement {
   const [isLoading, setIsLoading] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState<FormDataType>({ title: "", description: "", year: "" });
+  const [formData, setFormData] = useState<FormDataType>({ title: "", description: "", year: "", decade: "" });
   const [createObjectURL, setCreateObjectURL] = useState("");
   const [uploadFileError, setUploadFileError] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year, file } = formData;
+    const { title, description, year, file, decade } = formData;
 
     if (!file) {
       setUploadFileError("Molimo odaberite datoteku!");
+      return;
+    }
+
+    if (year === notSureAboutYear && !decade) {
+      setUploadFileError("Molimo odaberite desetljeće!");
       return;
     }
 
@@ -43,7 +52,9 @@ export default function CreateMemoryForm(): ReactElement {
     const fileId = await uploadToServer(file, setUploadFileError);
 
     if (fileId) {
-      const res = await mutateAsync({ title, description, year: +year, fileId });
+      const yearMin = year === notSureAboutYear ? +decade.split("-")[0]! : null;
+      const yearMax = year === notSureAboutYear ? +decade.split("-")[1]! : null;
+      const res = await mutateAsync({ title, description, year: +year || null, fileId, yearMin, yearMax });
       if (res?.id) {
         router.push(`/memories/${res.id}`);
       }
@@ -181,6 +192,34 @@ export default function CreateMemoryForm(): ReactElement {
               })}
             </select>
           </label>
+
+          {formData.year === notSureAboutYear && (
+            <label className="block">
+              <span>Desetljeće</span>
+              <select
+                required
+                name="decade"
+                disabled={isLoading}
+                onChange={handleChange}
+                defaultValue=""
+                className="
+                    mt-1
+                    block
+                    w-full
+                    rounded-md
+                    border-gray-300
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                  "
+              >
+                <option value="" disabled>
+                  Odaberi
+                </option>
+                {decadeOptions.map((y) => {
+                  return <option key={y}>{y}</option>;
+                })}
+              </select>
+            </label>
+          )}
 
           <label className="block">
             <span>Opis</span>

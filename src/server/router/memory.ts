@@ -2,7 +2,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "../trpc";
 
-const RECORDS_PER_PAGE = 10;
+const RECORDS_PER_PAGE = 20;
 
 export const memoryRouter = router({
   create: publicProcedure
@@ -10,7 +10,9 @@ export const memoryRouter = router({
       z.object({
         title: z.string(),
         description: z.string(),
-        year: z.number(),
+        year: z.number().nullable(),
+        yearMin: z.number().nullable(),
+        yearMax: z.number().nullable(),
         fileId: z.string(),
       })
     )
@@ -28,7 +30,9 @@ export const memoryRouter = router({
         id: z.string(),
         title: z.string(),
         description: z.string(),
-        year: z.number(),
+        year: z.number().nullable(),
+        yearMin: z.number().nullable(),
+        yearMax: z.number().nullable(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -82,7 +86,7 @@ export const memoryRouter = router({
   getMemoriesYears: publicProcedure.query(async ({ ctx }) => {
     const groupByYear = await ctx.prisma.memory.groupBy({
       by: ["year"],
-      where: { deleted: false },
+      where: { deleted: false, year: { not: null } },
       _count: {
         year: true,
       },
