@@ -6,6 +6,7 @@ import { createTransport } from "nodemailer";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 import { User } from "@prisma/client";
+import { logNewUser } from "../../../utils/log";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -35,6 +36,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, user }) {
       return { ...session, user: { ...session.user, id: user.id, role: (user as User).role } };
+    },
+  },
+  events: {
+    createUser({ user }) {
+      logNewUser(user);
     },
   },
   pages: {

@@ -20,6 +20,7 @@
     "@trpc/react-query": "^10.9.1",
     "@trpc/server": "^10.9.1",
     "formidable": "^2.1.1",
+    "logsnag": "^0.1.6",
     "next": "13.1.6",
     "next-auth": "^4.19.2",
     "next-seo": "^5.15.0",

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { publicProcedure, router } from "../trpc";
 import { ADMIN_ROLE, USER_ROLE } from "../../const";
+import { logNewComment, logNewMemory } from "../../utils/log";
 
 const RECORDS_PER_PAGE = 20;
 
@@ -18,11 +19,18 @@ export const memoryRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.session?.user?.id) {
+      const userId = ctx.session?.user?.id;
+      const email = ctx.session?.user?.email;
+
+      if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      return await ctx.prisma.memory.create({ data: { ...input, userId: ctx.session.user.id } });
+      const memory = await ctx.prisma.memory.create({ data: { ...input, userId } });
+
+      logNewMemory(memory.title, email!);
+
+      return memory;
     }),
 
   edit: publicProcedure
@@ -295,17 +303,22 @@ export const memoryRouter = router({
     )
     .mutation(async ({ ctx, input: { memoryId, body } }) => {
       const userId = ctx.session?.user?.id;
+      const email = ctx.session?.user?.email;
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      return await ctx.prisma.memoryComment.create({
+      const comment = await ctx.prisma.memoryComment.create({
         data: {
           userId,
           memoryId,
           body,
         },
       });
+
+      logNewComment(body, email!);
+
+      return comment;
     }),
   getCommentsByMemoryId: publicProcedure
     .input(
