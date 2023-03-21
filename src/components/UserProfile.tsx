@@ -36,7 +36,7 @@ export default function UserProfile({ user }: UserProfileProps) {
           Uspomene ({user._count.memories})
         </Button>
         <Button onClick={() => setActiveTab("liked")} isActive={activeTab === "liked"}>
-          Favoriti ({user._count.memoryLikes})
+          Najdraže ({user._count.memoryLikes})
         </Button>
         <Button onClick={() => setActiveTab("comments")} isActive={activeTab === "comments"}>
           Komentari ({user._count.memoryComments})
@@ -117,7 +117,7 @@ function LikedList() {
           return <MemoryCard memory={memory} key={id} userLiked={userLiked} />;
         })
       ) : (
-        <div className="text-center">Ovaj korisnika nema favorita</div>
+        <div className="text-center">Ovaj korisnika nije ni jednu uspomenu označio kao dragu</div>
       )}
     </div>
   );
