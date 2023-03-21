@@ -17,6 +17,7 @@ type FormDataType = {
   year: string;
   decade: string;
   file?: File;
+  isDraft: boolean;
 };
 
 const yearOptions = getYearOptions();
@@ -28,14 +29,20 @@ export default function CreateMemoryForm(): ReactElement {
   const [isLoading, setIsLoading] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState<FormDataType>({ title: "", description: "", year: "", decade: "" });
+  const [formData, setFormData] = useState<FormDataType>({
+    title: "",
+    description: "",
+    year: "",
+    decade: "",
+    isDraft: false,
+  });
   const [createObjectURL, setCreateObjectURL] = useState("");
   const [uploadFileError, setUploadFileError] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year, file, decade } = formData;
+    const { title, description, year, file, decade, isDraft } = formData;
 
     if (!file) {
       setUploadFileError("Molimo odaberite datoteku!");
@@ -54,7 +61,7 @@ export default function CreateMemoryForm(): ReactElement {
     if (fileId) {
       const yearMin = year === notSureAboutYear ? +decade.split("-")[0]! : null;
       const yearMax = year === notSureAboutYear ? +decade.split("-")[1]! : null;
-      const res = await mutateAsync({ title, description, year: +year || null, fileId, yearMin, yearMax });
+      const res = await mutateAsync({ title, description, year: +year || null, fileId, yearMin, yearMax, isDraft });
       if (res?.id) {
         router.push(`/memories/${res.id}`);
       }
@@ -83,6 +90,8 @@ export default function CreateMemoryForm(): ReactElement {
           setUploadFileError("Greška prilikom učitavanja slike, molimo pokušajte opet");
         }
       }
+    } else if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
+      setFormData({ ...formData, [name]: e.target.checked });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -238,6 +247,21 @@ export default function CreateMemoryForm(): ReactElement {
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
             />
+          </label>
+
+          <label className="block">
+            <span>Spremi kao skicu</span>
+            <input
+              type="checkbox"
+              className="rounded-md border-gray-300 ml-2
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              name="isDraft"
+              disabled={isLoading}
+              onChange={handleChange}
+            />
+            <span className="text-sm block mt-1">
+              Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije objaviti.
+            </span>
           </label>
 
           <input

@@ -16,6 +16,7 @@ export const memoryRouter = router({
         yearMin: z.number().nullable(),
         yearMax: z.number().nullable(),
         fileId: z.string(),
+        isDraft: z.boolean(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -42,6 +43,7 @@ export const memoryRouter = router({
         year: z.number().nullable(),
         yearMin: z.number().nullable(),
         yearMax: z.number().nullable(),
+        isDraft: z.boolean(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -80,12 +82,14 @@ export const memoryRouter = router({
       const count = await ctx.prisma.memory.count({
         where: {
           deleted: false,
+          isDraft: false,
           ...(year && { year }),
         },
       });
       const memories = await ctx.prisma.memory.findMany({
         where: {
           deleted: false,
+          isDraft: false,
           ...(year && { year }),
         },
         take: RECORDS_PER_PAGE,
@@ -108,7 +112,7 @@ export const memoryRouter = router({
   getMemoriesYears: publicProcedure.query(async ({ ctx }) => {
     const groupByYear = await ctx.prisma.memory.groupBy({
       by: ["year"],
-      where: { deleted: false, year: { not: null } },
+      where: { deleted: false, isDraft: false, year: { not: null } },
       _count: {
         year: true,
       },
@@ -140,7 +144,7 @@ export const memoryRouter = router({
     )
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.memory.findMany({
-        where: { userId: input.userId, deleted: false },
+        where: { userId: input.userId, deleted: false, isDraft: false },
         include: {
           file: { select: { id: true, ext: true } },
           user: true,
@@ -227,7 +231,7 @@ export const memoryRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const memoryLikes = await ctx.prisma.memoryLike.findMany({
-        where: { userId: input.userId, memory: { deleted: false } },
+        where: { userId: input.userId, memory: { deleted: false, isDraft: false } },
         include: {
           memory: {
             include: {
@@ -250,7 +254,7 @@ export const memoryRouter = router({
     )
     .query(async ({ ctx, input }) => {
       const comments = await ctx.prisma.memoryComment.findMany({
-        where: { userId: input.userId, memory: { deleted: false } },
+        where: { userId: input.userId, memory: { deleted: false, isDraft: false } },
         include: {
           memory: {
             include: {

@@ -45,13 +45,13 @@ export const userRouter = router({
 
       const _count = {
         memories: await ctx.prisma.memory.count({
-          where: { userId: user.id, deleted: false },
+          where: { userId: user.id, deleted: false, isDraft: false },
         }),
         memoryLikes: await ctx.prisma.memoryLike.count({
-          where: { userId: user.id, memory: { deleted: false } },
+          where: { userId: user.id, memory: { deleted: false, isDraft: false } },
         }),
         memoryComments: await ctx.prisma.memoryComment.count({
-          where: { userId: user.id, memory: { deleted: false } },
+          where: { userId: user.id, memory: { deleted: false, isDraft: false } },
         }),
       };
 

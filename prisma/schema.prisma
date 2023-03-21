@@ -78,6 +78,9 @@ model Memory {
     memoryComments MemoryComment[]
     views          MemoryView[]
     deleted        Boolean         @default(false)
+    isDraft        Boolean         @default(false)
+    categories     Category[]
+    tags           Tag[]
 }
 
 model MemoryLike {
@@ -120,4 +123,20 @@ model MemoryView {
     memory    Memory   @relation(fields: [memoryId], references: [id])
     userId    String?
     user      User?    @relation(fields: [userId], references: [id])
+}
+
+model Category {
+    id         String   @id @default(cuid())
+    createdAt  DateTime @default(now())
+    modifiedAt DateTime @default(now())
+    name       String
+    memories   Memory[]
+}
+
+model Tag {
+    id         String   @id @default(cuid())
+    createdAt  DateTime @default(now())
+    modifiedAt DateTime @default(now())
+    name       String
+    memories   Memory[]
 }

@@ -26,7 +26,7 @@ const MemoryPage: NextPage = () => {
   const { status, data } = useSession();
   const [visible, setVisible] = useState(false);
 
-  const { data: memory } = trpc.memory.getById.useQuery({ id: router.query.id as string });
+  const { data: memory, isLoading: memoryIsLoading } = trpc.memory.getById.useQuery({ id: router.query.id as string });
 
   const myLikedList = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
   const { mutateAsync: toggleLike, isLoading } = trpc.memory.toggleLike.useMutation();
@@ -37,7 +37,7 @@ const MemoryPage: NextPage = () => {
     createView({ memoryId: router.query.id as string });
   }, [createView, router]);
 
-  if (!memory) {
+  if (memoryIsLoading) {
     return (
       <MainLayout>
         <Loader />
@@ -45,7 +45,51 @@ const MemoryPage: NextPage = () => {
     );
   }
 
-  const { id, title, description, year, file, user, _count, createdAt, modifiedAt, yearMin, yearMax } = memory;
+  if (!memory) {
+    return (
+      <MainLayout>
+        <div className="text-center">
+          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
+          <Link href="/memories" className="btn btn-primary">
+            Pregled svih uspomena
+          </Link>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (memory.isDraft && status !== "authenticated") {
+    return (
+      <MainLayout>
+        <div className="text-center">
+          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
+          <Link href="/memories" className="btn btn-primary">
+            Pregled svih uspomena
+          </Link>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (
+    memory.isDraft &&
+    status === "authenticated" &&
+    data?.user.role !== ADMIN_ROLE &&
+    memory.user.id !== data?.user.id
+  ) {
+    return (
+      <MainLayout>
+        <div className="text-center">
+          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
+          <Link href="/memories" className="btn btn-primary">
+            Pregled svih uspomena
+          </Link>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  const { id, title, description, year, file, user, _count, createdAt, modifiedAt, yearMin, yearMax, isDraft } = memory;
   const userLiked = myLikedList.data?.some((likedId: string) => likedId === id);
 
   const handleToggleLikeClick = async (memoryId: string) => {
@@ -84,6 +128,9 @@ const MemoryPage: NextPage = () => {
 
       <MainLayout>
         <div className="max-w-5xl mx-auto w-full">
+          {isDraft && (
+            <p className="text-red-600 text-center mb-4">Ova uspomena je skica i nije vidljiva ostalim korisnicima.</p>
+          )}
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-2 items-center">
               <UserAvatar user={user} size="md" />
@@ -104,6 +151,7 @@ const MemoryPage: NextPage = () => {
               </button>
             </div>
           </div>
+
           <Zoom isZoomed={visible} onZoomChange={setVisible}>
             <div className={`h-[65vh] relative mb-2`}>
               <Image
@@ -121,7 +169,8 @@ const MemoryPage: NextPage = () => {
           <p className="text-center text-xs mb-8">Klik na sliku za povećanje</p>
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
-              {title} <span className="text-base">{`${year || `${yearMin}-${yearMax}`}`}</span>
+              {isDraft ? `[SKICA] ${title}` : title}{" "}
+              <span className="text-base">{`${year || `${yearMin}-${yearMax}`}`}</span>
             </h1>
             <p className="mb-8">{description}</p>
 

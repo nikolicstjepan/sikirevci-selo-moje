@@ -12,6 +12,7 @@ type FormDataType = {
   description: string;
   year: string;
   decade: string;
+  isDraft: boolean;
 };
 
 const yearOptions = getYearOptions();
@@ -41,6 +42,7 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
   const [formData, setFormData] = useState<FormDataType>({
     title: memory.title,
     description: memory.description || "",
+    isDraft: memory.isDraft || false,
     year: String(memory.year || notSureAboutYear),
     decade: !memory.year ? `${memory.yearMin}-${memory.yearMax}` : "",
   });
@@ -48,12 +50,12 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year, decade } = formData;
+    const { title, description, year, decade, isDraft } = formData;
 
     const yearMin = year === notSureAboutYear ? +decade.split("-")[0]! : null;
     const yearMax = year === notSureAboutYear ? +decade.split("-")[1]! : null;
 
-    mutate({ id: memory?.id!, title, description, year: +year || null, yearMin, yearMax });
+    mutate({ id: memory?.id!, title, description, year: +year || null, yearMin, yearMax, isDraft });
   };
 
   useEffect(() => {
@@ -65,7 +67,11 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    setFormData({ ...formData, [name]: value });
+    if (e.target instanceof HTMLInputElement && e.target.type === "checkbox") {
+      setFormData({ ...formData, [name]: e.target.checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   return (
@@ -171,6 +177,22 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
           />
+        </label>
+
+        <label className="block">
+          <span>Spremi kao skicu</span>
+          <input
+            type="checkbox"
+            className="rounded-md border-gray-300 ml-2
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            name="isDraft"
+            disabled={isLoading}
+            onChange={handleChange}
+            checked={formData.isDraft}
+          />
+          <span className="text-sm block mt-1">
+            Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije objaviti.
+          </span>
         </label>
 
         <button className="btn btn-primary" disabled={isLoading} type="submit">
