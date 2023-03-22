@@ -145,7 +145,7 @@ export default function CreateMemoryForm(): ReactElement {
                 <Image fill sizes="35vw" className="object-contain" src={createObjectURL} alt={"upladed image"} />
               </div>
               <div className="text-right mt-1">
-                <button className="text-white" onClick={handleRotate} type="button" disabled={isLoading}>
+                <button className="text-blue" onClick={handleRotate} type="button" disabled={isLoading}>
                   Rotiraj sliku
                 </button>
                 <button className="text-red-400 ml-2" onClick={handleRemoveImage} type="button" disabled={isLoading}>

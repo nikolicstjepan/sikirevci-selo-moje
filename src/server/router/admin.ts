@@ -53,6 +53,29 @@ export const adminRouter = router({
       });
     }),
 
+  deleteMemoryCategory: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      if (role !== ADMIN_ROLE) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memoryCategory.delete({
+        where: { id: input.id },
+      });
+    }),
+
   listMemoryCategories: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user?.id;
     const role = ctx.session?.user?.role;
@@ -113,6 +136,29 @@ export const adminRouter = router({
       return await ctx.prisma.memoryTag.update({
         where: { id: input.id },
         data: { ...input, modifiedAt: new Date() },
+      });
+    }),
+
+  deleteMemoryTag: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      if (role !== ADMIN_ROLE) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.memoryTag.delete({
+        where: { id: input.id },
       });
     }),
 

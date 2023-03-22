@@ -52,6 +52,10 @@ function AuthenticatedMenu() {
     current: router.asPath === item.href,
   }));
 
+  if (userDetails.data?.role === ADMIN_ROLE) {
+    navigation.push({ name: "Admin", href: "/admin", current: false });
+  }
+
   return (
     <div className="flex gap-2 items-center">
       <div className="hidden md:flex gap-4 items-center">
