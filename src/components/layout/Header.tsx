@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { ADMIN_ROLE } from "../../const";
 import { trpc } from "../../utils/trpc";
 
 export default function Header(): React.ReactElement {
@@ -11,7 +12,7 @@ export default function Header(): React.ReactElement {
   return (
     <div className="bg-blue text-white mb-6 py-2">
       <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-2 2xl:px-0">
-        <Link className="w-12 md:w-16 aspect-square sm:px-2 relative" href="/memories">
+        <Link className="w-12 md:w-16 aspect-square sm:px-2 relative" href="/">
           <Image className="bg-white object-contain" src="/logo.svg" alt="Sikirevci.com.hr logo" fill sizes="10vw" />
         </Link>
         {status === "unauthenticated" && <UnauthenticatedMenu />}
@@ -71,10 +72,12 @@ function AuthenticatedMenu() {
         {showMenu && (
           <>
             <div className="shadow-2xl flex flex-col gap-4 bg-white text-blue p-4 absolute w-[max-content] right-0 mt-2 rounded top-9 z-10">
+              <Link href="/memories/">Sve uspomene</Link>
               <Link href="/memories/create">Dodaj uspomenu</Link>
               <Link href="/memories/my">Moje uspomene</Link>
               <Link href={`/users/${userDetails.data?.id}`}>Moj profil</Link>
               <Link href="/users">Korisnici</Link>
+              {userDetails.data?.role === ADMIN_ROLE && <Link href="/admin">Admin</Link>}
               <span className="block cursor-pointer" onClick={() => signOut()}>
                 Odjava
               </span>

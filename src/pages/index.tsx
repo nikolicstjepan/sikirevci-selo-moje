@@ -42,11 +42,6 @@ function Page() {
         </p>
 
         <p className="mb-4">
-          Isto tako domaći proizvodi i turistička ponuda Sikirevaca bi uvelike imala korist od web mjesta koji
-          korisnicima mogu služiti kao svojevrsni vremeplov.
-        </p>
-
-        <p className="mb-4">
           U prvoj fazi je cilj omogućiti korisnicima pravljenje korisničkog računa i učitavanja slika uz osnovne
           informacija kao što su godina slikanja, naziv i opis.
         </p>
@@ -61,17 +56,9 @@ function Page() {
         </p>
 
         <p className="mb-4">
-          Iz ovog projekta stoji poduzeće{" "}
-          <a className="underline" rel="noreferrer" href="https://www.teuzcode.hr/" target="_blank">
-            Teuz Code j.d.o.o.
-          </a>{" "}
-          koja je u vlasništvu jednog od mnogih Sikirevčana koji su napustili Sikirevce.
-        </p>
-
-        <p className="mb-4">
-          Novosti vezane uz ovaj projekt ćemo objavljivati na{" "}
+          Novosti vezane uz ovaj projekt ćemo objavljivati na ovoj{" "}
           <a className="underline" rel="noreferrer" href="https://www.facebook.com/teuzcode/" target="_blank">
-            Facebok stranici poduzeća
+            Facebok stranici
           </a>{" "}
           .
         </p>
@@ -99,6 +86,14 @@ function Page() {
           <strong>Napomena:</strong> Ovo je volonterski projekt koji se radi u slobodno vrijeme, tako da vas molimo za
           strpljenju ukoliko naiđete na greške. Isto tako imajte na umu da je projekt tek u začetku i još puno toga je u
           planu (npr. video uradci iz prošlosti).
+        </p>
+
+        <p className="mb-4">
+          Stjepan Nikolić,{" "}
+          <a className="underline" rel="noreferrer" href="https://teuzcode.hr" target="_blank">
+            teuzcode.hr
+          </a>
+          .
         </p>
       </div>
 

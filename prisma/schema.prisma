@@ -62,25 +62,25 @@ model VerificationToken {
 }
 
 model Memory {
-    id             String          @id @default(cuid())
-    createdAt      DateTime        @default(now())
-    modifiedAt     DateTime        @default(now())
+    id             String           @id @default(cuid())
+    createdAt      DateTime         @default(now())
+    modifiedAt     DateTime         @default(now())
     title          String
     description    String?
     year           Int?
     yearMin        Int?
     yearMax        Int?
-    fileId         String          @unique
-    file           File?           @relation(fields: [fileId], references: [id])
+    fileId         String           @unique
+    file           File?            @relation(fields: [fileId], references: [id])
     userId         String
-    user           User            @relation(fields: [userId], references: [id])
+    user           User             @relation(fields: [userId], references: [id])
     memoryLikes    MemoryLike[]
     memoryComments MemoryComment[]
     views          MemoryView[]
-    deleted        Boolean         @default(false)
-    isDraft        Boolean         @default(false)
-    categories     Category[]
-    tags           Tag[]
+    deleted        Boolean          @default(false)
+    isDraft        Boolean          @default(false)
+    categories     MemoryCategory[]
+    tags           MemoryTag[]
 }
 
 model MemoryLike {
@@ -125,7 +125,7 @@ model MemoryView {
     user      User?    @relation(fields: [userId], references: [id])
 }
 
-model Category {
+model MemoryCategory {
     id         String   @id @default(cuid())
     createdAt  DateTime @default(now())
     modifiedAt DateTime @default(now())
@@ -133,7 +133,7 @@ model Category {
     memories   Memory[]
 }
 
-model Tag {
+model MemoryTag {
     id         String   @id @default(cuid())
     createdAt  DateTime @default(now())
     modifiedAt DateTime @default(now())

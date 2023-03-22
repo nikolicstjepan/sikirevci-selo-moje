@@ -117,7 +117,7 @@ function LikedList() {
           return <MemoryCard memory={memory} key={id} userLiked={userLiked} />;
         })
       ) : (
-        <div className="text-center">Ovaj korisnika nije ni jednu uspomenu označio kao dragu</div>
+        <div className="text-center mx-auto col-span-2">Ovaj korisnika nije ni jednu uspomenu označio kao dragu.</div>
       )}
     </div>
   );
@@ -140,7 +140,7 @@ function CommentsList() {
           return <CommentCard comment={comment} key={id} />;
         })
       ) : (
-        <div className="text-center">Ovaj korisnika nema komentara</div>
+        <div className="text-center mx-auto col-span-2">Ovaj korisnika nema komentara.</div>
       )}
     </div>
   );
