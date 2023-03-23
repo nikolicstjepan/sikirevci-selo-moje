@@ -84,10 +84,6 @@ export const adminRouter = router({
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    if (role !== ADMIN_ROLE) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
     return await ctx.prisma.memoryCategory.findMany();
   }),
 
@@ -167,10 +163,6 @@ export const adminRouter = router({
     const role = ctx.session?.user?.role;
 
     if (!userId) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
-    if (role !== ADMIN_ROLE) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 

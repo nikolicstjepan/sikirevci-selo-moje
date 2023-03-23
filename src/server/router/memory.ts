@@ -17,9 +17,11 @@ export const memoryRouter = router({
         yearMax: z.number().nullable(),
         fileId: z.string(),
         isDraft: z.boolean(),
+        categories: z.array(z.string()),
+        tags: z.array(z.string()),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input: { categories, tags, ...input }, ctx }) => {
       const userId = ctx.session?.user?.id;
       const email = ctx.session?.user?.email;
 
@@ -27,7 +29,14 @@ export const memoryRouter = router({
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      const memory = await ctx.prisma.memory.create({ data: { ...input, userId } });
+      const memory = await ctx.prisma.memory.create({
+        data: {
+          ...input,
+          userId,
+          categories: { connect: categories.map((id) => ({ id })) },
+          tags: { connect: tags.map((id) => ({ id })) },
+        },
+      });
 
       logNewMemory(memory.title, email!);
 
@@ -44,9 +53,11 @@ export const memoryRouter = router({
         yearMin: z.number().nullable(),
         yearMax: z.number().nullable(),
         isDraft: z.boolean(),
+        categories: z.array(z.string()),
+        tags: z.array(z.string()),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input: { categories, tags, ...input }, ctx }) => {
       const userId = ctx.session?.user?.id;
       const role = ctx.session?.user?.role;
 
@@ -66,7 +77,12 @@ export const memoryRouter = router({
 
       return await ctx.prisma.memory.update({
         where: { id: input.id },
-        data: { ...input, modifiedAt: new Date() },
+        data: {
+          ...input,
+          modifiedAt: new Date(),
+          categories: { set: categories.map((id) => ({ id })) },
+          tags: { set: tags.map((id) => ({ id })) },
+        },
       });
     }),
 

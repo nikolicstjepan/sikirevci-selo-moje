@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, ReactElement, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, ReactElement, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -10,6 +10,8 @@ import AddImageIcon from "../icons/AddImage";
 import rotateImage from "../../utils/rotateImage";
 import { notSureAboutYear } from "../../const";
 import getDecadeOptions from "../../utils/getDecadeOptions";
+import CategoriesSelector from "./CategoriesSelector";
+import TagsSelector from "./TagsSelector";
 
 type FormDataType = {
   title: string;
@@ -18,14 +20,16 @@ type FormDataType = {
   decade: string;
   file?: File;
   isDraft: boolean;
+  categories: string[];
+  tags: string[];
 };
 
 const yearOptions = getYearOptions();
 const decadeOptions = getDecadeOptions();
 
-export default function CreateMemoryForm(): ReactElement {
+export default function CreateMemoryForm({ isAdmin }: { isAdmin: boolean }): ReactElement {
   const router = useRouter();
-  const { mutateAsync, data, error } = trpc.memory.create.useMutation();
+  const { mutateAsync: create, error } = trpc.memory.create.useMutation();
   const [isLoading, setIsLoading] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -35,14 +39,17 @@ export default function CreateMemoryForm(): ReactElement {
     year: "",
     decade: "",
     isDraft: false,
+    categories: [],
+    tags: [],
   });
+
   const [createObjectURL, setCreateObjectURL] = useState("");
   const [uploadFileError, setUploadFileError] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year, file, decade, isDraft } = formData;
+    const { title, description, year, file, decade, isDraft, categories, tags } = formData;
 
     if (!file) {
       setUploadFileError("Molimo odaberite datoteku!");
@@ -61,7 +68,17 @@ export default function CreateMemoryForm(): ReactElement {
     if (fileId) {
       const yearMin = year === notSureAboutYear ? +decade.split("-")[0]! : null;
       const yearMax = year === notSureAboutYear ? +decade.split("-")[1]! : null;
-      const res = await mutateAsync({ title, description, year: +year || null, fileId, yearMin, yearMax, isDraft });
+      const res = await create({
+        title,
+        description,
+        year: +year || null,
+        fileId,
+        yearMin,
+        yearMax,
+        isDraft,
+        categories,
+        tags,
+      });
       if (res?.id) {
         router.push(`/memories/${res.id}`);
       }
@@ -121,6 +138,14 @@ export default function CreateMemoryForm(): ReactElement {
         file: new File([blob], file.name, { type: file.type, lastModified: file.lastModified }),
       });
     }
+  };
+
+  const handleCategoriesSet = (newCategories: string[]) => {
+    setFormData({ ...formData, categories: newCategories });
+  };
+
+  const handleTagsSet = (newTags: string[]) => {
+    setFormData({ ...formData, tags: newTags });
   };
 
   return (
@@ -249,6 +274,10 @@ export default function CreateMemoryForm(): ReactElement {
             />
           </label>
 
+          <CategoriesSelector categories={formData.categories} onChange={handleCategoriesSet} />
+
+          {isAdmin && <TagsSelector onChange={handleTagsSet} tags={formData.tags} />}
+
           <label className="block">
             <span>Spremi kao skicu</span>
             <input
@@ -260,7 +289,7 @@ export default function CreateMemoryForm(): ReactElement {
               onChange={handleChange}
             />
             <span className="text-sm block mt-1">
-              Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije objaviti.
+              Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije dodatno urediti i objaviti.
             </span>
           </label>
 

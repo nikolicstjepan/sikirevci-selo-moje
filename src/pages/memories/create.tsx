@@ -5,9 +5,11 @@ import Link from "next/link";
 import MainLayout from "../../components/layout/MainLayout";
 import Loader from "../../components/Loader";
 import CreateMemoryForm from "../../components/memory/CreateMemoryForm";
+import { ADMIN_ROLE } from "../../const";
 
 const CreateMemoriesPage: NextPage = () => {
-  const { status } = useSession();
+  const { status, data } = useSession();
+
   return (
     <>
       <Head>
@@ -26,7 +28,7 @@ const CreateMemoriesPage: NextPage = () => {
               </Link>
             </div>
           )}
-          {status === "authenticated" && <CreateMemoryForm />}
+          {status === "authenticated" && <CreateMemoryForm isAdmin={data?.user?.role === ADMIN_ROLE} />}
         </>
       </MainLayout>
     </>

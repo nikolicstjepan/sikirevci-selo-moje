@@ -191,7 +191,7 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
             checked={formData.isDraft}
           />
           <span className="text-sm block mt-1">
-            Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije objaviti.
+            Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije dodatno urediti i objaviti.
           </span>
         </label>
 
