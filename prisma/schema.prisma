@@ -51,6 +51,7 @@ model User {
     memoryLikes    MemoryLike[]
     memoryComments MemoryComment[]
     memoryViews    MemoryView[]
+    feedbacks      Feedback[]
 }
 
 model VerificationToken {
@@ -139,4 +140,14 @@ model MemoryTag {
     modifiedAt DateTime @default(now())
     name       String
     memories   Memory[]
+}
+
+model Feedback {
+    id         String   @id @default(cuid())
+    body       String
+    createdAt  DateTime @default(now())
+    type       String
+    attributes String?
+    userId     String?
+    user       User?    @relation(fields: [userId], references: [id])
 }

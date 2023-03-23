@@ -160,7 +160,6 @@ export const adminRouter = router({
 
   listMemoryTags: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user?.id;
-    const role = ctx.session?.user?.role;
 
     if (!userId) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -168,4 +167,18 @@ export const adminRouter = router({
 
     return await ctx.prisma.memoryTag.findMany();
   }),
+
+  createFeedback: publicProcedure
+    .input(
+      z.object({
+        body: z.string(),
+        type: z.string(),
+        attributes: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user?.id;
+
+      return await ctx.prisma.feedback.create({ data: { ...input, userId } });
+    }),
 });
