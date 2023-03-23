@@ -165,6 +165,8 @@ export const memoryRouter = router({
         where: { userId: input.userId, deleted: false, isDraft: false },
         include: {
           file: { select: { id: true, ext: true } },
+          categories: true,
+          tags: true,
           user: true,
           _count: { select: { memoryLikes: true, memoryComments: true } },
         },
@@ -254,6 +256,8 @@ export const memoryRouter = router({
           memory: {
             include: {
               file: { select: { id: true, ext: true } },
+              categories: true,
+              tags: true,
               user: true,
               _count: { select: { memoryLikes: true, memoryComments: true } },
             },
