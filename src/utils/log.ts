@@ -81,4 +81,29 @@ export const logNewComment = async (text: string, userEmail: string) => {
     });
 };
 
+export const logNewFeedback = async (text: string, userEmail?: string) => {
+  if (!text) {
+    return;
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return;
+  }
+
+  await logSnag
+    .publish({
+      channel: "users",
+      event: "New Feedback",
+      description: `New comment created: ${text}, by: ${userEmail || "Anonymous"}`,
+      notify: true,
+      icon: "💬",
+      tags: {
+        ...(userEmail && { email: userEmail }),
+      },
+    })
+    .catch((error) => {
+      console.error({ errorLogSnag: error });
+    });
+};
+
 export default logSnag;

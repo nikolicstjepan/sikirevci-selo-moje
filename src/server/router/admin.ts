@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { router, publicProcedure } from "../trpc";
 import { ADMIN_ROLE } from "../../const";
+import { logNewFeedback } from "../../utils/log";
 
 export const adminRouter = router({
   createMemoryCategory: publicProcedure
@@ -178,6 +179,9 @@ export const adminRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id;
+      const email = ctx.session?.user?.email;
+
+      logNewFeedback(input.body, email!);
 
       return await ctx.prisma.feedback.create({ data: { ...input, userId } });
     }),
