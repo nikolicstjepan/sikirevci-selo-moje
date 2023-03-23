@@ -6,6 +6,8 @@ import getYearOptions from "../../utils/getYearOptions";
 import { useSession } from "next-auth/react";
 import { ADMIN_ROLE, notSureAboutYear } from "../../const";
 import getDecadeOptions from "../../utils/getDecadeOptions";
+import CategoriesSelector from "./CategoriesSelector";
+import TagsSelector from "./TagsSelector";
 
 type FormDataType = {
   title: string;
@@ -13,6 +15,8 @@ type FormDataType = {
   year: string;
   decade: string;
   isDraft: boolean;
+  categories: string[];
+  tags: string[];
 };
 
 const yearOptions = getYearOptions();
@@ -27,14 +31,23 @@ export default function EditMemoryFormContainer(): ReactElement | null {
     return null;
   }
 
-  if (memory.userId !== data?.user.id && data?.user.role !== ADMIN_ROLE) {
+  const isAdmin = data?.user.role === ADMIN_ROLE;
+  const isOwner = memory.userId === data?.user.id;
+
+  if (!isOwner && !isAdmin) {
     return <div className="max-w-md mx-auto text-center">Korisnik može samo svoje uspomene uređivati</div>;
   }
 
-  return <EditMemoryForm memory={memory} />;
+  return <EditMemoryForm memory={memory} isAdmin={isAdmin} />;
 }
 
-function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]["getById"]> }): ReactElement {
+function EditMemoryForm({
+  memory,
+  isAdmin,
+}: {
+  memory: NonNullable<RouterOutput["memory"]["getById"]>;
+  isAdmin: boolean;
+}): ReactElement {
   const router = useRouter();
 
   const { mutate, data, error, isLoading } = trpc.memory.edit.useMutation();
@@ -45,17 +58,19 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
     isDraft: memory.isDraft || false,
     year: String(memory.year || notSureAboutYear),
     decade: !memory.year ? `${memory.yearMin}-${memory.yearMax}` : "",
+    categories: memory.categories.map((c) => c.id),
+    tags: memory.tags.map((t) => t.id),
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { title, description, year, decade, isDraft } = formData;
+    const { title, description, year, decade, isDraft, categories, tags } = formData;
 
     const yearMin = year === notSureAboutYear ? +decade.split("-")[0]! : null;
     const yearMax = year === notSureAboutYear ? +decade.split("-")[1]! : null;
 
-    mutate({ id: memory?.id!, title, description, year: +year || null, yearMin, yearMax, isDraft });
+    mutate({ id: memory?.id!, title, description, year: +year || null, yearMin, yearMax, isDraft, categories, tags });
   };
 
   useEffect(() => {
@@ -72,6 +87,14 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
     } else {
       setFormData({ ...formData, [name]: value });
     }
+  };
+
+  const handleCategoriesSet = (newCategories: string[]) => {
+    setFormData({ ...formData, categories: newCategories });
+  };
+
+  const handleTagsSet = (newTags: string[]) => {
+    setFormData({ ...formData, tags: newTags });
   };
 
   return (
@@ -178,6 +201,10 @@ function EditMemoryForm({ memory }: { memory: NonNullable<RouterOutput["memory"]
                   "
           />
         </label>
+
+        <CategoriesSelector categories={formData.categories} onChange={handleCategoriesSet} />
+
+        {isAdmin && <TagsSelector onChange={handleTagsSet} tags={formData.tags} />}
 
         <label className="block">
           <span>Spremi kao skicu</span>

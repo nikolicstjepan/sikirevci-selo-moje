@@ -148,6 +148,8 @@ export const memoryRouter = router({
         include: {
           file: { select: { id: true, ext: true } },
           user: true,
+          categories: true,
+          tags: true,
           _count: { select: { memoryLikes: true, memoryComments: true } },
         },
       });
