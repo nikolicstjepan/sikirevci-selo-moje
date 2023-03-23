@@ -125,7 +125,7 @@ function MemoryMeta({ getList, getCreate, getEdit, getDelete, title, getInvalida
     <div>
       <h1 className="text-3xl font-extrabold mb-4">{title}</h1>
       <div className="mb-8">
-        {list.data.map((item) => {
+        {list.data.map((item: any) => {
           return (
             <div className="mb-1" key={item.id}>
               {item.name}{" "}
