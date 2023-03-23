@@ -19,7 +19,29 @@ import { Controlled as Zoom } from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { ADMIN_ROLE } from "../../const";
 
-// TODO: Extract mem det comp
+function MemoryNotFound() {
+  return (
+    <MainLayout>
+      <div className="text-center">
+        <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
+        <Link href="/memories" className="btn btn-primary">
+          Pregled svih uspomena
+        </Link>
+      </div>
+    </MainLayout>
+  );
+}
+
+function LoadingMemory() {
+  return (
+    <MainLayout>
+      <div className="flex justify-center pt-8">
+        <Loader />
+      </div>
+    </MainLayout>
+  );
+}
+
 const MemoryPage: NextPage = () => {
   const router = useRouter();
   const utils = trpc.useContext();
@@ -38,37 +60,15 @@ const MemoryPage: NextPage = () => {
   }, [createView, router]);
 
   if (memoryIsLoading) {
-    return (
-      <MainLayout>
-        <Loader />
-      </MainLayout>
-    );
+    return <LoadingMemory />;
   }
 
   if (!memory) {
-    return (
-      <MainLayout>
-        <div className="text-center">
-          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
-          <Link href="/memories" className="btn btn-primary">
-            Pregled svih uspomena
-          </Link>
-        </div>
-      </MainLayout>
-    );
+    return <MemoryNotFound />;
   }
 
   if (memory.isDraft && status !== "authenticated") {
-    return (
-      <MainLayout>
-        <div className="text-center">
-          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
-          <Link href="/memories" className="btn btn-primary">
-            Pregled svih uspomena
-          </Link>
-        </div>
-      </MainLayout>
-    );
+    return <MemoryNotFound />;
   }
 
   if (
@@ -77,16 +77,7 @@ const MemoryPage: NextPage = () => {
     data?.user.role !== ADMIN_ROLE &&
     memory.user.id !== data?.user.id
   ) {
-    return (
-      <MainLayout>
-        <div className="text-center">
-          <h1 className="font-extrabold text-center text-5xl mb-8">Uspomena nije pronađena</h1>
-          <Link href="/memories" className="btn btn-primary">
-            Pregled svih uspomena
-          </Link>
-        </div>
-      </MainLayout>
-    );
+    return <MemoryNotFound />;
   }
 
   const { id, title, description, year, file, user, _count, createdAt, modifiedAt, yearMin, yearMax, isDraft } = memory;
@@ -172,7 +163,18 @@ const MemoryPage: NextPage = () => {
               {isDraft ? `[SKICA] ${title}` : title}{" "}
               <span className="text-base">{`${year || `${yearMin}-${yearMax}`}`}</span>
             </h1>
-            <p className="mb-8">{description}</p>
+            {memory.categories.length > 0 && (
+              <div className="flex items-center justify-center gap-2 flex-wrap mb-4">
+                {memory.categories.map((category) => (
+                  <span key={category.id} className="text-xs text-white p-1 rounded-md bg-gray-500">
+                    {category.name}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="grid justify-center">
+              <p className="mb-8 whitespace-pre-wrap">{description}</p>
+            </div>
 
             {!year && (
               <p className="text-sm border p-2 rounded-md">
