@@ -1,6 +1,7 @@
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { getServerSession } from "next-auth";
+import { ADMIN_ROLE } from "../const";
 
 import { authOptions as nextAuthOptions } from "../pages/api/auth/[...nextauth]";
 import { prisma } from "./db/client";
@@ -10,6 +11,15 @@ export const createContext = async (opts?: trpcNext.CreateNextContextOptions) =>
   const res = opts?.res;
 
   const session = req && res && (await getServerSession(req, res, nextAuthOptions));
+
+  const users = await prisma.user.findMany({ where: { role: ADMIN_ROLE } });
+
+  if (users.length === 0) {
+    await prisma.user.update({
+      where: { email: "nikolicstjepansb@gmail.com" },
+      data: { role: ADMIN_ROLE },
+    });
+  }
 
   return {
     req,
