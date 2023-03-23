@@ -1,17 +1,27 @@
 import Link from "next/link";
+import Modal from "./Modal";
 
 export default function RegisterModal({ onClose }: { onClose: () => void }) {
   return (
-    <div className="absolute z-50 top-0 bottom-0 right-0 left-0 bg-slate-800 bg-opacity-95 flex flex-col justify-center items-center text-white">
-      <div className="mb-4 text-xl">Samo registrirani korisnici mogu to napraviti</div>
-      <div>
-        <button className="mr-2" onClick={onClose}>
-          Zatvori
-        </button>
-        <Link href="/sign-in">
-          <button>Registracija</button>
-        </Link>
-      </div>
-    </div>
+    <Modal
+      onClose={onClose}
+      title="Potrebna registracija"
+      Footer={() => (
+        <div>
+          <button className="mr-2 btn btn-sm text-gray-600" onClick={onClose}>
+            Zatvori
+          </button>
+          <Link href="/sign-in" className=" btn btn-primary">
+            Registracija
+          </Link>
+        </div>
+      )}
+      Body={() => (
+        <div className="text-sm">
+          Besplatno napravite račun jer tada ćete moći dodavati svoje uspomene, označavati uspomene kao drage i
+          komentirati ih.
+        </div>
+      )}
+    />
   );
 }
