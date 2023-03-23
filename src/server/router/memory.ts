@@ -113,6 +113,8 @@ export const memoryRouter = router({
         orderBy: { createdAt: "desc" },
         include: {
           file: { select: { id: true, ext: true } },
+          categories: true,
+          tags: true,
           user: true,
           _count: { select: { memoryLikes: true, memoryComments: true } },
         },
