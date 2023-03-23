@@ -68,7 +68,7 @@ function MemoryTags() {
   );
 }
 
-function MemoryMeta({ getList, getCreate, getEdit, getDelete, title, getInvalidate }) {
+function MemoryMeta({ getList, getCreate, getEdit, getDelete, title, getInvalidate }: any) {
   const list = getList.useQuery();
   const { mutateAsync: create, isLoading: isCreating } = getCreate.useMutation();
   const { mutateAsync: edit, isLoading: isEditing } = getEdit.useMutation();
