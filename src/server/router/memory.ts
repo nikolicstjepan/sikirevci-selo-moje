@@ -136,7 +136,7 @@ export const memoryRouter = router({
       },
     });
 
-    return groupByYear;
+    return groupByYear.filter((m) => m.year);
   }),
   getById: publicProcedure
     .input(

@@ -42,7 +42,7 @@ const MemoriesListPage: NextPage = () => {
       <MainLayout>
         <div className="w-full">
           <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Uspomene</h1>
-          <YearsFilter handleYearChange={handleYearChange} />
+          <YearsFilter handleYearChange={handleYearChange} year={year} />
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 mb-8">
             {list.data?.pages.map(({ memories }) =>
               memories.map((memory) => {
@@ -66,7 +66,13 @@ const MemoriesListPage: NextPage = () => {
   );
 };
 
-function YearsFilter({ handleYearChange }: { handleYearChange: (year: number | null) => void }) {
+function YearsFilter({
+  handleYearChange,
+  year,
+}: {
+  handleYearChange: (year: number | null) => void;
+  year: number | null;
+}) {
   const years = trpc.memory.getMemoriesYears.useQuery();
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -77,15 +83,11 @@ function YearsFilter({ handleYearChange }: { handleYearChange: (year: number | n
     <div className="text-right mb-4">
       <label>
         Godina:
-        <select onChange={handleChange} className="ml-2">
+        <select onChange={handleChange} className="ml-2" value={year || ""}>
           <option value="">Sve</option>
           {years.data?.map((y) => {
-            if (!y.year) {
-              return null;
-            }
-
             return (
-              <option value={y.year} key={y.year}>
+              <option value={y.year!} key={y.year}>
                 {y.year} ({y._count.year})
               </option>
             );
