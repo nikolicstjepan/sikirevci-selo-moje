@@ -300,4 +300,42 @@ export const adminRouter = router({
 
       return await ctx.prisma.user.delete({ where: { id: input.id } });
     }),
+
+  listMemoryViews: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user?.id;
+    const role = ctx.session?.user?.role;
+
+    if (!userId) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    if (role !== ADMIN_ROLE) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const memoryViews = await ctx.prisma.memoryView.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 1000,
+    });
+
+    const memoryViewsGroupedByDate = memoryViews.reduce((acc, memoryView) => {
+      const date = memoryView.createdAt.toISOString().split("T")[0];
+
+      if (!date) {
+        return acc;
+      }
+
+      if (!acc[date]) {
+        acc[date] = 0;
+      }
+
+      acc[date]++;
+
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(memoryViewsGroupedByDate) as [string, number][];
+  }),
 });

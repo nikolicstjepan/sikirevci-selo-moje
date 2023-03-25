@@ -34,6 +34,7 @@ const MemoriesListPage: NextPage = () => {
           <MemoryTags />
           <Feedbacks />
           <Users />
+          <Views />
         </div>
       </MainLayout>
     </>
@@ -306,6 +307,53 @@ function Users() {
               <button className="text-red-700 font-bold" onClick={() => handleRemove(id)}>
                 {idToDelete === id ? "Potvrdi" : "Obriši"}
               </button>
+            </div>
+          );
+        })}
+      </div>
+    </ItemContainer>
+  );
+}
+
+function Views() {
+  const list = trpc.admin.listMemoryViews.useQuery();
+
+  if (list.isLoading) {
+    return (
+      <ItemContainer title="Pregledi uspomena">
+        <div>Ucitavanje</div>
+      </ItemContainer>
+    );
+  }
+
+  if (list.isError) {
+    return (
+      <ItemContainer title="Pregledi uspomena">
+        <div>Doslo je do greske!</div>
+      </ItemContainer>
+    );
+  }
+
+  if (!list.data.length) {
+    return (
+      <ItemContainer title="Pregledi uspomena">
+        <div>Nema podataka</div>
+      </ItemContainer>
+    );
+  }
+
+  return (
+    <ItemContainer title="Pregledi uspomena">
+      <div className="grid grid-cols-3 md:grid-cols-7">
+        {list.data.map(([date, count]) => {
+          const dateN = new Date(date);
+
+          return (
+            <div className="p-2 border" key={date}>
+              <div className="mb-1 text-center">
+                <div className="text-gray-500 text-sm">{dateN.toLocaleDateString("hr").slice(0, 6)}</div>
+                <div> {count} </div>
+              </div>
             </div>
           );
         })}
