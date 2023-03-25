@@ -185,4 +185,119 @@ export const adminRouter = router({
 
       return await ctx.prisma.feedback.create({ data: { ...input, userId } });
     }),
+
+  listFeedbacks: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user?.id;
+    const role = ctx.session?.user?.role;
+
+    if (!userId) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    if (role !== ADMIN_ROLE) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return await ctx.prisma.feedback.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  }),
+
+  deleteFeedback: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      if (role !== ADMIN_ROLE) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      return await ctx.prisma.feedback.delete({ where: { id: input.id } });
+    }),
+
+  listUsers: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user?.id;
+    const role = ctx.session?.user?.role;
+
+    if (!userId) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    if (role !== ADMIN_ROLE) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const users = await ctx.prisma.user.findMany({
+      include: {
+        _count: {
+          select: {
+            memories: { where: { deleted: false } },
+            feedbacks: true,
+            memoryComments: true,
+            memoryLikes: true,
+            memoryViews: true,
+          },
+        },
+      },
+    });
+
+    return users;
+  }),
+
+  deleteUser: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user?.id;
+      const role = ctx.session?.user?.role;
+
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      if (role !== ADMIN_ROLE) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      await ctx.prisma.user.update({
+        where: { id: input.id },
+        data: {
+          accounts: {
+            deleteMany: {},
+          },
+          sessions: {
+            deleteMany: {},
+          },
+          memoryComments: {
+            deleteMany: {},
+          },
+          memoryViews: {
+            set: [],
+          },
+          memoryLikes: {
+            deleteMany: {},
+          },
+        },
+      });
+
+      return await ctx.prisma.user.delete({ where: { id: input.id } });
+    }),
 });

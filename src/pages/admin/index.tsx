@@ -29,9 +29,11 @@ const MemoriesListPage: NextPage = () => {
       </Head>
 
       <MainLayout>
-        <div className="flex gap-4 flex-wrap">
+        <div className="flex gap-4 flex-col">
           <MemoryCategories />
           <MemoryTags />
+          <Feedbacks />
+          <Users />
         </div>
       </MainLayout>
     </>
@@ -79,15 +81,27 @@ function MemoryMeta({ getList, getCreate, getEdit, getDelete, title, getInvalida
   const [idToDelete, setIdToDelete] = useState("");
 
   if (list.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <ItemContainer title={title}>
+        <div>Ucitavanje...</div>
+      </ItemContainer>
+    );
   }
 
   if (list.isError) {
-    return <div>Error</div>;
+    return (
+      <ItemContainer title={title}>
+        <div>Doslo je do greske</div>
+      </ItemContainer>
+    );
   }
 
-  if (!list.data) {
-    return <div>No data</div>;
+  if (!list.data.length) {
+    return (
+      <ItemContainer title={title}>
+        <div>Nema podataka</div>
+      </ItemContainer>
+    );
   }
 
   const handleSubmit = async () => {
@@ -122,43 +136,190 @@ function MemoryMeta({ getList, getCreate, getEdit, getDelete, title, getInvalida
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-extrabold mb-4">{title}</h1>
-      <div className="mb-8">
-        {list.data.map((item: any) => {
-          return (
-            <div className="mb-1" key={item.id}>
-              {item.name}{" "}
-              <button className="text-blue font-bold mr-2" onClick={() => handleSetToEdit(item)}>
-                Uredi
-              </button>
-              <button className="text-red-700 font-bold" onClick={() => handleRemove(item.id)}>
-                {idToDelete === item.id ? "Potvrdi" : "Obriši"}
-              </button>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mb-8 flex gap-2">
-        <input
-          type="text"
-          disabled={isCreating || isEditing}
-          value={name}
-          name="title"
-          onChange={({ target }) => setName(target.value)}
-          className="
+    <ItemContainer title={title}>
+      <div>
+        <div className="mb-2">
+          {list.data.map((item: any) => {
+            return (
+              <div className="mb-1" key={item.id}>
+                {item.name}{" "}
+                <button className="text-blue font-bold mr-2" onClick={() => handleSetToEdit(item)}>
+                  Uredi
+                </button>
+                <button className="text-red-700 font-bold" onClick={() => handleRemove(item.id)}>
+                  {idToDelete === item.id ? "Potvrdi" : "Obriši"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            disabled={isCreating || isEditing}
+            value={name}
+            name="title"
+            onChange={({ target }) => setName(target.value)}
+            className="
                     mt-1
                     block
                     rounded-md
                     border-gray-300
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                   "
-        />
-        <button disabled={isCreating || isEditing || !name} onClick={handleSubmit} className="btn btn-sm text-blue">
-          {idToEdit ? "Spremi" : "Dodaj"}
-        </button>
+          />
+          <button disabled={isCreating || isEditing || !name} onClick={handleSubmit} className="btn btn-sm text-blue">
+            {idToEdit ? "Spremi" : "Dodaj"}
+          </button>
+        </div>
       </div>
-    </div>
+    </ItemContainer>
+  );
+}
+
+function Feedbacks() {
+  const list = trpc.admin.listFeedbacks.useQuery();
+  const { mutateAsync: remove } = trpc.admin.deleteFeedback.useMutation();
+  const utils = trpc.useContext();
+
+  const [idToDelete, setIdToDelete] = useState("");
+
+  const handleRemove = async (id: string) => {
+    if (!idToDelete) {
+      setIdToDelete(id);
+
+      return;
+    }
+
+    if (idToDelete !== id) {
+      setIdToDelete(id);
+      return;
+    }
+    await remove({ id });
+    utils.admin.listFeedbacks.invalidate();
+  };
+
+  if (list.isLoading) {
+    return (
+      <ItemContainer title="Povratne informacije">
+        <div>Ucitavanje</div>
+      </ItemContainer>
+    );
+  }
+
+  if (list.isError) {
+    return (
+      <ItemContainer title="Povratne informacije">
+        <div>Doslo je do greske!</div>
+      </ItemContainer>
+    );
+  }
+
+  if (!list.data.length) {
+    return (
+      <ItemContainer title="Povratne informacije">
+        <div>Nema podataka</div>
+      </ItemContainer>
+    );
+  }
+
+  return (
+    <ItemContainer title="Povratne informacije">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        {list.data.map(({ user, body, attributes, createdAt, id }) => {
+          return (
+            <div className="p-2 border" key={id}>
+              <div className="mb-1">{`${user?.name ? `${user.name}: ` : ""}${body}`}</div>
+              <details className="mb-1">
+                <summary className="text-sm">Detalji</summary>
+                <div className="text-sm whitespace-pre-wrap">{attributes}</div>
+              </details>
+              <button className="text-red-700 font-bold" onClick={() => handleRemove(id)}>
+                {idToDelete === id ? "Potvrdi" : "Obriši"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </ItemContainer>
+  );
+}
+
+function Users() {
+  const list = trpc.admin.listUsers.useQuery();
+  const { mutateAsync: remove } = trpc.admin.deleteUser.useMutation();
+  const utils = trpc.useContext();
+
+  const [idToDelete, setIdToDelete] = useState("");
+
+  const handleRemove = async (id: string) => {
+    if (!idToDelete) {
+      setIdToDelete(id);
+
+      return;
+    }
+
+    if (idToDelete !== id) {
+      setIdToDelete(id);
+      return;
+    }
+
+    await remove({ id });
+    utils.admin.listUsers.invalidate();
+  };
+
+  if (list.isLoading) {
+    return (
+      <ItemContainer title="Korisnici">
+        <div>Ucitavanje</div>
+      </ItemContainer>
+    );
+  }
+
+  if (list.isError) {
+    return (
+      <ItemContainer title="Korisnici">
+        <div>Doslo je do greske!</div>
+      </ItemContainer>
+    );
+  }
+
+  if (!list.data.length) {
+    return (
+      <ItemContainer title="Korisnici">
+        <div>Nema podataka</div>
+      </ItemContainer>
+    );
+  }
+
+  return (
+    <ItemContainer title="Korisnici">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        {list.data.map(({ name, _count, id }) => {
+          return (
+            <div className="p-2 border" key={id}>
+              <div className="mb-1">{name}</div>
+              <details className="mb-1">
+                <summary className="text-sm">Detalji</summary>
+                <div className="text-sm whitespace-pre-wrap">{JSON.stringify(_count, null, 2)}</div>
+              </details>
+              <button className="text-red-700 font-bold" onClick={() => handleRemove(id)}>
+                {idToDelete === id ? "Potvrdi" : "Obriši"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </ItemContainer>
+  );
+}
+
+function ItemContainer({ children, title }: { children: React.ReactElement; title: string }) {
+  return (
+    <details className="">
+      <summary className="text-3xl font-extrabold mb-4">{title}</summary>
+      {children}
+    </details>
   );
 }
 
