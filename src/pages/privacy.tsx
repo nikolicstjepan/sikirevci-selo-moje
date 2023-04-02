@@ -15,9 +15,9 @@ const SignIn: NextPage = () => {
           <h1 className="font-extrabold text-3xl text-center md:text-5xl mb-8">Politika privatnosti</h1>
           <h2 className="text-xl md:text-2xl mb-2">Prikupljanje osobnih podataka</h2>
           <p className="mb-4">
-            Aplikacija "Sikirevci.com.hr" prikuplja ime, prezime i e-mail adresu korisnika. E-mail adresa se koristi za
-            verifikaciju i pristup korisničkom računu, dok se ime i prezime koriste za prikazivanje korisničkog imena na
-            sadržaju koji korisnik objavljuje.
+            Aplikacija &quot;Sikirevci.com.hr&quot; prikuplja ime, prezime i e-mail adresu korisnika. E-mail adresa se
+            koristi za verifikaciju i pristup korisničkom računu, dok se ime i prezime koriste za prikazivanje
+            korisničkog imena na sadržaju koji korisnik objavljuje.
           </p>
           <h2 className="text-xl md:text-2xl mb-2">Upotreba osobnih podataka</h2>
           <p className="mb-4">
