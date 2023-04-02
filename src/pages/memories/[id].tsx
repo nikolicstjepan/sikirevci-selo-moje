@@ -160,6 +160,8 @@ const MemoryPage: NextPage = () => {
             </div>
           </Zoom>
           <p className="text-center text-xs mb-8">Klik na sliku za povećanje</p>
+          <MemoriesNavigation memory={memory} />
+
           <div className="max-w-2xl mx-auto w-full">
             <h1 className="font-extrabold text-center text-5xl mb-4">
               {isDraft ? `[SKICA] ${title}` : title}{" "}
@@ -185,7 +187,6 @@ const MemoryPage: NextPage = () => {
               </p>
             )}
 
-            <MemoriesNavigation memory={memory} />
             <Comments memoryId={id} />
             <ShareOptions text={`${title}, ${year || `${yearMin}-${yearMax}`}. godina.`} />
           </div>
@@ -286,7 +287,7 @@ function MemoriesNavigation({ memory }: { memory: { id: string } }) {
   const { data: nextMemory } = trpc.memory.getNextMemory.useQuery({ id: memory.id });
 
   return (
-    <div className="flex justify-between items-center text-blue text-sm mb-8">
+    <div className="flex justify-between items-center text-blue font-bold mb-8">
       {prevMemory ? (
         <Link className="flex items-center gap-2" href={`/memories/${prevMemory.id}`}>
           <LeftArrow width="1rem" />
