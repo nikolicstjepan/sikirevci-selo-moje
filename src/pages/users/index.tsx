@@ -12,11 +12,11 @@ const MemoriesListPage: NextPage = () => {
   return (
     <>
       <NextSeo
-        title="Korisnici | sikirevci.com.hr"
-        description="Svi korisnici koji su objavili uspomenu na sikirevci.com.hr"
+        title="Korisnici | Sikirevci.com.hr"
+        description="Svi korisnici koji su objavili uspomenu na Sikirevci.com.hr"
         openGraph={{
           images: [{ url: "/siki.png" }],
-          siteName: "sikirevci.com.hr",
+          siteName: "Sikirevci.com.hr",
         }}
       />
 

@@ -6,22 +6,23 @@ const SignIn: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Politika privatnosti | sikirevci.com.hr</title>
+        <title>Politika privatnosti | Sikirevci.com.hr</title>
         <meta name="description" content="Politika privatnosti" />
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
       <MainLayout>
         <div className="max-w-3xl mx-auto">
           <h1 className="font-extrabold text-3xl text-center md:text-5xl mb-8">Politika privatnosti</h1>
           <h2 className="text-xl md:text-2xl mb-2">Prikupljanje osobnih podataka</h2>
           <p className="mb-4">
-            Aplikacija Teuz Code prikuplja ime, prezime i e-mail adresu korisnika. E-mail adresa se koristi za
+            Aplikacija "Sikirevci.com.hr" prikuplja ime, prezime i e-mail adresu korisnika. E-mail adresa se koristi za
             verifikaciju i pristup korisničkom računu, dok se ime i prezime koriste za prikazivanje korisničkog imena na
             sadržaju koji korisnik objavljuje.
           </p>
           <h2 className="text-xl md:text-2xl mb-2">Upotreba osobnih podataka</h2>
           <p className="mb-4">
-            Osobni podaci koriste se isključivo za svrhe koje su navedene u ovoj politici privatnosti. Teuz Code neće
-            prodavati, dijeliti ili iznajmljivati osobne podatke korisnika trećim stranama.
+            Osobni podaci koriste se isključivo za svrhe koje su navedene u ovoj politici privatnosti. Teuz Code
+            j.d.o.o. neće prodavati, dijeliti ili iznajmljivati osobne podatke korisnika trećim stranama.
           </p>
           <h2 className="text-xl md:text-2xl mb-2">Sigurnost podataka</h2>
           <p className="mb-4">

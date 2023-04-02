@@ -19,8 +19,8 @@ export default function NewUserPage() {
   return (
     <>
       <Head>
-        <title>Novi korisnik | sikirevci.com.hr</title>
-        <meta name="robots" content="noindex" />
+        <title>Novi korisnik | Sikirevci.com.hr</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
 
       <div className=" py-8 px-2">
@@ -28,7 +28,7 @@ export default function NewUserPage() {
           <h1 className="font-extrabold text-center text-3xl md:text-5xl mb-8">Dobrodošli! :)</h1>
 
           <p className="mb-8 text-center">
-            Prije nego što krenete koristiti sikirevci.com.hr, molim provjerite/unesite svoje podatke:
+            Prije nego što krenete koristiti Sikirevci.com.hr, molim provjerite/unesite svoje podatke:
           </p>
 
           {data?.user ? <EditProfile user={data.user} onSave={() => router.push("/memories")} /> : <Loader />}

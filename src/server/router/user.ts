@@ -63,7 +63,7 @@ export const userRouter = router({
         name: true,
         image: true,
         id: true,
-        _count: { select: { memories: { where: { deleted: false } } } },
+        _count: { select: { memories: { where: { deleted: false, isDraft: false } } } },
       },
     });
 

@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       sendVerificationRequest,
-      from: `Stjepan | sikirevci.com.hr <${process.env.EMAIL_FROM}>`,
+      from: `Stjepan | Sikirevci.com.hr <${process.env.EMAIL_FROM}>`,
     }),
   ],
   secret: "LlKq6ZtYbr+hTC073mAmAh9/h2HwMfsFo4hrfCx5mLg=dsdsds",

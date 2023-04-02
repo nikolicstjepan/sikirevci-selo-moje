@@ -13,8 +13,8 @@ const CreateMemoriesPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Dodaj uspomenu | sikirevci.com.hr</title>
-        <meta name="robots" content="noindex" />
+        <title>Dodaj uspomenu | Sikirevci.com.hr</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
 
       <MainLayout>

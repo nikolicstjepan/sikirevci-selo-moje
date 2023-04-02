@@ -18,6 +18,8 @@ import MemoryComment from "../../components/memory/MemoryComment";
 import { Controlled as Zoom } from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { ADMIN_ROLE } from "../../const";
+import LeftArrow from "../../components/icons/LeftArrow";
+import RightArrow from "../../components/icons/RightArrow";
 
 function MemoryNotFound() {
   return (
@@ -103,11 +105,11 @@ const MemoryPage: NextPage = () => {
   return (
     <>
       <NextSeo
-        title={`${title}, ${year || `${yearMin}-${yearMax}`} godina | sikirevci.com.hr`}
+        title={`${title}, ${year || `${yearMin}-${yearMax}`} godina | Sikirevci.com.hr`}
         description={description || "Uspomena iz Sikirevaca"}
         openGraph={{
           images: [{ url: `${process.env.NEXT_PUBLIC_FILE_BASE_PATH}/${file?.id}` }],
-          siteName: "sikirevci.com.hr",
+          siteName: "Sikirevci.com.hr",
           type: "article",
           article: {
             authors: [user.name || ""],
@@ -183,6 +185,7 @@ const MemoryPage: NextPage = () => {
               </p>
             )}
 
+            <MemoriesNavigation memory={memory} />
             <Comments memoryId={id} />
             <ShareOptions text={`${title}, ${year || `${yearMin}-${yearMax}`}. godina.`} />
           </div>
@@ -275,6 +278,30 @@ function Comments({ memoryId }: { memoryId: string }) {
 
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
     </>
+  );
+}
+
+function MemoriesNavigation({ memory }: { memory: { id: string } }) {
+  const { data: prevMemory } = trpc.memory.getPrevMemory.useQuery({ id: memory.id });
+  const { data: nextMemory } = trpc.memory.getNextMemory.useQuery({ id: memory.id });
+
+  return (
+    <div className="flex justify-between items-center text-blue text-sm mb-8">
+      {prevMemory ? (
+        <Link className="flex items-center gap-2" href={`/memories/${prevMemory.id}`}>
+          <LeftArrow width="1rem" />
+          <p>prethodna</p>
+        </Link>
+      ) : (
+        <div></div>
+      )}
+      {nextMemory && (
+        <Link className="flex items-center gap-2" href={`/memories/${nextMemory.id}`}>
+          <p>sljedeća</p>
+          <RightArrow width="1rem" />
+        </Link>
+      )}
+    </div>
   );
 }
 

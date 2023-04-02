@@ -11,8 +11,8 @@ const EditMemoryPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Uredi uspomenu - sikirevci.com.hr</title>
-        <meta name="robots" content="noindex" />
+        <title>Uredi uspomenu - Sikirevci.com.hr</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
 
       <MainLayout>

@@ -4,7 +4,7 @@ import { trpc } from "../utils/trpc";
 import Modal from "./Modal";
 
 export default function FeedbackModal({ onClose }: { onClose: () => void }) {
-  return <Modal onClose={onClose} title="Povratna informacija" Body={() => <FeedbackForm onClose={onClose} />} />;
+  return <Modal onClose={onClose} title="Pošaljite nam poruku" Body={() => <FeedbackForm onClose={onClose} />} />;
 }
 
 function FeedbackForm({ onClose }: { onClose: () => void }) {
@@ -53,7 +53,7 @@ function FeedbackForm({ onClose }: { onClose: () => void }) {
   if (data) {
     return (
       <div className="text-sm">
-        <div className="text-green-700">Poruka je uspješno poslana.</div>
+        <div className="text-green-800">Poruka je uspješno poslana!</div>
         <div className="text-right mt-4">
           <button onClick={onClose} className=" btn btn-primary">
             Zatvori
@@ -67,6 +67,10 @@ function FeedbackForm({ onClose }: { onClose: () => void }) {
     <div className="text-sm">
       <form className="text-blue grid grid-cols-1 gap-6">
         <label className="block">
+          <span className="block mb-4">
+            Imate poteškoća prilikom korištenja aplikacije? Ili nam želite poslati prijedlog, pohvalu ili kritiku?
+            Pišite nam!
+          </span>
           <textarea
             ref={ref}
             name="description"

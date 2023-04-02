@@ -218,7 +218,7 @@ function EditMemoryForm({
             checked={formData.isDraft}
           />
           <span className="text-sm block mt-1">
-            Ukoliko ovo uključite uspomena neće biti javno vidljiva. Možete ju kasnije dodatno urediti i objaviti.
+            Ako ovo uključite uspomena neće biti javno vidljiva. Možete ju objaviti isključivanjem ove opcije.
           </span>
         </label>
 

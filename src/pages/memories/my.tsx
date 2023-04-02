@@ -21,8 +21,8 @@ const MemoriesListPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Moje uspomene | sikirevci.com.hr</title>
-        <meta name="robots" content="noindex" />
+        <title>Moje uspomene | Sikirevci.com.hr</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
 
       <MainLayout>

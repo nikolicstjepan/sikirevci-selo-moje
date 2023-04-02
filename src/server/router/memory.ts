@@ -453,4 +453,58 @@ export const memoryRouter = router({
         },
       });
     }),
+
+  getPrevMemory: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input: { id } }) => {
+      const memory = await ctx.prisma.memory.findUnique({ where: { id } });
+
+      if (!memory) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const prevMemory = await ctx.prisma.memory.findFirst({
+        where: {
+          createdAt: { lt: memory.createdAt },
+          isDraft: false,
+          deleted: false,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return prevMemory;
+    }),
+
+  getNextMemory: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input: { id } }) => {
+      const memory = await ctx.prisma.memory.findUnique({ where: { id } });
+
+      if (!memory) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      const nextMemory = await ctx.prisma.memory.findFirst({
+        where: {
+          createdAt: { gt: memory.createdAt },
+          isDraft: false,
+          deleted: false,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      return nextMemory;
+    }),
 });

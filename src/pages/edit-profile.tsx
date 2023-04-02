@@ -21,8 +21,8 @@ const ProfilePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Uredi profil | sikirevci.com.hr</title>
-        <meta name="robots" content="noindex" />
+        <title>Uredi profil | Sikirevci.com.hr</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
       <MainLayout>
         <div className="max-w-md mx-auto">

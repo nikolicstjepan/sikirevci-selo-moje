@@ -16,7 +16,7 @@ const Page: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{`${user?.name || ""} | sikirevci.com.hr`}</title>
+        <title>{`${user?.name || ""} | Sikirevci.com.hr`}</title>
         <meta name="description" content="Korisnički račun" />
       </Head>
 

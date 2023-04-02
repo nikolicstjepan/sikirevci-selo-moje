@@ -26,15 +26,15 @@ const MemoriesListPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Uspomene | sikirevci.com.hr</title>
+        <title>Uspomene | Sikirevci.com.hr</title>
       </Head>
 
       <NextSeo
-        title="Uspomene | sikirevci.com.hr"
+        title="Uspomene | Sikirevci.com.hr"
         description="Uspomene iz Sikirevaca"
         openGraph={{
           images: [{ url: "/siki.png" }],
-          siteName: "sikirevci.com.hr",
+          siteName: "Sikirevci.com.hr",
           type: "website",
         }}
       />
