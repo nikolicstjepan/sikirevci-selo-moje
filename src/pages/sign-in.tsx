@@ -2,7 +2,6 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useSession, signOut, getProviders } from "next-auth/react";
 import Auth from "../components/Auth";
-import Link from "next/link";
 import MainLayout from "../components/layout/MainLayout";
 import Loader from "../components/Loader";
 

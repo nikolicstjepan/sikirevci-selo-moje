@@ -9,6 +9,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "**.fbsbx.com",
+      },
+      {
+        protocol: "https",
         hostname: "**.contabostorage.com",
       },
     ],

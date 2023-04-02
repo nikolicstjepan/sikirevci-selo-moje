@@ -1,5 +1,6 @@
 import NextAuth, { Theme, type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
 import EmailProvider, { SendVerificationRequestParams } from "next-auth/providers/email";
 import { createTransport } from "nodemailer";
 
@@ -14,6 +15,10 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     }),
     EmailProvider({
       server: {
