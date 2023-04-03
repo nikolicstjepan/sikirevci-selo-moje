@@ -47,7 +47,7 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
 
         <ol className="list-decimal pl-8 pb-4">
           <li>pomoću svog Google računa</li>
-          <li>pomoću svog Facebook računa</li>
+          {/* <li>pomoću svog Facebook računa</li> */}
           <li>
             pomoću email adrese tako da prvo unesete svoju email adresu te nakon toga kliknete na poveznicu koju vam
             pošaljemo na unesenu email adresu.
