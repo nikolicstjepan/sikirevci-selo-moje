@@ -47,31 +47,14 @@ function Page() {
         </p>
 
         <p className="mb-4">
-          Digitalizacijom omogućit ćemo da svi s internetskom vezom mogu pogledati, pročitati i zajedno se prisjetiti
-          svojih obitelji, susjeda, prijatelja i svih ostalih mještana Sikirevaca.
-        </p>
-
-        <p className="mb-4">
           Glavni cilj ovog projekta je omogućiti korisnicima da se ponovo povežu s prošlošću i da se zajedno prisjete
           osoba, događaja i materijalnih predmeta koje su ostavili svoj trag u našim životima i prošlosti Sikirevaca.
         </p>
 
         <p className="mb-4">
-          U prvoj fazi projekta nam je cilj omogućiti svim korisnicima učitavanja slika uz dodavanje osnovnih
-          informacija o slici.
-        </p>
-
-        <p className="mb-4">
-          Osim dodavanja slika svi korisnici će moći pregledavati slike drugih korisnika, filtrirati ih po godini i
+          Da bi to uspjeli omogućili smo korisnicima učitavanja slika uz dodavanje osnovnih informacija. Osim dodavanja,
+          korisnici mogu pregledavati slike drugih korisnika, filtrirati ih po godini, označiti kao najdraže i
           komentirati.
-        </p>
-
-        <p className="mb-4">
-          Novosti vezane uz ovaj projekt ćemo objavljivati na ovoj{" "}
-          <a className="underline" rel="noreferrer" href="https://www.facebook.com/teuzcode/" target="_blank">
-            Facebook stranici
-          </a>{" "}
-          .
         </p>
 
         <p className="font-extrabold text-2xl md:text-3xl mb-4 mt-8">Postanite dio projekta jer uspjeh ovisi o vama!</p>
@@ -94,6 +77,14 @@ function Page() {
             sa svojim prijedlozima kako poboljšati aplikaciju.
           </li>
         </ul>
+
+        <p className="mb-4">
+          Novosti vezane uz ovaj projekt ćemo objavljivati na ovoj{" "}
+          <a className="underline" rel="noreferrer" href="https://www.facebook.com/teuzcode/" target="_blank">
+            Facebook stranici
+          </a>{" "}
+          .
+        </p>
 
         <p className="mb-4">
           <strong>Napomena:</strong> Ovo je volonterski projekt koji se radio u slobodno vrijeme. Javite nam se ako
