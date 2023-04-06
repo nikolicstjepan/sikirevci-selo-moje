@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { NextSeo } from "next-seo";
 import Link from "next/link";
 import MainLayout from "../components/layout/MainLayout";
+import ShareOptions from "../components/ShareOptions";
 
 const Home: NextPage = () => {
   return (
@@ -101,7 +102,7 @@ function Page() {
         </p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-center mb-6">
         <Link className="btn btn-primary" href="/memories">
           Pogledaj uspomene
         </Link>
@@ -111,6 +112,8 @@ function Page() {
           </Link>
         )}
       </div>
+
+      <ShareOptions text="Sikirevci.com.hr - Digitalizacija i očuvanje bogate prošlosti Sikirevaca" />
     </div>
   );
 }

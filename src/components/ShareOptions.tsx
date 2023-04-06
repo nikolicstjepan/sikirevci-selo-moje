@@ -9,11 +9,11 @@ export default function ShareOptions({ text }: { text: string }) {
   }, []);
 
   const getText = () => {
-    return `${text} Link: ${url}`;
+    return `${text}, ${url}`;
   };
 
   return (
-    <div className="">
+    <div className="mb-8">
       <div className="flex gap-4 items-center justify-center p-3 bg-white">
         <div className="hidden md:block font-bold">PODIJELI: </div>
         <div className="flex gap-2 items-center">

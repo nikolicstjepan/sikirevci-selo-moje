@@ -5,6 +5,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import { ChangeEvent, useState } from "react";
 import MemoryCard from "../../components/memory/MemoryCard";
 import { NextSeo } from "next-seo";
+import ShareOptions from "../../components/ShareOptions";
 
 const MemoriesListPage: NextPage = () => {
   const [year, setYear] = useState<number | null>(null);
@@ -61,6 +62,7 @@ const MemoriesListPage: NextPage = () => {
             </div>
           )}
         </div>
+        <ShareOptions text="Uspomene iz Sikirevaca" />
       </MainLayout>
     </>
   );

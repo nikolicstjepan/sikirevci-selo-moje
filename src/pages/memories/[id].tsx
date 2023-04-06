@@ -20,6 +20,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { ADMIN_ROLE } from "../../const";
 import LeftArrow from "../../components/icons/LeftArrow";
 import RightArrow from "../../components/icons/RightArrow";
+import MemoryCard from "../../components/memory/MemoryCard";
 
 function MemoryNotFound() {
   return (
@@ -187,8 +188,10 @@ const MemoryPage: NextPage = () => {
               </p>
             )}
 
+            <ShareOptions text={`${title}, ${year || `${yearMin}-${yearMax}`}. godina`} />
             <Comments memoryId={id} />
-            <ShareOptions text={`${title}, ${year || `${yearMin}-${yearMax}`}. godina.`} />
+
+            <RelatedMemories memoryId={memory.id} userId={memory.userId} />
           </div>
         </div>
       </MainLayout>
@@ -237,7 +240,7 @@ function Comments({ memoryId }: { memoryId: string }) {
   };
 
   return (
-    <>
+    <div className="mb-8">
       <div className="mb-8">
         {commentIsSending && (
           <div className="grid mb-4">
@@ -278,7 +281,7 @@ function Comments({ memoryId }: { memoryId: string }) {
       </div>
 
       {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
-    </>
+    </div>
   );
 }
 
@@ -302,6 +305,36 @@ function MemoriesNavigation({ memory }: { memory: { id: string } }) {
           <RightArrow width="1rem" />
         </Link>
       )}
+    </div>
+  );
+}
+
+function RelatedMemories({ userId, memoryId }: { userId: string; memoryId: string }) {
+  const { data: memories, isLoading } = trpc.memory.getByUserId.useQuery({ userId });
+
+  const { data: myLikedList } = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (!memories || !memories.length) {
+    return null;
+  }
+
+  return (
+    <div>
+      <h2 className="text-2xl font-extrabold text-center mb-4">Uspomene od istog korisnika</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-8">
+        {memories
+          .filter((m) => m.id !== memoryId)
+          .map((memory) => {
+            const { id } = memory;
+            const userLiked = !!myLikedList?.some((likedId) => likedId === id);
+
+            return <MemoryCard key={id} memory={memory} userLiked={userLiked} />;
+          })}
+      </div>
     </div>
   );
 }
