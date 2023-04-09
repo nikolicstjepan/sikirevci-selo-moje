@@ -317,7 +317,7 @@ export const adminRouter = router({
       orderBy: {
         createdAt: "desc",
       },
-      take: 1000,
+      take: 10000,
     });
 
     const memoryViewsGroupedByDate = memoryViews.reduce((acc, memoryView) => {
