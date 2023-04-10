@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
+import { ChangeEvent, FormEvent, ReactElement, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
@@ -23,6 +23,20 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
   const [formData, setFormData] = useState<LoginFormType>({
     email: "",
   });
+  const [FacebookInAppBrowserError, setFacebookInAppBrowserError] = useState<string>();
+
+  useEffect(() => {
+    if (window.navigator.userAgent) {
+      const isFacebookInAppBrowser =
+        window.navigator.userAgent.includes("FB_IAB") && window.navigator.userAgent.includes("FBAV");
+
+      if (isFacebookInAppBrowser) {
+        setFacebookInAppBrowserError(
+          "Pregledik unutar Facebook aplikacije trenutno ne podržava prijavu putem Google-a. Molimo koristite drugi preglednik ukoliko želite prijavu/registraciju pomoću Google-a (u gornjem desnom kutu postoji izbornik pomoću kojega možete otvoriti ovu stranicu u drugom pregledniku)."
+        );
+      }
+    }
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,7 +60,10 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
         <p className="mb-2">Registrirati i prijaviti se može na dva načina:</p>
 
         <ol className="list-decimal pl-8 pb-4">
-          <li>pomoću svog Google računa</li>
+          <li>
+            pomoću svog Google računa{" "}
+            {FacebookInAppBrowserError ? <span className="text-red-700">! {FacebookInAppBrowserError} !</span> : ""}
+          </li>
           {/* <li>pomoću svog Facebook računa</li> */}
           <li>
             pomoću email adrese tako da prvo unesete svoju email adresu te nakon toga kliknete na poveznicu koju vam
@@ -71,7 +88,11 @@ function SignInAuth({ providers }: { providers: Providers }): ReactElement {
         {providers &&
           providers.map((provider) => (
             <div key={provider.name}>
-              <button className="btn btn-primary" onClick={() => signIn(provider.id, { callbackUrl: "/memories" })}>
+              <button
+                disabled={!!FacebookInAppBrowserError}
+                className="btn btn-primary"
+                onClick={() => signIn(provider.id, { callbackUrl: "/memories" })}
+              >
                 Prijava s {provider.name} računom
               </button>
             </div>
