@@ -311,14 +311,14 @@ function MemoriesNavigation({ memory }: { memory: { id: string } }) {
 
 function RelatedMemories({ userId, memoryId }: { userId: string; memoryId: string }) {
   const { data: memories, isLoading } = trpc.memory.getByUserId.useQuery({ userId });
-
+  const otherMemories = memories?.filter((m) => m.id !== memoryId);
   const { data: myLikedList } = trpc.memory.listMyLikedMemoriesIds.useQuery(undefined, { trpc: { ssr: false } });
 
   if (isLoading) {
     return null;
   }
 
-  if (!memories || !memories.length) {
+  if (!memories || !memories.length || !otherMemories?.length) {
     return null;
   }
 
