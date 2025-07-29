@@ -2,12 +2,12 @@ import NextAuth, { Theme, type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import EmailProvider, { SendVerificationRequestParams } from "next-auth/providers/email";
-import { createTransport } from "nodemailer";
 
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 import { User } from "@prisma/client";
 import { logNewUser } from "../../../utils/log";
+import sendEmail from "./send-email";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -21,14 +21,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     }), */
     EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: +process.env.EMAIL_SERVER_PORT!,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
       sendVerificationRequest,
       from: `Stjepan | Sikirevci.com.hr <${process.env.EMAIL_FROM}>`,
     }),
@@ -58,21 +50,16 @@ export const authOptions: NextAuthOptions = {
 export default NextAuth(authOptions);
 
 async function sendVerificationRequest(params: SendVerificationRequestParams) {
-  const { identifier, url, provider, theme } = params;
+  const { identifier, url, theme } = params;
   const { host } = new URL(url);
 
-  const transport = createTransport(provider.server);
-  const result = await transport.sendMail({
+  await sendEmail({
     to: identifier,
-    from: provider.from,
+    from: process.env.EMAIL_FROM!,
     subject: `Prijava za ${host}`,
     text: text({ url, host }),
     html: html({ url, host, theme }),
   });
-  const failed = result.rejected.concat(result.pending).filter(Boolean);
-  if (failed.length) {
-    throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
-  }
 }
 
 /**
