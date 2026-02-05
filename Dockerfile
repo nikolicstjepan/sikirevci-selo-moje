@@ -38,7 +38,8 @@ COPY --from=builder /app/next.config.js ./next.config.js
 COPY --from=builder /app/prisma ./prisma
 
 # So nextjs user can create prisma/db.sqlite (SQLite)
-RUN chown -R nextjs:nodejs /app/prisma
+# and write to .next/cache for image optimization
+RUN chown -R nextjs:nodejs /app/prisma /app/.next
 
 USER nextjs
 
