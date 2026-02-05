@@ -9,6 +9,12 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+# NEXT_PUBLIC_* are inlined at build time; must be set here so client bundle has correct image URLs.
+# Override with: docker build --build-arg NEXT_PUBLIC_FILE_BASE_PATH=... ...
+ARG NEXT_PUBLIC_FILE_BASE_PATH=https://eu2.contabostorage.com/5d5c7bc98ba045af8a7a1e2bc04e891e:sikirevci/sikirevci
+ENV NEXT_PUBLIC_FILE_BASE_PATH=$NEXT_PUBLIC_FILE_BASE_PATH
+
 RUN npx prisma generate
 RUN npm run build
 

@@ -16,7 +16,7 @@
    - `S3_ACCESS_KEY_ID`, `S3_ACCESS_KEY`
    - `LOGSNAG_ACCESS_KEY`
 
-3. **Docker image** pushed to `registry.teuzcode.hr/sikirevci-selo-moje:latest` (registry auth from `nomad/jobs/_shared/registry`).
+3. **Docker image** pushed to `registry.teuzcode.hr/sikirevci:latest` (registry auth from `nomad/jobs/_shared/registry`). The Dockerfile bakes in `NEXT_PUBLIC_FILE_BASE_PATH` at build time so memory images load correctly; override with `--build-arg NEXT_PUBLIC_FILE_BASE_PATH=...` if needed.
 
 ## Deploy
 
