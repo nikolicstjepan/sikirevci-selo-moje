@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build output
+.next
+out
+build
+
+# Git
+.git
+.gitignore
+
+# Env (inject at runtime)
+.env
+.env*.local
+
+# IDE and misc
+.vscode
+.vercel
+.DS_Store
+*.md
+*.log
+coverage
+*.tsbuildinfo
+
+# Prisma local DB (if any)
+prisma/db.sqlite
+prisma/db.sqlite-journal
+
+# Uploads (ephemeral / mounted in prod)
+public/uploads
