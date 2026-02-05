@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-# Build stage (node:lts-slim has OpenSSL for Prisma)
-FROM node:lts-slim AS builder
+# Build stage (Bullseye has libssl1.1 required by Prisma 4.x)
+FROM node:18-bullseye-slim AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Production stage
-FROM node:lts-slim AS runner
+FROM node:18-bullseye-slim AS runner
 
 WORKDIR /app
 

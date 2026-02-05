@@ -27,10 +27,10 @@ job "sikirevci" {
       driver = "docker"
 
       config {
-        image   = "registry.teuzcode.hr/sikirevci.com.hr:latest"
+        image   = "registry.teuzcode.hr/sikirevci:latest"
         ports   = ["http"]
         volumes = [
-          "/var/snap/docker/common/nomad/sikirevci.com.hr/app-data:/app/app-data",
+          "/var/snap/docker/common/nomad/sikirevci/app-data:/app/app-data",
         ]
 
         auth {
